@@ -436,7 +436,10 @@
     <ClInclude Include="Enemy.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="IPhysicsCharacter.h">
+    <ClInclude Include="HUDText.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsObject.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

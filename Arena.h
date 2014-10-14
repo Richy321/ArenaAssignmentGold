@@ -7,9 +7,11 @@
 #include "RoamCamera.h"
 #include "Player.h"
 #include "Enemy.h"
-#include "IPhysicsCharacter.h"
+#include "PhysicsObject.h"
+#include "HUDText.h"
 
-namespace octet {
+namespace octet
+{
 	/// Scene using bullet for physics effects.
 	class Arena : public app {
 		// scene for drawing box
@@ -25,30 +27,24 @@ namespace octet {
 		dynarray<scene_node*> nodes;
 
 		camera_instance *camera;
-		Player* player;
+		Player *player;
+		HUDText *debugText;
 
 		//Mouse variables
-		float prevMouseX = -1;
-		float prevMouseY = -1;
+		int prevMouseX = -1;
+		int prevMouseY = -1;
+		int curMouseX = -1;
+		int curMouseY = -1;
 		float sensitivity = 0.3f;
 
 		bool debugMode = true;
 
-		// a texture for our text
-		GLuint font_texture;
-
-		// information for our text
-		bitmap_font font;
-
 		void handleCameraMovement()
 		{
-			int x = 0, y = 0;
-			get_mouse_pos(x, y);
-
 			if (prevMouseX != -1 && prevMouseY != -1)
 			{
-				float dx = (x - prevMouseX);
-				float dy = (y - prevMouseY);
+				int dx = (curMouseX - prevMouseX);
+				int dy = (curMouseY - prevMouseY);
 
 				vec3 up = vec3(0, 1, 0);
 				vec3 right = vec3(1, 0, 0);
@@ -60,12 +56,12 @@ namespace octet {
 				{
 					mat4t &camMat = app_scene->get_camera_instance(0)->get_node()->access_nodeToParent();
 					camMat.loadIdentity();
-					camMat.rotateY(-x * sensitivity);
-					camMat.rotateX(-y * sensitivity);
+					camMat.rotateY(-curMouseX * sensitivity);
+					camMat.rotateX(-curMouseY * sensitivity);
 				}
 			}
-			prevMouseX = x;
-			prevMouseY = y;
+			prevMouseX = curMouseX;
+			prevMouseY = curMouseY;
 		}
 
 		void handleInput()
@@ -86,9 +82,6 @@ namespace octet {
 			}
 		}
 
-
-
-
 		void Cleanup()
 		{
 			delete world;
@@ -96,6 +89,7 @@ namespace octet {
 			delete broadphase;
 			delete dispatcher;
 		}
+
 		void create_default_roam_camera_and_lights()
 		{
 			/// default camera_instance
@@ -166,40 +160,6 @@ namespace octet {
 			app_scene->add_mesh_instance(new mesh_instance(node, box, mat));
 		}
 
-		void draw_text(texture_shader &shader, float x, float y, float scale, const char *text)
-		{
-			mat4t modelToWorld;
-			modelToWorld.loadIdentity();
-			modelToWorld.translate(x, y, 0);
-			modelToWorld.scale(scale, scale, 1);
-			mat4t modelToProjection = mat4t::build_projection_matrix(modelToWorld, camera->get_node()->access_nodeToParent());
-
-			/*mat4t tmp;
-			glLoadIdentity();
-			glTranslatef(x, y, 0);
-			glGetFloatv(GL_MODELVIEW_MATRIX, (float*)&tmp);
-			glScalef(scale, scale, 1);
-			glGetFloatv(GL_MODELVIEW_MATRIX, (float*)&tmp);*/
-
-			enum { max_quads = 32 };
-			bitmap_font::vertex vertices[max_quads * 4];
-			uint32_t indices[max_quads * 6];
-			aabb bb(vec3(0, 0, 0), vec3(256, 256, 0));
-
-			unsigned num_quads = font.build_mesh(bb, vertices, indices, max_quads, text, 0);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, font_texture);
-
-			shader.render(modelToProjection, 0);
-
-			glVertexAttribPointer(attribute_pos, 3, GL_FLOAT, GL_FALSE, sizeof(bitmap_font::vertex), (void*)&vertices[0].x);
-			glEnableVertexAttribArray(attribute_pos);
-			glVertexAttribPointer(attribute_uv, 3, GL_FLOAT, GL_FALSE, sizeof(bitmap_font::vertex), (void*)&vertices[0].u);
-			glEnableVertexAttribArray(attribute_uv);
-
-			glDrawElements(GL_TRIANGLES, num_quads * 6, GL_UNSIGNED_INT, indices);
-		}
-
 		void update()
 		{
 			player->Update();
@@ -217,7 +177,7 @@ namespace octet {
 			world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, &config);
 		}
 
-		~Arena() 
+		~Arena()
 		{
 			Cleanup();
 		}
@@ -236,11 +196,14 @@ namespace octet {
 			rigid_bodies[rigid_bodies.size() - 1]->setFriction(0.70f);
 
 			player = new Player();
-			world->addRigidBody(player->rigidBody);
-			rigid_bodies.push_back(player->rigidBody);
-			nodes.push_back(player->node);
-			app_scene->add_child(player->node);
-			app_scene->add_mesh_instance(player->mesh);
+			world->addRigidBody(player->GetRigidBody());
+			rigid_bodies.push_back(player->GetRigidBody());
+			nodes.push_back(player->GetNode());
+			app_scene->add_child(player->GetNode());
+			app_scene->add_mesh_instance(player->GetMesh());
+
+			debugText = new HUDText(new aabb(vec3(-350.0f, -300, 0.0f), vec3(10.0f, 10.0f, 10.0f)));
+			debugText->text = "Hello";
 
 			//add the boxes (as dynamic objects)
 			modelToWorld.translate(-4.5f, 10.0f, 0);
@@ -257,8 +220,6 @@ namespace octet {
 			if (debugMode)
 			{
 
-
-
 			}
 		}
 
@@ -267,18 +228,21 @@ namespace octet {
 			camera->get_node()->loadIdentity();
 
 			vec3 targetPos = target.GetPosition();
-			printf("%f %f %f\n", targetPos.x(), targetPos.y(), targetPos.z());
 			camera->get_node()->rotate(-90, vec3(1, 0, 0));
 			camera->get_node()->translate(vec3(targetPos.x(), -targetPos.z(), 30));
 		}
 		/// this is called to draw the world
 		void draw_world(int x, int y, int w, int h) {
 
+			get_mouse_pos(curMouseX, curMouseY);
+
 			update();
 
 			int vx = 0, vy = 0;
 			get_viewport_size(vx, vy);
 			app_scene->begin_render(vx, vy);
+
+			debugText->draw(vx, vy);
 
 			world->stepSimulation(1.0f / 30);
 			for (unsigned i = 0; i != rigid_bodies.size(); ++i) {
@@ -293,9 +257,16 @@ namespace octet {
 
 			// update matrices. assume 30 fps.
 			app_scene->update(1.0f / 30);
-
 			// draw the scene
 			app_scene->render((float)vx / vy);
+		}
+
+
+		vec3 calcMouseToWorld()
+		{
+
+
+
 		}
 	};
 }
