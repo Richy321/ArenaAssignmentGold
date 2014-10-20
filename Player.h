@@ -1,5 +1,5 @@
+#pragma once
 #include "PhysicsObject.h"
-
 #include "../../octet.h"
 
 namespace octet
@@ -10,7 +10,7 @@ namespace octet
 	public:
 		Player()
 		{
-			Initialise();
+			Initialise(vec3(0.0f, 10.0f, -10.0f), vec3(2.0f, 2.0f, 2.0f));
 		}
 		~Player() {}
 
@@ -20,15 +20,15 @@ namespace octet
 
 		float speed;
 
-		void Initialise()
+		virtual void Initialise(vec3 position, vec3 size)
 		{
-			PhysicsObject::Initialise();
-
+			PhysicsObject::Initialise(position, size);
 			speed = 25.0f;
 		}
 
 		void Update()
 		{
+			PhysicsObject::Update();
 		}
 
 		void Move(vec3 moveVec)

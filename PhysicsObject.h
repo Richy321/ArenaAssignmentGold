@@ -1,51 +1,59 @@
 #pragma once
+#include "../../octet.h"
 
 namespace octet
 {
 	class PhysicsObject
 	{
 	private:
+		void UpdateNodeMatrixFromPhysics()
+		{
+			btQuaternion btq = rigidBody->getOrientation();
+			btVector3 pos = rigidBody->getCenterOfMassPosition();
+			quat q(btq[0], btq[1], btq[2], btq[3]);
+			mat4t modelToWorld = q;
+			modelToWorld[3] = vec4(pos[0], pos[1], pos[2], 1);
+			node->access_nodeToParent() = modelToWorld;
+		}
 	protected:
 		bool isDynamic = true;
 		btRigidBody* rigidBody;
 		ref<scene_node> node;
 		ref<mesh_box> box;
 		ref<mesh_instance> mesh;
-		ref<material> mat;
+		ref<material> mat = nullptr;
 	public:
-		vec3 size;
 		
 		PhysicsObject()
 		{
-			Initialise();
 		}
 
-		virtual void Initialise()
+		virtual ~PhysicsObject()
 		{
-			vec3 position = vec3(0.0f, 10.0f, -10.0f);
-			size = vec3(2.0f, 2.0f, 2.0f);
+			delete rigidBody;
+		}
+		virtual void Initialise(vec3 position, vec3 size)
+		{
 			random rnd = random();
-			//mat = new material(vec4(rnd.get(0, 1), rnd.get(0, 1), rnd.get(0, 1), 0.0f));
-
-			image *arrowTexture = new image("src/examples/Arena/ArrowTexture.jpg");
-			mat = new material(arrowTexture);
+			if (mat == nullptr)
+				mat = new material(vec4(rnd.get(0.0f, 1.0f), rnd.get(0.0f, 1.0f), rnd.get(0.0f, 1.0f), 0.0f));
 
 			mat4t modelToWorld = mat4t();
 			modelToWorld.translate(position.x(), position.y(), position.z());
 			
-			InitialiseRigidBody(modelToWorld);
+			InitialiseRigidBody(modelToWorld, size);
 
 			box = new mesh_box(size);
 			node = new scene_node(modelToWorld, atom_);
 			mesh = new mesh_instance(node, box, mat);
 		}
-		void InitialiseRigidBody(mat4t modelToWorld)
+		
+		void InitialiseRigidBody(mat4t modelToWorld, vec3 size)
 		{
 			btMatrix3x3 btMatrix(get_btMatrix3x3(modelToWorld));
 			btVector3 btPos(get_btVector3(modelToWorld[3].xyz()));
 
 			btCollisionShape *shape = new btBoxShape(get_btVector3(size));
-			
 			btTransform transform(btMatrix, btPos);
 
 			btDefaultMotionState *motionState = new btDefaultMotionState(transform);
@@ -56,9 +64,10 @@ namespace octet
 			rigidBody = new btRigidBody(mass, motionState, shape, inertiaTensor);
 		}
 
-		~PhysicsObject()
+	
+		virtual void Update()
 		{
-			delete rigidBody;
+			UpdateNodeMatrixFromPhysics();
 		}
 
 		virtual material &GetMaterial()

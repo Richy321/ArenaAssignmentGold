@@ -9,6 +9,7 @@
 #include "Enemy.h"
 #include "PhysicsObject.h"
 #include "HUDText.h"
+#include "Floor.h"
 
 namespace octet
 {
@@ -25,9 +26,11 @@ namespace octet
 
 		dynarray<btRigidBody*> rigid_bodies;
 		dynarray<scene_node*> nodes;
+		dynarray<PhysicsObject*> physicsObjects;
 
 		camera_instance *camera;
 		Player *player;
+		Floor* floor;
 		HUDText *debugText;
 
 		//Mouse variables
@@ -162,9 +165,12 @@ namespace octet
 
 		void update()
 		{
-			player->Update();
 			handleInput();
 			cameraFollow((*player));
+			vec3 playerPos = player->GetPosition();
+			static char tmp[64];
+
+			debugText->text = playerPos.toString(tmp, sizeof(tmp));
 			//handleCameraMovement
 		}
 
@@ -188,31 +194,35 @@ namespace octet
 			app_scene = new visual_scene();
 			app_scene->create_default_camera_and_lights();
 			camera = app_scene->get_camera_instance(0);
-			mat4t modelToWorld;
-			material *floor_mat = new material(vec4(0, 1, 1, 1));
-
-			// add the ground (as a static object)
-			add_box(modelToWorld, vec3(200.0f, 0.5f, 200.0f), floor_mat, false);
-			rigid_bodies[rigid_bodies.size() - 1]->setFriction(0.70f);
+			
+			floor = new Floor();
+			addPhysicsObjectToWorld(floor);
 
 			player = new Player();
-			world->addRigidBody(player->GetRigidBody());
-			rigid_bodies.push_back(player->GetRigidBody());
-			nodes.push_back(player->GetNode());
-			app_scene->add_child(player->GetNode());
-			app_scene->add_mesh_instance(player->GetMesh());
+			addPhysicsObjectToWorld(player);
 
-			debugText = new HUDText(new aabb(vec3(-350.0f, -300, 0.0f), vec3(10.0f, 10.0f, 10.0f)));
+			debugText = new HUDText(new aabb(vec3(-350.0f, -300, 0.0f), vec3(10.0f, 20.0f, 30.0f)));
 			debugText->text = "Hello";
-
+			
 			//add the boxes (as dynamic objects)
+			mat4t modelToWorld;
 			modelToWorld.translate(-4.5f, 10.0f, 0);
 			material *mat = new material(vec4(0, 1.0f, 0.5f, 1.0f));
-			for (int i = 0; i != 20; ++i) {
+			for (int i = 0; i != 20; ++i) 
+			{
 				modelToWorld.translate(3, 0, 0);
 				modelToWorld.rotateZ(360 / 20);
-				add_box(modelToWorld, vec3(0.5f), mat);
+				Enemy *enemy = new Enemy(modelToWorld[3].xyz());
+				addPhysicsObjectToWorld(enemy);
 			}
+		}
+
+		void addPhysicsObjectToWorld(PhysicsObject* physObj)
+		{
+			world->addRigidBody(physObj->GetRigidBody());
+			app_scene->add_child(physObj->GetNode());
+			app_scene->add_mesh_instance(physObj->GetMesh());
+			physicsObjects.push_back(physObj);
 		}
 
 		void drawDebug()
@@ -245,14 +255,10 @@ namespace octet
 			debugText->draw(vx, vy);
 
 			world->stepSimulation(1.0f / 30);
-			for (unsigned i = 0; i != rigid_bodies.size(); ++i) {
-				btRigidBody *rigid_body = rigid_bodies[i];
-				btQuaternion btq = rigid_body->getOrientation();
-				btVector3 pos = rigid_body->getCenterOfMassPosition();
-				quat q(btq[0], btq[1], btq[2], btq[3]);
-				mat4t modelToWorld = q;
-				modelToWorld[3] = vec4(pos[0], pos[1], pos[2], 1);
-				nodes[i]->access_nodeToParent() = modelToWorld;
+			
+			for (unsigned int i = 0; i < physicsObjects.size(); ++i)
+			{
+				physicsObjects[i]->Update();
 			}
 
 			// update matrices. assume 30 fps.
@@ -260,7 +266,6 @@ namespace octet
 			// draw the scene
 			app_scene->render((float)vx / vy);
 		}
-
 
 		vec3 calcMouseToWorld()
 		{

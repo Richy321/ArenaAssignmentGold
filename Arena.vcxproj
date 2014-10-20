@@ -217,6 +217,7 @@
     <ClInclude Include="..\..\shaders\texture_shader.h" />
     <ClInclude Include="Arena.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Floor.h" />
     <ClInclude Include="HUDText.h" />
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="Player.h" />
