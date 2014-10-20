@@ -6,20 +6,19 @@
 //
 #define OCTET_BULLET 1
 #include "../../octet.h"
-#include "RoamCamera.h"
+#include "PhysicsObject.h"
 #include "Player.h"
 #include "Enemy.h"
-#include "PhysicsObject.h"
-#include "HUDText.h"
 #include "Floor.h"
 
+#include "HUDText.h"
 namespace Arena
 {
 	/// Scene using bullet for physics effects.
-	class Arena : public octet::app {
-		// scene for drawing box
+	class ArenaApp : public octet::app 
+	{
+	private:
 		octet::ref<octet::visual_scene> app_scene;
-
 		btDefaultCollisionConfiguration config;       /// setup for the world
 		btCollisionDispatcher *dispatcher;            /// handler for collisions between objects
 		btDbvtBroadphase *broadphase;                 /// handler for broadphase (rough) collision
@@ -34,6 +33,8 @@ namespace Arena
 		Player *player;
 		Floor* floor;
 		HUDText *debugText;
+
+		btOverlapFilterCallback *customFilterCallback;
 
 		//Mouse variables
 		int prevMouseX = -1;
@@ -130,19 +131,20 @@ namespace Arena
 			static char tmp[64];
 
 			debugText->text = playerPos.toString(tmp, sizeof(tmp));
-			//handleCameraMovement
 		}
 
 	public:
 		/// this is called when we construct the class before everything is initialised.
-		Arena(int argc, char **argv) : octet::app(argc, argv) {
+		ArenaApp(int argc, char **argv) : octet::app(argc, argv) {
 			dispatcher = new btCollisionDispatcher(&config);
 			broadphase = new btDbvtBroadphase();
 			solver = new btSequentialImpulseConstraintSolver();
 			world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, &config);
+			customFilterCallback = new Arena::customFilterCallback();
+			world->getPairCache()->setOverlapFilterCallback(customFilterCallback); //register custom broadphase callback filter
 		}
 
-		~Arena()
+		~ArenaApp()
 		{
 			Cleanup();
 		}
@@ -178,7 +180,7 @@ namespace Arena
 
 		void addPhysicsObjectToWorld(PhysicsObject* physObj)
 		{
-			world->addRigidBody(physObj->GetRigidBody());
+			world->addRigidBody(physObj->GetRigidBody(), physObj->collisionType, physObj->collisionMask);
 			app_scene->add_child(physObj->GetNode());
 			app_scene->add_mesh_instance(physObj->GetMesh());
 			physicsObjects.push_back(physObj);
@@ -200,7 +202,7 @@ namespace Arena
 			camera->get_node()->rotate(-90, octet::vec3(1, 0, 0));
 			camera->get_node()->translate(octet::vec3(targetPos.x(), -targetPos.z(), 30));
 		}
-		/// this is called to draw the world
+		/// this is called to draw tnhe world
 		void draw_world(int x, int y, int w, int h) {
 
 			get_mouse_pos(curMouseX, curMouseY);

@@ -427,9 +427,6 @@
     <ClInclude Include="..\..\containers\string.h">
       <Filter>containers</Filter>
     </ClInclude>
-    <ClInclude Include="Arena.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -442,7 +439,15 @@
     <ClInclude Include="PhysicsObject.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Floor.h" />
+    <ClInclude Include="ArenaApp.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionFlags.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Floor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\resources\mesh_builder.inl">

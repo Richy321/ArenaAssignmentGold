@@ -215,7 +215,8 @@
     <ClInclude Include="..\..\shaders\shader.h" />
     <ClInclude Include="..\..\shaders\shaders.h" />
     <ClInclude Include="..\..\shaders\texture_shader.h" />
-    <ClInclude Include="Arena.h" />
+    <ClInclude Include="ArenaApp.h" />
+    <ClInclude Include="CollisionFlags.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="HUDText.h" />

@@ -26,6 +26,10 @@ namespace Arena
 
 		void Initialise(octet::vec3 position, octet::vec3 size)
 		{
+			collisionType = CollisionFlags::CollisionTypes::COL_ENEMY;
+			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_PLAYER |
+				CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_PROJECTILES;
+
 			PhysicsObject::Initialise(position, size);
 			speed = 25.0f;
 		}

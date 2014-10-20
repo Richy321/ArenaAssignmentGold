@@ -1,6 +1,7 @@
 #pragma once
 #define OCTET_BULLET 1
 #include "../../octet.h"
+#include "CollisionFlags.h"
 
 namespace Arena
 {
@@ -24,7 +25,9 @@ namespace Arena
 		octet::ref<octet::mesh_instance> mesh;
 		octet::ref<octet::material> mat = nullptr;
 	public:
-		
+		CollisionFlags::CollisionTypes collisionType = CollisionFlags::CollisionTypes::COL_NOTHING;
+		int collisionMask = CollisionFlags::CollisionTypes::COL_WALL;
+
 		PhysicsObject()
 		{
 		}
@@ -65,7 +68,6 @@ namespace Arena
 			rigidBody = new btRigidBody(mass, motionState, shape, inertiaTensor);
 		}
 
-	
 		virtual void Update()
 		{
 			UpdateNodeMatrixFromPhysics();

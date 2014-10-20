@@ -22,7 +22,12 @@ namespace Arena
 
 		virtual void Initialise(octet::vec3 position, octet::vec3 size)
 		{
+			
+			collisionType = CollisionFlags::CollisionTypes::COL_PLAYER;
+			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_POWERUP;
+
 			PhysicsObject::Initialise(position, size);
+			rigidBody->setActivationState(DISABLE_DEACTIVATION);
 			speed = 25.0f;
 		}
 
@@ -37,6 +42,8 @@ namespace Arena
 			btVector3 force = btVector3(moveVec.x() * speed, moveVec.y() * speed, moveVec.z() * speed);
 
 			rigidBody->applyForce(force, btVector3(0, 0, 0));
+			
+
 		}
 
 		octet::vec3 GetPosition()

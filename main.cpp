@@ -11,7 +11,7 @@
 
 #include "../../octet.h"
 
-#include "Arena.h"
+#include "ArenaApp.h"
 
 
 /// Create a box with octet
@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
   octet::app::init_all(argc, argv);
 
   // our application.
-  Arena::Arena app(argc, argv);
+  Arena::ArenaApp app(argc, argv);
   app.init();
 
   // open windows
