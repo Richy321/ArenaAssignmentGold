@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
   octet::app::init_all(argc, argv);
 
   // our application.
-  octet::Arena app(argc, argv);
+  Arena::Arena app(argc, argv);
   app.init();
 
   // open windows

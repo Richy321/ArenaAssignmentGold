@@ -2,7 +2,7 @@
 #include "PhysicsObject.h"
 #include "../../octet.h"
 
-namespace octet
+namespace Arena
 {
 	class Player : public PhysicsObject
 	{
@@ -10,17 +10,17 @@ namespace octet
 	public:
 		Player()
 		{
-			Initialise(vec3(0.0f, 10.0f, -10.0f), vec3(2.0f, 2.0f, 2.0f));
+			Initialise(octet::vec3(0.0f, 10.0f, -10.0f), octet::vec3(2.0f, 2.0f, 2.0f));
 		}
 		~Player() {}
 
-		vec3 right = vec3(1, 0, 0);
-		vec3 up = vec3(0, 1, 0);
-		vec3 forward = vec3(0, 0, 1);
+		octet::vec3 right = octet::vec3(1, 0, 0);
+		octet::vec3 up = octet::vec3(0, 1, 0);
+		octet::vec3 forward = octet::vec3(0, 0, 1);
 
 		float speed;
 
-		virtual void Initialise(vec3 position, vec3 size)
+		virtual void Initialise(octet::vec3 position, octet::vec3 size)
 		{
 			PhysicsObject::Initialise(position, size);
 			speed = 25.0f;
@@ -31,7 +31,7 @@ namespace octet
 			PhysicsObject::Update();
 		}
 
-		void Move(vec3 moveVec)
+		void Move(octet::vec3 moveVec)
 		{
 			moveVec.normalize();
 			btVector3 force = btVector3(moveVec.x() * speed, moveVec.y() * speed, moveVec.z() * speed);
@@ -39,12 +39,12 @@ namespace octet
 			rigidBody->applyForce(force, btVector3(0, 0, 0));
 		}
 
-		vec3 GetPosition()
+		octet::vec3 GetPosition()
 		{
 			return node->access_nodeToParent()[3].xyz();
 		}
 
-		void LookAt(vec3 target)
+		void LookAt(octet::vec3 target)
 		{
 
 		}

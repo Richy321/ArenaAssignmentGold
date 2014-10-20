@@ -1,7 +1,8 @@
 #pragma once
+#define OCTET_BULLET 1
 #include "../../octet.h"
 
-namespace octet
+namespace Arena
 {
 	class PhysicsObject
 	{
@@ -10,18 +11,18 @@ namespace octet
 		{
 			btQuaternion btq = rigidBody->getOrientation();
 			btVector3 pos = rigidBody->getCenterOfMassPosition();
-			quat q(btq[0], btq[1], btq[2], btq[3]);
-			mat4t modelToWorld = q;
-			modelToWorld[3] = vec4(pos[0], pos[1], pos[2], 1);
+			octet::quat q(btq[0], btq[1], btq[2], btq[3]);
+			octet::mat4t modelToWorld = q;
+			modelToWorld[3] = octet::vec4(pos[0], pos[1], pos[2], 1);
 			node->access_nodeToParent() = modelToWorld;
 		}
 	protected:
 		bool isDynamic = true;
 		btRigidBody* rigidBody;
-		ref<scene_node> node;
-		ref<mesh_box> box;
-		ref<mesh_instance> mesh;
-		ref<material> mat = nullptr;
+		octet::ref<octet::scene_node> node;
+		octet::ref<octet::mesh_box> box;
+		octet::ref<octet::mesh_instance> mesh;
+		octet::ref<octet::material> mat = nullptr;
 	public:
 		
 		PhysicsObject()
@@ -32,23 +33,23 @@ namespace octet
 		{
 			delete rigidBody;
 		}
-		virtual void Initialise(vec3 position, vec3 size)
+		virtual void Initialise(octet::vec3 position, octet::vec3 size)
 		{
-			random rnd = random();
+			octet::random rnd = octet::random();
 			if (mat == nullptr)
-				mat = new material(vec4(rnd.get(0.0f, 1.0f), rnd.get(0.0f, 1.0f), rnd.get(0.0f, 1.0f), 0.0f));
+				mat = new octet::material(octet::vec4(rnd.get(0.0f, 1.0f), rnd.get(0.0f, 1.0f), rnd.get(0.0f, 1.0f), 0.0f));
 
-			mat4t modelToWorld = mat4t();
+			octet::mat4t modelToWorld = octet::mat4t();
 			modelToWorld.translate(position.x(), position.y(), position.z());
 			
 			InitialiseRigidBody(modelToWorld, size);
 
-			box = new mesh_box(size);
-			node = new scene_node(modelToWorld, atom_);
-			mesh = new mesh_instance(node, box, mat);
+			box = new octet::mesh_box(size);
+			node = new octet::scene_node(modelToWorld, octet::atom_);
+			mesh = new octet::mesh_instance(node, box, mat);
 		}
 		
-		void InitialiseRigidBody(mat4t modelToWorld, vec3 size)
+		void InitialiseRigidBody(octet::mat4t modelToWorld, octet::vec3 size)
 		{
 			btMatrix3x3 btMatrix(get_btMatrix3x3(modelToWorld));
 			btVector3 btPos(get_btVector3(modelToWorld[3].xyz()));
@@ -70,7 +71,7 @@ namespace octet
 			UpdateNodeMatrixFromPhysics();
 		}
 
-		virtual material &GetMaterial()
+		virtual octet::material &GetMaterial()
 		{
 			return *mat;
 		}
@@ -80,12 +81,12 @@ namespace octet
 			return rigidBody;
 		}
 
-		virtual mesh_instance *GetMesh()
+		virtual octet::mesh_instance *GetMesh()
 		{
 			return mesh;
 		}
 
-		virtual scene_node *GetNode()
+		virtual octet::scene_node *GetNode()
 		{
 			return node;
 		}

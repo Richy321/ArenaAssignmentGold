@@ -2,21 +2,21 @@
 #include "PhysicsObject.h"
 #include "../../octet.h"
 
-namespace octet
+namespace Arena
 {
 	class Enemy : public PhysicsObject
 	{
 	private:
 
 	public:
-		vec3 up = vec3(0, 1, 0);
-		vec3 right = vec3(0, 1, 0);
-		vec3 forward = vec3(0, 0, 1);
+		octet::vec3 up = octet::vec3(0, 1, 0);
+		octet::vec3 right = octet::vec3(0, 1, 0);
+		octet::vec3 forward = octet::vec3(0, 0, 1);
 		float speed;
 		
-		Enemy(vec3 position)
+		Enemy(octet::vec3 position)
 		{
-			Initialise(position, vec3(0.5f));
+			Initialise(position, octet::vec3(0.5f));
 		}
 
 		~Enemy()
@@ -24,7 +24,7 @@ namespace octet
 
 		}
 
-		void Initialise(vec3 position, vec3 size)
+		void Initialise(octet::vec3 position, octet::vec3 size)
 		{
 			PhysicsObject::Initialise(position, size);
 			speed = 25.0f;
