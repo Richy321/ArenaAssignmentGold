@@ -2,7 +2,6 @@
 #define OCTET_BULLET 1
 #include "../../octet.h"
 #include "PhysicsObject.h"
-#include "CollisionFlags.h"
 
 namespace Arena
 {
@@ -10,6 +9,7 @@ namespace Arena
 	{
 	private:
 		unsigned int health;
+		float fireForce = 1000.0f;
 		
 	public:
 		Player()
@@ -35,10 +35,16 @@ namespace Arena
 		{
 			collisionType = CollisionFlags::CollisionTypes::COL_PLAYER;
 			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_POWERUP;
-			health = 100;
-			PhysicsObject::Initialise(position, size);
+			
+			mat = new octet::material(octet::vec4(0.0f, 0.75f, 0.0f, 1.0f));
+			octet::mesh *shape = new octet::mesh_box(size);
+			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
+
+			PhysicsObject::Initialise(position, shape, collisionShape, mat);
+
 			rigidBody->setActivationState(DISABLE_DEACTIVATION);
 			speed = 25.0f;
+			health = 100;
 
 			rigidBody->setCollisionFlags(rigidBody->getCollisionFlags() |
 				btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
@@ -76,11 +82,15 @@ namespace Arena
 		{
 
 		}
+
 		void FireProjectile()
 		{
+			Projectile *proj = objectPool->GetProjectileObject();
+			btVector3 force = btVector3(forward.x() * fireForce, forward.y() * fireForce, forward.z() * fireForce);
 
+			proj->GetRigidBody()->applyForce(force, btVector3(0.0f, 0.0f, 0.0f));
 		}
 	};
+	const char * Player::referenceName = "Player";
 }
 
-const char * Arena::Player::referenceName = "Player";

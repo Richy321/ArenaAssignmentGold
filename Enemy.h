@@ -37,23 +37,17 @@ namespace Arena
 			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_PLAYER |
 				CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_PROJECTILES;
 
-			PhysicsObject::Initialise(position, size);
+			mat = new octet::material(octet::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+			octet::mesh *shape = new octet::mesh_box(size);
+			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
+
+			PhysicsObject::Initialise(position, shape, collisionShape, mat);
+
 			speed = 25.0f;
 		}
 
-		void Enable()
-		{
-			rigidBody->setActivationState(ACTIVE_TAG);
-		}
-
-		void Disable()
-		{
-			rigidBody->setActivationState(DISABLE_SIMULATION);
-			rigidBody->translate(btVector3(1000, 1000, -1000));
-		}
-
 		int getDamage() { return damage; }
-		int getHalth() { return health; }
+		int getHealth() { return health; }
 	};
+	const char * Enemy::referenceName = "Enemy";
 }
-const char * Arena::Enemy::referenceName = "Enemy";

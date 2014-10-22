@@ -14,6 +14,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Floor.h"
+#include "Projectile.h"
 
 #include "HUD.h"
 
@@ -118,7 +119,7 @@ namespace Arena
 			solver = new btSequentialImpulseConstraintSolver();
 			world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, &config);
 			filterCallback = new ArenaApp::customFilterCallback();
-			world->getPairCache()->setOverlapFilterCallback(filterCallback); //register custom broadphase callback filter
+			//world->getPairCache()->setOverlapFilterCallback(filterCallback); //register custom broadphase callback filter
 		}
 
 		~ArenaApp()
@@ -139,11 +140,9 @@ namespace Arena
 
 			floor = new Floor();
 			floor->addPhysicsObjectToWorld((*worldContext));
-			//addPhysicsObjectToWorld(floor);
 
 			player = new Player();
 			player->addPhysicsObjectToWorld((*worldContext));
-			//addPhysicsObjectToWorld(player);
 			
 			HUD = new Hud();
 			HUD->initialise();
@@ -158,8 +157,8 @@ namespace Arena
 				modelToWorld.rotateZ(360 / 20);
 				Enemy *enemy =  ObjectPool::getInstance().GetEnemyObject(modelToWorld[3].xyz());
 				enemy->addPhysicsObjectToWorld((*worldContext));
-				//addPhysicsObjectToWorld(enemy);
 			}
+			gContactAddedCallback = contactCallback;
 		}
 
 		void drawDebug()
@@ -178,7 +177,7 @@ namespace Arena
 			camera->get_node()->rotate(-90, octet::vec3(1, 0, 0));
 			camera->get_node()->translate(octet::vec3(targetPos.x(), -targetPos.z(), 30));
 		}
-		/// this is called to draw tnhe world
+		/// this is called to draw the world
 		void draw_world(int x, int y, int w, int h) {
 
 			get_mouse_pos(curMouseX, curMouseY);
@@ -208,14 +207,36 @@ namespace Arena
 			//camera->get_cameraToProjection
 		}
 
-		bool contactCallback(btManifoldPoint &btmanifoldpoint,
-			const btCollisionObject *btcollisionobject0,
+		static bool contactCallback(btManifoldPoint &btmanifoldpoint,
+			const btCollisionObjectWrapper *btcollisionobject0,
 			int part_0, int index_0,
-			const btCollisionObject *btcollisionobject1,
+			const btCollisionObjectWrapper *btcollisionobject1,
 			int part_1, int index_1)
 		{
-			PhysicsObject *physObj1 = (PhysicsObject*)((btRigidBody *)btcollisionobject0)->getUserPointer();
+			Enemy *enemy = nullptr;
+			Player *player = nullptr;
 
+			for (int i = 0; i < 2; i++)
+			{
+				btRigidBody *rigidBody = nullptr;
+				PhysicsObject* physObj = nullptr;
+				if (i == 0)
+					physObj = (PhysicsObject*)btcollisionobject0->getCollisionObject()->getUserPointer();
+				else
+					physObj = (PhysicsObject*)btcollisionobject1->getCollisionObject()->getUserPointer();
+
+				if (physObj->GetReferenceType() == Enemy::referenceName)
+					enemy = ((Enemy*)physObj);
+
+				if (physObj->GetReferenceType() == Player::referenceName)
+					player = ((Player*)physObj);
+			}
+
+			if (enemy != nullptr)
+				ObjectPool::getInstance().DestroyActiveEnemyObject(enemy);
+
+			if (player != nullptr && enemy != nullptr)
+				player->takeDamage(enemy->getDamage());
 			return false;
 		}
 
@@ -231,33 +252,6 @@ namespace Arena
 					(proxy1->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_ENEMY && proxy0->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_PLAYER))
 				{
 					collides = false;
-					
-					Enemy *enemy = nullptr;
-					Player *player = nullptr;
-
-					for (int i = 0; i < 2; i++)
-					{
-						btRigidBody *rigidBody = nullptr;
-				
-						if (i == 0)
-							rigidBody = (btRigidBody*)proxy0->m_clientObject;
-						else
-							rigidBody = (btRigidBody*)proxy1->m_clientObject;
-
-						PhysicsObject* physObj = ((PhysicsObject*)rigidBody->getUserPointer());
-
-						if (physObj->GetReferenceType() == Enemy::referenceName)
-							enemy = ((Enemy*)physObj);
-						
-						if (physObj->GetReferenceType() == Player::referenceName)
-							player = ((Player*)physObj);
-					}
-
-					if (enemy != nullptr)
-						ObjectPool::getInstance().DestroyActiveEnemyObject(enemy);
-
-					if (player != nullptr && enemy != nullptr)
-						player->takeDamage(enemy->getDamage());
 				}
 				return collides;
 			}

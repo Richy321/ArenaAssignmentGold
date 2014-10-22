@@ -1,6 +1,4 @@
 #pragma once
-//#define OCTET_BULLET 1
-//#include "../../octet.h"
 #include "CollisionFlags.h"
 
 namespace Arena
@@ -21,9 +19,11 @@ namespace Arena
 		bool isDynamic = true;
 		btRigidBody* rigidBody;
 		octet::ref<octet::scene_node> node;
-		octet::ref<octet::mesh_box> box;
 		octet::ref<octet::mesh_instance> mesh;
 		octet::ref<octet::material> mat = nullptr;
+		static const octet::vec3 defaultSize;
+
+		IObjectPool* objectPool;
 
 	public:
 		CollisionFlags::CollisionTypes collisionType = CollisionFlags::CollisionTypes::COL_NOTHING;
@@ -45,39 +45,44 @@ namespace Arena
 			delete rigidBody;
 		}
 
-		virtual void Initialise(octet::vec3 position, octet::vec3 size)
+		virtual void Initialise(octet::vec3 position, octet::mesh *shape = nullptr, btCollisionShape* collisionShape = nullptr, octet::material* mat = nullptr)
 		{
-			octet::random rnd = octet::random();
-			if (mat == nullptr)
-				mat = new octet::material(octet::vec4(rnd.get(0.0f, 1.0f), rnd.get(0.0f, 1.0f), rnd.get(0.0f, 1.0f), 0.0f));
-
 			octet::mat4t modelToWorld = octet::mat4t();
 			modelToWorld.translate(position.x(), position.y(), position.z());
-			
-			InitialiseRigidBody(modelToWorld, size);
 
-			box = new octet::mesh_box(size);
+			if (mat == nullptr)
+			{
+				octet::random rnd = octet::random();
+				mat = new octet::material(octet::vec4(rnd.get(0.0f, 1.0f), rnd.get(0.0f, 1.0f), rnd.get(0.0f, 1.0f), 0.0f));
+			}
+
+			if (shape == nullptr)
+				shape = new octet::mesh_box(defaultSize);
+
+			InitialiseRigidBody(modelToWorld, collisionShape);
+
 			node = new octet::scene_node(modelToWorld, octet::atom_);
-			mesh = new octet::mesh_instance(node, box, mat);
+			mesh = new octet::mesh_instance(node, shape, mat);
 		}
-		
-		void InitialiseRigidBody(octet::mat4t modelToWorld, octet::vec3 size)
+
+		void InitialiseRigidBody(octet::mat4t modelToWorld, btCollisionShape* collisionShape = nullptr)
 		{
 			btMatrix3x3 btMatrix(get_btMatrix3x3(modelToWorld));
 			btVector3 btPos(get_btVector3(modelToWorld[3].xyz()));
 
-			btCollisionShape *shape = new btBoxShape(get_btVector3(size));
+			if (collisionShape == nullptr)
+				collisionShape = new btBoxShape(get_btVector3(defaultSize));
+
 			btTransform transform(btMatrix, btPos);
 
 			btDefaultMotionState *motionState = new btDefaultMotionState(transform);
 			btScalar mass = isDynamic ? 10.0f : 0.0f;
 			btVector3 inertiaTensor;
 
-			shape->calculateLocalInertia(mass, inertiaTensor);
-			rigidBody = new btRigidBody(mass, motionState, shape, inertiaTensor);
+			collisionShape->calculateLocalInertia(mass, inertiaTensor);
+			rigidBody = new btRigidBody(mass, motionState, collisionShape, inertiaTensor);
 			rigidBody->setUserPointer(this);
 		}
-
 
 		void addPhysicsObjectToWorld(GameWorldContext& context)
 		{
@@ -86,6 +91,7 @@ namespace Arena
 
 			context.app_scene.add_mesh_instance(GetMesh());
 			context.objectPool.AddPhysicsObject(this);
+			objectPool = &context.objectPool;
 		}
 
 		virtual void Update()
@@ -93,6 +99,19 @@ namespace Arena
 			UpdateNodeMatrixFromPhysics();
 		}
 
+		void Enable()
+		{
+			rigidBody->setActivationState(ACTIVE_TAG);
+		}
+
+		void Disable()
+		{
+			rigidBody->setActivationState(DISABLE_SIMULATION);
+			rigidBody->translate(btVector3(1000, 1000, -1000));
+		}
+
+		#pragma endregion
+		#pragma region getters
 		virtual octet::material &GetMaterial()
 		{
 			return *mat;
@@ -112,7 +131,10 @@ namespace Arena
 		{
 			return node;
 		}
+		#pragma endregion
 	};
-}
-const char *Arena::PhysicsObject::referenceName = "PhysicsObject";
+	
 
+	const char *PhysicsObject::referenceName = "PhysicsObject";
+	const octet::vec3 PhysicsObject::defaultSize = octet::vec3(2.0f, 2.0f, 2.0f);
+}

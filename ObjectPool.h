@@ -2,6 +2,7 @@
 #include "../../octet.h"
 #include "IObjectPool.h"
 #include "Enemy.h"
+#include "Projectile.h"
 
 namespace Arena
 {
@@ -65,6 +66,15 @@ namespace Arena
 			activeObjects.push_back(enemy);
 			enemy->Enable();
 			return enemy;
+		}
+
+		Projectile* GetProjectileObject()
+		{
+			Projectile *projectile = nullptr;
+
+			projectile = new Projectile();
+			projectile->Enable();
+			return projectile;
 		}
 
 		void DestroyActiveEnemyObject(Enemy* enemy)
