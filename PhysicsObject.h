@@ -1,6 +1,6 @@
 #pragma once
-#define OCTET_BULLET 1
-#include "../../octet.h"
+//#define OCTET_BULLET 1
+//#include "../../octet.h"
 #include "CollisionFlags.h"
 
 namespace Arena
@@ -24,9 +24,17 @@ namespace Arena
 		octet::ref<octet::mesh_box> box;
 		octet::ref<octet::mesh_instance> mesh;
 		octet::ref<octet::material> mat = nullptr;
+
 	public:
 		CollisionFlags::CollisionTypes collisionType = CollisionFlags::CollisionTypes::COL_NOTHING;
 		int collisionMask = CollisionFlags::CollisionTypes::COL_WALL;
+
+		static const char* referenceName;
+
+		virtual const char* GetReferenceType()
+		{
+			return referenceName;
+		}
 
 		PhysicsObject()
 		{
@@ -36,6 +44,7 @@ namespace Arena
 		{
 			delete rigidBody;
 		}
+
 		virtual void Initialise(octet::vec3 position, octet::vec3 size)
 		{
 			octet::random rnd = octet::random();
@@ -66,6 +75,17 @@ namespace Arena
 
 			shape->calculateLocalInertia(mass, inertiaTensor);
 			rigidBody = new btRigidBody(mass, motionState, shape, inertiaTensor);
+			rigidBody->setUserPointer(this);
+		}
+
+
+		void addPhysicsObjectToWorld(GameWorldContext& context)
+		{
+			context.physicsWorld.addRigidBody(GetRigidBody(), collisionType, collisionMask);
+			context.app_scene.add_child(GetNode());
+
+			context.app_scene.add_mesh_instance(GetMesh());
+			context.objectPool.AddPhysicsObject(this);
 		}
 
 		virtual void Update()
@@ -94,4 +114,5 @@ namespace Arena
 		}
 	};
 }
+const char *Arena::PhysicsObject::referenceName = "PhysicsObject";
 

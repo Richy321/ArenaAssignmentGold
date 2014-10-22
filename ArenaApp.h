@@ -6,12 +6,17 @@
 //
 #define OCTET_BULLET 1
 #include "../../octet.h"
+#include "IObjectPool.h"
+#include "GameWorldContext.h"
+
+#include "ObjectPool.h"
 #include "PhysicsObject.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Floor.h"
 
-#include "HUDText.h"
+#include "HUD.h"
+
 namespace Arena
 {
 	/// Scene using bullet for physics effects.
@@ -23,18 +28,19 @@ namespace Arena
 		btCollisionDispatcher *dispatcher;            /// handler for collisions between objects
 		btDbvtBroadphase *broadphase;                 /// handler for broadphase (rough) collision
 		btSequentialImpulseConstraintSolver *solver;  /// handler to resolve collisions
-		btDiscreteDynamicsWorld *world;             /// physics world, contains rigid bodies
-
-		octet::dynarray<btRigidBody*> rigid_bodies;
-		octet::dynarray<octet::scene_node*> nodes;
-		octet::dynarray<PhysicsObject*> physicsObjects;
+		btDiscreteDynamicsWorld *world;               /// physics world, contains rigid bodies
 
 		octet::camera_instance *camera;
-		Player *player;
-		Floor* floor;
-		HUDText *debugText;
 
-		btOverlapFilterCallback *customFilterCallback;
+		Player *player;
+		Floor *floor;
+		ObjectPool *objectPool;
+		
+		Hud *HUD;
+
+		btOverlapFilterCallback *filterCallback;
+
+		GameWorldContext *worldContext;
 
 		//Mouse variables
 		int prevMouseX = -1;
@@ -83,12 +89,12 @@ namespace Arena
 
 			if (is_key_down(octet::key_esc))
 			{
-				Cleanup();
+				cleanup();
 				exit(1); //quick exit, cleanup?
 			}
 		}
 
-		void Cleanup()
+		void cleanup()
 		{
 			delete world;
 			delete solver;
@@ -96,57 +102,28 @@ namespace Arena
 			delete dispatcher;
 		}
 
-		void add_box(octet::mat4t_in modelToWorld, octet::vec3_in size, octet::material *mat, bool is_dynamic = true) {
-
-			btMatrix3x3 matrix(get_btMatrix3x3(modelToWorld));
-			btVector3 pos(get_btVector3(modelToWorld[3].xyz()));
-
-			btCollisionShape *shape = new btBoxShape(get_btVector3(size));
-
-			btTransform transform(matrix, pos);
-
-			btDefaultMotionState *motionState = new btDefaultMotionState(transform);
-			btScalar mass = is_dynamic ? 1.0f : 0.0f;
-			btVector3 inertiaTensor;
-
-			shape->calculateLocalInertia(mass, inertiaTensor);
-
-			btRigidBody * rigid_body = new btRigidBody(mass, motionState, shape, inertiaTensor);
-			world->addRigidBody(rigid_body);
-			rigid_bodies.push_back(rigid_body);
-
-			octet::mesh_box *box = new octet::mesh_box(size);
-			octet::scene_node *node = new octet::scene_node(modelToWorld, octet::atom_);
-			nodes.push_back(node);
-
-			app_scene->add_child(node);
-			app_scene->add_mesh_instance(new octet::mesh_instance(node, box, mat));
-		}
-
 		void update()
 		{
 			handleInput();
 			cameraFollow((*player));
-			octet::vec3 playerPos = player->GetPosition();
-			static char tmp[64];
-
-			debugText->text = playerPos.toString(tmp, sizeof(tmp));
+			HUD->update((*player));
 		}
 
 	public:
 		/// this is called when we construct the class before everything is initialised.
-		ArenaApp(int argc, char **argv) : octet::app(argc, argv) {
+		ArenaApp(int argc, char **argv) : octet::app(argc, argv) 
+		{
 			dispatcher = new btCollisionDispatcher(&config);
 			broadphase = new btDbvtBroadphase();
 			solver = new btSequentialImpulseConstraintSolver();
 			world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, &config);
-			customFilterCallback = new Arena::customFilterCallback();
-			world->getPairCache()->setOverlapFilterCallback(customFilterCallback); //register custom broadphase callback filter
+			filterCallback = new ArenaApp::customFilterCallback();
+			world->getPairCache()->setOverlapFilterCallback(filterCallback); //register custom broadphase callback filter
 		}
 
 		~ArenaApp()
 		{
-			Cleanup();
+			cleanup();
 		}
 
 		/// this is called once OpenGL is initialized
@@ -156,15 +133,21 @@ namespace Arena
 			app_scene->create_default_camera_and_lights();
 			camera = app_scene->get_camera_instance(0);
 			
+			objectPool = new ObjectPool();
+
+			worldContext = new GameWorldContext((*app_scene), (*world), (IObjectPool&)ObjectPool::getInstance());
+
 			floor = new Floor();
-			addPhysicsObjectToWorld(floor);
+			floor->addPhysicsObjectToWorld((*worldContext));
+			//addPhysicsObjectToWorld(floor);
 
 			player = new Player();
-			addPhysicsObjectToWorld(player);
-
-			debugText = new HUDText(new octet::aabb(octet::vec3(-350.0f, -300, 0.0f), octet::vec3(10.0f, 20.0f, 30.0f)));
-			debugText->text = "Hello";
+			player->addPhysicsObjectToWorld((*worldContext));
+			//addPhysicsObjectToWorld(player);
 			
+			HUD = new Hud();
+			HUD->initialise();
+
 			//add the boxes (as dynamic objects)
 			octet::mat4t modelToWorld;
 			modelToWorld.translate(-4.5f, 10.0f, 0);
@@ -173,17 +156,10 @@ namespace Arena
 			{
 				modelToWorld.translate(3, 0, 0);
 				modelToWorld.rotateZ(360 / 20);
-				Enemy *enemy = new Enemy(modelToWorld[3].xyz());
-				addPhysicsObjectToWorld(enemy);
+				Enemy *enemy =  ObjectPool::getInstance().GetEnemyObject(modelToWorld[3].xyz());
+				enemy->addPhysicsObjectToWorld((*worldContext));
+				//addPhysicsObjectToWorld(enemy);
 			}
-		}
-
-		void addPhysicsObjectToWorld(PhysicsObject* physObj)
-		{
-			world->addRigidBody(physObj->GetRigidBody(), physObj->collisionType, physObj->collisionMask);
-			app_scene->add_child(physObj->GetNode());
-			app_scene->add_mesh_instance(physObj->GetMesh());
-			physicsObjects.push_back(physObj);
 		}
 
 		void drawDebug()
@@ -213,15 +189,13 @@ namespace Arena
 			get_viewport_size(vx, vy);
 			app_scene->begin_render(vx, vy);
 
-			debugText->draw(vx, vy);
+			HUD->draw(vx, vy);
 
 			world->stepSimulation(1.0f / 30);
 			
-			for (unsigned int i = 0; i < physicsObjects.size(); ++i)
-			{
-				physicsObjects[i]->Update();
-			}
-
+			for (unsigned int i = 0; i <  ObjectPool::getInstance().physicsObjects.size(); ++i)
+				ObjectPool::getInstance().physicsObjects[i]->Update();
+			
 			// update matrices. assume 30 fps.
 			app_scene->update(1.0f / 30);
 			// draw the scene
@@ -230,9 +204,63 @@ namespace Arena
 
 		octet::vec3 calcMouseToWorld()
 		{
-
-
-
+			//camera->get_cameraToProjection().
+			//camera->get_cameraToProjection
 		}
+
+		bool contactCallback(btManifoldPoint &btmanifoldpoint,
+			const btCollisionObject *btcollisionobject0,
+			int part_0, int index_0,
+			const btCollisionObject *btcollisionobject1,
+			int part_1, int index_1)
+		{
+			PhysicsObject *physObj1 = (PhysicsObject*)((btRigidBody *)btcollisionobject0)->getUserPointer();
+
+			return false;
+		}
+
+		static struct customFilterCallback : public btOverlapFilterCallback
+		{
+			// return true when pairs need collision
+			virtual bool needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1) const
+			{
+				bool collides = (proxy0->m_collisionFilterGroup & proxy1->m_collisionFilterMask) != 0;
+				collides = collides && (proxy1->m_collisionFilterGroup & proxy0->m_collisionFilterMask);
+				
+				if ((proxy0->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_ENEMY && proxy1->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_PLAYER) ||
+					(proxy1->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_ENEMY && proxy0->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_PLAYER))
+				{
+					collides = false;
+					
+					Enemy *enemy = nullptr;
+					Player *player = nullptr;
+
+					for (int i = 0; i < 2; i++)
+					{
+						btRigidBody *rigidBody = nullptr;
+				
+						if (i == 0)
+							rigidBody = (btRigidBody*)proxy0->m_clientObject;
+						else
+							rigidBody = (btRigidBody*)proxy1->m_clientObject;
+
+						PhysicsObject* physObj = ((PhysicsObject*)rigidBody->getUserPointer());
+
+						if (physObj->GetReferenceType() == Enemy::referenceName)
+							enemy = ((Enemy*)physObj);
+						
+						if (physObj->GetReferenceType() == Player::referenceName)
+							player = ((Player*)physObj);
+					}
+
+					if (enemy != nullptr)
+						ObjectPool::getInstance().DestroyActiveEnemyObject(enemy);
+
+					if (player != nullptr && enemy != nullptr)
+						player->takeDamage(enemy->getDamage());
+				}
+				return collides;
+			}
+		};
 	};
 }

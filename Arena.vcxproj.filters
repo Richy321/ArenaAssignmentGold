@@ -448,6 +448,18 @@
     <ClInclude Include="Floor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectPool.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hud.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IObjectPool.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameWorldContext.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\resources\mesh_builder.inl">

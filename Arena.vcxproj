@@ -219,7 +219,11 @@
     <ClInclude Include="CollisionFlags.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Floor.h" />
+    <ClInclude Include="GameWorldContext.h" />
+    <ClInclude Include="Hud.h" />
     <ClInclude Include="HUDText.h" />
+    <ClInclude Include="IObjectPool.h" />
+    <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
