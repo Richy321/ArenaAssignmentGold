@@ -110,7 +110,23 @@ namespace Arena
 			rigidBody->translate(btVector3(1000, 1000, -1000));
 		}
 
-		#pragma endregion
+		void SetWorldTransform(octet::mat4t world4t)
+		{
+			btMatrix3x3 btMat = get_btMatrix3x3(world4t);
+			btVector3 btPos = get_btVector3(world4t[3].xyz());
+			btTransform transform = btTransform(btMat, btPos);
+			rigidBody->setWorldTransform(transform);
+		}
+
+		void Translate(octet::vec3 dir)
+		{
+			rigidBody->translate(get_btVector3(dir));
+		}
+		void Translate(btVector3 dir)
+		{
+			rigidBody->translate(dir);
+		}
+
 		#pragma region getters
 		virtual octet::material &GetMaterial()
 		{

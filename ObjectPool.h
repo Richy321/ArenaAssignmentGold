@@ -6,19 +6,26 @@
 
 namespace Arena
 {
-	class ObjectPool : IObjectPool
+	class ObjectPool : public IObjectPool
 	{
 	private:
 		octet::dynarray<Enemy*> activeObjects;
 		octet::dynarray<Enemy*> inactiveObjects;
+
+		octet::dynarray<Projectile*> activeProjectiles;
+		octet::dynarray<Projectile*> inactiveProjectiles;
+
+		GameWorldContext* gameWorldContext;
+
 	public:
 		octet::dynarray<PhysicsObject*> physicsObjects;
 
+		/*
 		static ObjectPool& getInstance()
 		{
 			static ObjectPool instance;
 			return instance;
-		}
+		}*/
 
 		void AddPhysicsObject(PhysicsObject* physObj) override
 		{
@@ -29,6 +36,14 @@ namespace Arena
 		{
 			for (unsigned int i = 0; i < physicsObjects.size(); i++)
 				physicsObjects[i]->Update();
+			
+			/*
+			for (int i = 0; i < activeObjects.size(); i++)
+				activeObjects[i]->Update();
+
+			for (int i = 0; i < activeProjectiles.size(); i++)
+				activeProjectiles[i]->Update();
+				*/
 		}
 
 		ObjectPool(){}
@@ -37,10 +52,25 @@ namespace Arena
 
 		virtual ~ObjectPool() override { }
 
-		void initialise(int enemyCapacity)
+		void Initialise(GameWorldContext& context, int enemyCapacity, int projectileCapacity)
 		{
+			gameWorldContext = &context;
 			activeObjects.reserve(enemyCapacity);
 			inactiveObjects.reserve(enemyCapacity);
+			activeProjectiles.reserve(projectileCapacity);
+			inactiveProjectiles.reserve(projectileCapacity);
+
+			for (int i = 0; i < projectileCapacity; i++)
+			{
+				Projectile* proj = GetProjectileObject();
+				proj->Disable();
+			}
+			
+			for (int i = 0; i < enemyCapacity; i++)
+			{
+				Enemy* enemy = GetEnemyObject();
+				enemy->Disable();
+			}
 		}
 
 		Enemy* GetEnemyObject()
@@ -54,13 +84,14 @@ namespace Arena
 			if (inactiveObjects.size() > 0)
 			{
 				enemy = inactiveObjects[inactiveObjects.size() - 1];
+				enemy->Translate(get_btVector3(position));
 				inactiveObjects.pop_back();
-				return enemy;
 			}
 			else
 			{
 				//allocate new - try to avoid this
-				enemy = new Enemy(position);
+				enemy = new Enemy();
+				enemy->addPhysicsObjectToWorld(*gameWorldContext);
 			}
 
 			activeObjects.push_back(enemy);
@@ -70,9 +101,27 @@ namespace Arena
 
 		Projectile* GetProjectileObject()
 		{
-			Projectile *projectile = nullptr;
+			return GetProjectileObject(octet::vec3(0.0f, 0.0f, 0.0f));
+		}
 
-			projectile = new Projectile();
+		Projectile* GetProjectileObject(octet::vec3 position)
+		{
+			Projectile *projectile = nullptr;
+			if (inactiveProjectiles.size() > 0)
+			{
+				projectile = inactiveProjectiles[inactiveProjectiles.size() - 1];
+				projectile->Translate(get_btVector3(position));
+				inactiveProjectiles.pop_back();
+			}
+			else
+			{
+				//allocate new - try to avoid this
+				projectile = new Projectile();
+				projectile->Translate(get_btVector3(position));
+				projectile->addPhysicsObjectToWorld(*gameWorldContext);
+			}
+
+			activeProjectiles.push_back(projectile);
 			projectile->Enable();
 			return projectile;
 		}
@@ -86,6 +135,20 @@ namespace Arena
 					enemy->Disable();
 					inactiveObjects.push_back(activeObjects[i]);
 					activeObjects.erase(i);
+					return;
+				}
+			}
+		}
+
+		void DestroyActiveProjectileObject(Projectile* projectile)
+		{
+			for (unsigned int i = 0; i < activeProjectiles.size(); i++)
+			{
+				if (activeProjectiles[i] == projectile)
+				{
+					projectile->Disable();
+					inactiveProjectiles.push_back(activeProjectiles[i]);
+					activeProjectiles.erase(i);
 					return;
 				}
 			}

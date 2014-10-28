@@ -5,6 +5,7 @@ namespace Arena
 {
 	class Projectile : public PhysicsObject
 	{
+	private:
 		unsigned int damage = 50;
 
 	public:
@@ -29,7 +30,12 @@ namespace Arena
 			btCollisionShape *collisionShape = new btSphereShape(btScalar(radius));
 
 			PhysicsObject::Initialise(position, shape, collisionShape, mat);
+		}
 
+		void DestroyViaPool()
+		{
+			objectPool->DestroyActiveProjectileObject(this);
+			Disable();
 		}
 	};
 }

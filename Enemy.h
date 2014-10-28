@@ -21,9 +21,9 @@ namespace Arena
 			return Enemy::referenceName;
 		}
 
-		Enemy(octet::vec3 position)
+		Enemy()
 		{
-			Initialise(position, octet::vec3(0.5f));
+			Initialise(octet::vec3(0.0f, 0.0f, 0.0f), octet::vec3(0.5f));
 		}
 
 		~Enemy()
@@ -44,6 +44,12 @@ namespace Arena
 			PhysicsObject::Initialise(position, shape, collisionShape, mat);
 
 			speed = 25.0f;
+		}
+
+		void DestroyViaPool()
+		{
+			objectPool->DestroyActiveEnemyObject(this);
+			Disable();
 		}
 
 		int getDamage() { return damage; }

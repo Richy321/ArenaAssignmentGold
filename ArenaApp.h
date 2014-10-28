@@ -88,6 +88,9 @@ namespace Arena
 			if (is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s'))
 				player->Move(octet::vec3(0, 0, player->speed));
 
+			if (is_key_down(octet::key_space))
+				player->FireProjectile(*worldContext);
+
 			if (is_key_down(octet::key_esc))
 			{
 				cleanup();
@@ -136,7 +139,7 @@ namespace Arena
 			
 			objectPool = new ObjectPool();
 
-			worldContext = new GameWorldContext((*app_scene), (*world), (IObjectPool&)ObjectPool::getInstance());
+			worldContext = new GameWorldContext((*app_scene), (*world), (*objectPool));
 
 			floor = new Floor();
 			floor->addPhysicsObjectToWorld((*worldContext));
@@ -147,16 +150,18 @@ namespace Arena
 			HUD = new Hud();
 			HUD->initialise();
 
+			objectPool->Initialise(*worldContext, 0, 30);
+
 			//add the boxes (as dynamic objects)
 			octet::mat4t modelToWorld;
 			modelToWorld.translate(-4.5f, 10.0f, 0);
 			octet::material *mat = new octet::material(octet::vec4(0, 1.0f, 0.5f, 1.0f));
 			for (int i = 0; i != 20; ++i) 
 			{
+				Enemy *enemy = worldContext->objectPool.GetEnemyObject();
 				modelToWorld.translate(3, 0, 0);
 				modelToWorld.rotateZ(360 / 20);
-				Enemy *enemy =  ObjectPool::getInstance().GetEnemyObject(modelToWorld[3].xyz());
-				enemy->addPhysicsObjectToWorld((*worldContext));
+				enemy->SetWorldTransform(modelToWorld);
 			}
 			gContactAddedCallback = contactCallback;
 		}
@@ -191,10 +196,14 @@ namespace Arena
 			HUD->draw(vx, vy);
 
 			world->stepSimulation(1.0f / 30);
+
+			objectPool->UpdatePhysicsObjects();
+
+			//for (unsigned int i = 0; i < ObjectPool::getInstance().physicsObjects.size(); ++i)
+			//	ObjectPool::getInstance().physicsObjects[i]->Update();
+
 			
-			for (unsigned int i = 0; i <  ObjectPool::getInstance().physicsObjects.size(); ++i)
-				ObjectPool::getInstance().physicsObjects[i]->Update();
-			
+
 			// update matrices. assume 30 fps.
 			app_scene->update(1.0f / 30);
 			// draw the scene
@@ -233,7 +242,7 @@ namespace Arena
 			}
 
 			if (enemy != nullptr)
-				ObjectPool::getInstance().DestroyActiveEnemyObject(enemy);
+				enemy->DestroyViaPool();
 
 			if (player != nullptr && enemy != nullptr)
 				player->takeDamage(enemy->getDamage());

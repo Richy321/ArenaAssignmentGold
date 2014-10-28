@@ -10,6 +10,7 @@ namespace Arena
 	private:
 		unsigned int health;
 		float fireForce = 1000.0f;
+		float weaponOffset = 1.0f;
 		
 	public:
 		Player()
@@ -19,8 +20,8 @@ namespace Arena
 		~Player() {}
 
 		octet::vec3 right = octet::vec3(1, 0, 0);
+		octet::vec3 forward = octet::vec3(0, 0, -1); 
 		octet::vec3 up = octet::vec3(0, 1, 0);
-		octet::vec3 forward = octet::vec3(0, 0, 1);
 
 		float speed;
 
@@ -80,15 +81,19 @@ namespace Arena
 		
 		void LookAt(octet::vec3 target)
 		{
-
+			
 		}
 
-		void FireProjectile()
+		void FireProjectile(GameWorldContext& context)
 		{
-			Projectile *proj = objectPool->GetProjectileObject();
-			btVector3 force = btVector3(forward.x() * fireForce, forward.y() * fireForce, forward.z() * fireForce);
+			Projectile *proj = context.objectPool.GetProjectileObject();
+			
+			proj->SetWorldTransform(node->access_nodeToParent());
+			proj->Translate(btVector3(0,0,weaponOffset)); //weaponOffset
 
-			proj->GetRigidBody()->applyForce(force, btVector3(0.0f, 0.0f, 0.0f));
+			btVector3 force = btVector3(forward.x() * fireForce, forward.y() * fireForce, forward.z() * fireForce);
+			proj->GetRigidBody()->applyImpulse(force, btVector3(0.0f, 0.0f, 0.0f));
+			
 		}
 	};
 	const char * Player::referenceName = "Player";
