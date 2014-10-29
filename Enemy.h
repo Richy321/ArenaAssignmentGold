@@ -23,7 +23,7 @@ namespace Arena
 
 		Enemy()
 		{
-			Initialise(octet::vec3(0.0f, 0.0f, 0.0f), octet::vec3(0.5f));
+			Initialise(octet::vec3(0.0f, 0.0f, 0.0f), octet::vec3(2.5f));
 		}
 
 		~Enemy()

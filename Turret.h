@@ -40,13 +40,6 @@ namespace Arena
 
 			octet::material* mat = new octet::material(octet::vec4(1.0f, 0.54f, 0.2f, 0.1f));
 			barrel = new TurretBarrel(context, node, mat, barrelOffset);
-			//barrel->addPhysicsObjectToWorld(context);
-
-//			btVector3 axis = btVector3(0.0f, 0.0f, 1.0f);
-//			btVector3 connectionPointBase = btVector3(0.0f, 0.0f, 0.0f);
-//			btVector3 connectionPointBarrel = btVector3(0.0f, 0.0f, barrel->halfExtents);
-//			btHingeConstraint *barrelBaseConstraint = new btHingeConstraint(*rigidBody, *barrel->GetRigidBody(), connectionPointBase, connectionPointBarrel, axis, axis);
-//			context.physicsWorld.addConstraint(barrelBaseConstraint);
 		}
 
 		void FireProjectile(GameWorldContext& context)
@@ -56,18 +49,14 @@ namespace Arena
 
 		void Rotate(float amount)
 		{
+			SetDampening(0.0f);
 			rigidBody->applyTorque(btVector3(0.0f, amount, 0.0f));
 		}
 
-		/*
-		virtual void Update()
+		void SetDampening(float dampening)
 		{
-			PhysicsObject::Update();
-			btTransform transform = rigidBody->getWorldTransform();
-
-			rigidBody->setWorldTransform(transform);
-			rigidBody->translate()
-		}*/
+			rigidBody->setDamping(0.0f, dampening);
+		}
 	};
 	const char * Turret::referenceName = "Turret";
 }

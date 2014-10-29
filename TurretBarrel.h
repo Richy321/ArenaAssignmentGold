@@ -5,7 +5,7 @@
 
 namespace Arena
 {
-	class TurretBarrel //: public PhysicsObject
+	class TurretBarrel
 	{
 	private:
 
@@ -28,7 +28,6 @@ namespace Arena
 			this->node = node;
 			this->mat = mat;
 			Initialise(position, context);
-
 		}
 
 		virtual ~TurretBarrel()
@@ -61,8 +60,6 @@ namespace Arena
 
 			btVector3 force = get_btVector3(newFwd);
 			proj->GetRigidBody()->applyImpulse(force, btVector3(0.0f, 0.0f, 0.0f));
-
-
 		}
 	};
 

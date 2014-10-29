@@ -19,14 +19,6 @@ namespace Arena
 
 	public:
 		octet::dynarray<PhysicsObject*> physicsObjects;
-
-		/*
-		static ObjectPool& getInstance()
-		{
-			static ObjectPool instance;
-			return instance;
-		}*/
-
 		void AddPhysicsObject(PhysicsObject* physObj) override
 		{
 			physicsObjects.push_back(physObj);
@@ -36,14 +28,6 @@ namespace Arena
 		{
 			for (unsigned int i = 0; i < physicsObjects.size(); i++)
 				physicsObjects[i]->Update();
-			
-			/*
-			for (int i = 0; i < activeObjects.size(); i++)
-				activeObjects[i]->Update();
-
-			for (int i = 0; i < activeProjectiles.size(); i++)
-				activeProjectiles[i]->Update();
-				*/
 		}
 
 		ObjectPool(){}
@@ -63,13 +47,13 @@ namespace Arena
 			for (int i = 0; i < projectileCapacity; i++)
 			{
 				Projectile* proj = GetProjectileObject();
-				proj->Disable();
+				proj->DestroyViaPool();
 			}
 			
 			for (int i = 0; i < enemyCapacity; i++)
 			{
 				Enemy* enemy = GetEnemyObject();
-				enemy->Disable();
+				enemy->DestroyViaPool();
 			}
 		}
 

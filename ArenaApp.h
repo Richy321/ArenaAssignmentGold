@@ -79,20 +79,38 @@ namespace Arena
 
 		void handleInput()
 		{
-			if (is_key_down(octet::key_left) || is_key_down('A') || is_key_down('a'))
-				player->Move(octet::vec3(-player->speed, 0, 0));
-			if (is_key_down(octet::key_right) || is_key_down('D') || is_key_down('d'))
-				player->Move(octet::vec3(player->speed, 0, 0));
-			if (is_key_down(octet::key_up) || is_key_down('W') || is_key_down('w'))
-				player->Move(octet::vec3(0, 0, -player->speed));
-			if (is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s'))
-				player->Move(octet::vec3(0, 0, player->speed));
+			if ((is_key_down(octet::key_left) || is_key_down('A') || is_key_down('a')) ||
+				(is_key_down(octet::key_right) || is_key_down('D') || is_key_down('d')) ||
+				(is_key_down(octet::key_up) || is_key_down('W') || is_key_down('w')) ||
+				(is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s')) )
+			{
+				if (is_key_down(octet::key_left) || is_key_down('A') || is_key_down('a'))
+					player->Move(octet::vec3(-1.0f, 0.0f, 0.0f));
+				if (is_key_down(octet::key_right) || is_key_down('D') || is_key_down('d'))
+					player->Move(octet::vec3(1.0f, 0.0f, 0.0f));
+				if (is_key_down(octet::key_up) || is_key_down('W') || is_key_down('w'))
+					player->Move(octet::vec3(0.0f, 0.0f, -1.0f));
+				if (is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s'))
+					player->Move(octet::vec3(0.0f, 0.0f, 1.0f));
+			}
+			else
+			{
 
-			if (is_key_down(octet::key_down) || is_key_down('Q') || is_key_down('q'))
-				player->RotateTurret(0.05f);
+			}
 
-			if (is_key_down(octet::key_down) || is_key_down('E') || is_key_down('e'))
-				player->RotateTurret(-0.05f);
+			if (is_key_down(octet::key_down) || is_key_down('Q') || is_key_down('q') ||
+				(is_key_down(octet::key_down) || is_key_down('E') || is_key_down('e')))
+			{
+				if (is_key_down(octet::key_down) || is_key_down('Q') || is_key_down('q'))
+					player->RotateTurret(1.0f);
+
+				if (is_key_down(octet::key_down) || is_key_down('E') || is_key_down('e'))
+					player->RotateTurret(-1.0f);
+			}
+			else
+			{
+				player->SetTurretDampening(2.5f);
+			}
 
 			if (is_key_down(octet::key_space))
 				player->FireTurrets(*worldContext);
@@ -156,7 +174,7 @@ namespace Arena
 			HUD = new Hud();
 			HUD->initialise();
 
-			objectPool->Initialise(*worldContext, 0, 30);
+			objectPool->Initialise(*worldContext, 20, 30);
 
 			//add the boxes (as dynamic objects)
 			octet::mat4t modelToWorld;
@@ -186,7 +204,7 @@ namespace Arena
 
 			octet::vec3 targetPos = target.GetPosition();
 			camera->get_node()->rotate(-90, octet::vec3(1, 0, 0));
-			camera->get_node()->translate(octet::vec3(targetPos.x(), -targetPos.z(), 30));
+			camera->get_node()->translate(octet::vec3(targetPos.x(), -targetPos.z(), 50));
 		}
 		/// this is called to draw the world
 		void draw_world(int x, int y, int w, int h) {

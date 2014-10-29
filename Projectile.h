@@ -7,8 +7,13 @@ namespace Arena
 	{
 	private:
 		unsigned int damage = 50;
-
+		static const char* referenceName;
 	public:
+
+		virtual const char* GetReferenceType() override
+		{
+			return Projectile::referenceName;
+		}
 
 		Projectile()
 		{
@@ -17,6 +22,7 @@ namespace Arena
 
 		virtual ~Projectile()
 		{
+
 		}
 
 		virtual void Initialise(octet::vec3 position)
@@ -38,5 +44,7 @@ namespace Arena
 			Disable();
 		}
 	};
+
+	const char * Projectile::referenceName = "Projectile";
 }
 

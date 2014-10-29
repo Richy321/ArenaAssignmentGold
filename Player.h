@@ -9,7 +9,8 @@ namespace Arena
 	class Player : public PhysicsObject
 	{
 	private:
-		unsigned int health;
+		unsigned int health = 100.0f;
+		float speed = 500.0f;
 		octet::vec3 size;
 
 	public:
@@ -18,12 +19,6 @@ namespace Arena
 			Initialise(octet::vec3(0.0f, 10.0f, -10.0f), octet::vec3(2.0f, 2.0f, 2.0f));
 		}
 		~Player() {}
-
-		//octet::vec3 right = octet::vec3(1, 0, 0);
-		
-		//octet::vec3 up = octet::vec3(0, 1, 0);
-
-		float speed;
 
 		Turret *turret;
 
@@ -76,8 +71,6 @@ namespace Arena
 			PhysicsObject::Initialise(position, shape, collisionShape, mat);
 
 			rigidBody->setActivationState(DISABLE_DEACTIVATION);
-			speed = 25.0f;
-			health = 100;
 
 			rigidBody->setCollisionFlags(rigidBody->getCollisionFlags() |
 				btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
@@ -100,6 +93,7 @@ namespace Arena
 
 		void Move(octet::vec3 moveVec)
 		{
+			SetMovementDampening(0.0f);
 			moveVec.normalize();
 			btVector3 force = btVector3(moveVec.x() * speed, moveVec.y() * speed, moveVec.z() * speed);
 			rigidBody->applyForce(force, btVector3(0, 0, 0));
@@ -134,6 +128,17 @@ namespace Arena
 		void FireTurrets(GameWorldContext& context)
 		{
 			turret->FireProjectile(context);
+		}
+
+
+		void SetTurretDampening(float value)
+		{
+			turret->SetDampening(value);
+		}
+
+		void SetMovementDampening(float value)
+		{
+			rigidBody->setDamping(value, 0.0f);
 		}
 	};
 	const char * Player::referenceName = "Player";
