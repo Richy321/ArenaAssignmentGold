@@ -2,6 +2,7 @@
 #define OCTET_BULLET 1
 #include "../../octet.h"
 #include "PhysicsObject.h"
+#include "Turret.h"
 
 namespace Arena
 {
@@ -9,9 +10,8 @@ namespace Arena
 	{
 	private:
 		unsigned int health;
-		float fireForce = 1000.0f;
-		float weaponOffset = 1.0f;
-		
+		octet::vec3 size;
+
 	public:
 		Player()
 		{
@@ -19,11 +19,13 @@ namespace Arena
 		}
 		~Player() {}
 
-		octet::vec3 right = octet::vec3(1, 0, 0);
-		octet::vec3 forward = octet::vec3(0, 0, -1); 
-		octet::vec3 up = octet::vec3(0, 1, 0);
+		//octet::vec3 right = octet::vec3(1, 0, 0);
+		
+		//octet::vec3 up = octet::vec3(0, 1, 0);
 
 		float speed;
+
+		Turret *turret;
 
 		static const char* referenceName;
 
@@ -32,6 +34,34 @@ namespace Arena
 			return Player::referenceName;
 		}
 
+		void addXZConstraint(GameWorldContext &context)
+		{
+			btTransform local;
+			local.setIdentity();
+
+
+			btGeneric6DofConstraint* constr = new btGeneric6DofConstraint(*rigidBody, local, true);
+
+			context.physicsWorld.addConstraint(constr);
+
+			constr->setLinearLowerLimit(btVector3(-1000, -1000, -1000));
+			constr->setLinearUpperLimit(btVector3(1000, 1000, 1000));
+
+			constr->setAngularLowerLimit(btVector3(-SIMD_PI * 0.25f, 0, -SIMD_PI * 0.25f));
+			constr->setAngularUpperLimit(btVector3(SIMD_PI * 0.25f, 0, SIMD_PI * 0.25f));
+
+
+		}
+
+		void addTurretConstraint(GameWorldContext &context)
+		{
+			btVector3 axis = btVector3(0.0f, 1.0f, 0.0f);
+			btVector3 connectionPointPlayer = btVector3(0.0f, size.y(), 0.0f);
+			btVector3 connectionPointBase = btVector3(0.0f, 0.0f, 0.0f);
+
+			btHingeConstraint *turretBaseContraint = new btHingeConstraint(*rigidBody, *turret->GetRigidBody(), connectionPointPlayer, connectionPointBase, axis, axis);
+			context.physicsWorld.addConstraint(turretBaseContraint);
+		}
 		virtual void Initialise(octet::vec3 position, octet::vec3 size)
 		{
 			collisionType = CollisionFlags::CollisionTypes::COL_PLAYER;
@@ -39,6 +69,8 @@ namespace Arena
 			
 			mat = new octet::material(octet::vec4(0.0f, 0.75f, 0.0f, 1.0f));
 			octet::mesh *shape = new octet::mesh_box(size);
+			
+			this->size = size;
 			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
 
 			PhysicsObject::Initialise(position, shape, collisionShape, mat);
@@ -49,6 +81,16 @@ namespace Arena
 
 			rigidBody->setCollisionFlags(rigidBody->getCollisionFlags() |
 				btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+		}
+
+		void addPhysicsObjectToWorld(GameWorldContext& context) override
+		{
+			addXZConstraint(context);
+			PhysicsObject::addPhysicsObjectToWorld(context);
+			
+			turret = new Turret(context);
+			turret->addPhysicsObjectToWorld(context);
+			addTurretConstraint(context);
 		}
 
 		void Update()
@@ -63,6 +105,11 @@ namespace Arena
 			rigidBody->applyForce(force, btVector3(0, 0, 0));
 		}
 
+		void RotateTurret(float amount)
+		{
+			turret->Rotate(amount);
+		}
+		
 		octet::vec3 GetPosition()
 		{
 			return node->access_nodeToParent()[3].xyz();
@@ -84,16 +131,9 @@ namespace Arena
 			
 		}
 
-		void FireProjectile(GameWorldContext& context)
+		void FireTurrets(GameWorldContext& context)
 		{
-			Projectile *proj = context.objectPool.GetProjectileObject();
-			
-			proj->SetWorldTransform(node->access_nodeToParent());
-			proj->Translate(btVector3(0,0,weaponOffset)); //weaponOffset
-
-			btVector3 force = btVector3(forward.x() * fireForce, forward.y() * fireForce, forward.z() * fireForce);
-			proj->GetRigidBody()->applyImpulse(force, btVector3(0.0f, 0.0f, 0.0f));
-			
+			turret->FireProjectile(context);
 		}
 	};
 	const char * Player::referenceName = "Player";

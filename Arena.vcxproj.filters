@@ -463,6 +463,8 @@
     <ClInclude Include="Projectile.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Turret.h" />
+    <ClInclude Include="TurretBarrel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\resources\mesh_builder.inl">

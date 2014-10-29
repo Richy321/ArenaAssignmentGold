@@ -25,7 +25,7 @@ namespace Arena
 
 		virtual void Initialise(octet::vec3 position, octet::vec3 size)
 		{
-			isDynamic = false;
+			mass = 0.0f;
 			collisionType = CollisionFlags::CollisionTypes::COL_WALL;
 			collisionMask = CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_PLAYER | CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_PROJECTILES;
 			

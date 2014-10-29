@@ -88,8 +88,14 @@ namespace Arena
 			if (is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s'))
 				player->Move(octet::vec3(0, 0, player->speed));
 
+			if (is_key_down(octet::key_down) || is_key_down('Q') || is_key_down('q'))
+				player->RotateTurret(0.05f);
+
+			if (is_key_down(octet::key_down) || is_key_down('E') || is_key_down('e'))
+				player->RotateTurret(-0.05f);
+
 			if (is_key_down(octet::key_space))
-				player->FireProjectile(*worldContext);
+				player->FireTurrets(*worldContext);
 
 			if (is_key_down(octet::key_esc))
 			{
@@ -198,11 +204,6 @@ namespace Arena
 			world->stepSimulation(1.0f / 30);
 
 			objectPool->UpdatePhysicsObjects();
-
-			//for (unsigned int i = 0; i < ObjectPool::getInstance().physicsObjects.size(); ++i)
-			//	ObjectPool::getInstance().physicsObjects[i]->Update();
-
-			
 
 			// update matrices. assume 30 fps.
 			app_scene->update(1.0f / 30);

@@ -16,7 +16,7 @@ namespace Arena
 			node->access_nodeToParent() = modelToWorld;
 		}
 	protected:
-		bool isDynamic = true;
+		float mass = 10.0f;
 		btRigidBody* rigidBody;
 		octet::ref<octet::scene_node> node;
 		octet::ref<octet::mesh_instance> mesh;
@@ -76,7 +76,6 @@ namespace Arena
 			btTransform transform(btMatrix, btPos);
 
 			btDefaultMotionState *motionState = new btDefaultMotionState(transform);
-			btScalar mass = isDynamic ? 10.0f : 0.0f;
 			btVector3 inertiaTensor;
 
 			collisionShape->calculateLocalInertia(mass, inertiaTensor);
@@ -84,7 +83,7 @@ namespace Arena
 			rigidBody->setUserPointer(this);
 		}
 
-		void addPhysicsObjectToWorld(GameWorldContext& context)
+		virtual void addPhysicsObjectToWorld(GameWorldContext& context)
 		{
 			context.physicsWorld.addRigidBody(GetRigidBody(), collisionType, collisionMask);
 			context.app_scene.add_child(GetNode());
@@ -115,6 +114,11 @@ namespace Arena
 			btMatrix3x3 btMat = get_btMatrix3x3(world4t);
 			btVector3 btPos = get_btVector3(world4t[3].xyz());
 			btTransform transform = btTransform(btMat, btPos);
+			rigidBody->setWorldTransform(transform);
+		}
+
+		void SetWorldTransform(btTransform transform)
+		{
 			rigidBody->setWorldTransform(transform);
 		}
 
