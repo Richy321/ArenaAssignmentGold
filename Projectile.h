@@ -1,5 +1,6 @@
 #pragma once
 #include "PhysicsObject.h"
+#include "Timer.h"
 
 namespace Arena
 {
@@ -7,8 +8,12 @@ namespace Arena
 	{
 	private:
 		unsigned int damage = 50;
+		float createdTime = -1.0f;
+		const float lifespan = 1.0f; //seconds
 		static const char* referenceName;
+
 	public:
+		PhysicsObject *owner = nullptr;
 
 		virtual const char* GetReferenceType() override
 		{
@@ -38,10 +43,28 @@ namespace Arena
 			PhysicsObject::Initialise(position, shape, collisionShape, mat);
 		}
 
+		void Enable() override
+		{
+			PhysicsObject::Enable();
+			createdTime = timer->GetRunningTime();
+		}
+
 		void DestroyViaPool()
 		{
 			objectPool->DestroyActiveProjectileObject(this);
-			Disable();
+			createdTime = -1.0f;
+			owner = nullptr;
+		}
+
+		void Update() override
+		{
+			PhysicsObject::Update();
+			if (createdTime >= 0.0f)
+			{
+				float runningTime = timer->GetRunningTime();
+				if (runningTime > createdTime + lifespan)
+					DestroyViaPool();
+			}
 		}
 	};
 

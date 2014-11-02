@@ -9,10 +9,10 @@ namespace Arena
 	class Player : public PhysicsObject
 	{
 	private:
-		unsigned int health = 100.0f;
+		unsigned int health = 100;
 		float speed = 500.0f;
 		octet::vec3 size;
-
+		
 	public:
 		Player()
 		{
@@ -42,9 +42,8 @@ namespace Arena
 			constr->setLinearLowerLimit(btVector3(-1000, -1000, -1000));
 			constr->setLinearUpperLimit(btVector3(1000, 1000, 1000));
 
-			constr->setAngularLowerLimit(btVector3(-SIMD_PI * 0.25f, 0, -SIMD_PI * 0.25f));
-			constr->setAngularUpperLimit(btVector3(SIMD_PI * 0.25f, 0, SIMD_PI * 0.25f));
-
+			constr->setAngularLowerLimit(btVector3(-SIMD_PI * 0.20f, 0, -SIMD_PI * 0.20f));
+			constr->setAngularUpperLimit(btVector3(SIMD_PI * 0.20f, 0, SIMD_PI * 0.20f));
 
 		}
 
@@ -81,7 +80,7 @@ namespace Arena
 			addXZConstraint(context);
 			PhysicsObject::addPhysicsObjectToWorld(context);
 			
-			turret = new Turret(context);
+			turret = new Turret(context, this);
 			turret->addPhysicsObjectToWorld(context);
 			addTurretConstraint(context);
 		}
@@ -129,7 +128,6 @@ namespace Arena
 		{
 			turret->FireProjectile(context);
 		}
-
 
 		void SetTurretDampening(float value)
 		{

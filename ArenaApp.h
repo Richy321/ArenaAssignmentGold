@@ -15,6 +15,7 @@
 #include "Enemy.h"
 #include "Floor.h"
 #include "Projectile.h"
+#include "Timer.h"
 
 #include "HUD.h"
 
@@ -36,7 +37,8 @@ namespace Arena
 		Player *player;
 		Floor *floor;
 		ObjectPool *objectPool;
-		
+		Timer *timer;
+
 		Hud *HUD;
 
 		btOverlapFilterCallback *filterCallback;
@@ -62,7 +64,7 @@ namespace Arena
 				octet::vec3 up = octet::vec3(0, 1, 0);
 				octet::vec3 right = octet::vec3(1, 0, 0);
 
-				octet::vec4 mouseMove = octet::vec4(dy, dx, 0);
+				octet::vec4 mouseMove = octet::vec4((float)dy, (float)dx, 0);
 				octet::vec4 mouseMoveDir = mouseMove.normalize();
 				float mouseMoveLength = mouseMove.squared();
 				if (mouseMoveLength > 0)
@@ -134,7 +136,8 @@ namespace Arena
 		{
 			handleInput();
 			cameraFollow((*player));
-			HUD->update((*player));
+			HUD->update(*player, *objectPool);
+			timer->Update();
 		}
 
 	public:
@@ -160,10 +163,12 @@ namespace Arena
 			app_scene = new octet::visual_scene();
 			app_scene->create_default_camera_and_lights();
 			camera = app_scene->get_camera_instance(0);
-			
+			timer = new Timer();
+			timer->Start();
+
 			objectPool = new ObjectPool();
 
-			worldContext = new GameWorldContext((*app_scene), (*world), (*objectPool));
+			worldContext = new GameWorldContext(*app_scene, *world, *objectPool, *timer);
 
 			floor = new Floor();
 			floor->addPhysicsObjectToWorld((*worldContext));
@@ -174,7 +179,7 @@ namespace Arena
 			HUD = new Hud();
 			HUD->initialise();
 
-			objectPool->Initialise(*worldContext, 20, 30);
+			objectPool->Initialise(*worldContext, 25, 30);
 
 			//add the boxes (as dynamic objects)
 			octet::mat4t modelToWorld;
@@ -188,14 +193,6 @@ namespace Arena
 				enemy->SetWorldTransform(modelToWorld);
 			}
 			gContactAddedCallback = contactCallback;
-		}
-
-		void drawDebug()
-		{
-			if (debugMode)
-			{
-
-			}
 		}
 
 		void cameraFollow(Player& target)
@@ -223,7 +220,7 @@ namespace Arena
 
 			objectPool->UpdatePhysicsObjects();
 
-			// update matrices. assume 30 fps.
+			// update matrices. assume 30 fps .
 			app_scene->update(1.0f / 30);
 			// draw the scene
 			app_scene->render((float)vx / vy);

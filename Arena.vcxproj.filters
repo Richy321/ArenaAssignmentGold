@@ -38,6 +38,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\helpers\http_server.h">
@@ -463,8 +466,15 @@
     <ClInclude Include="Projectile.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Turret.h" />
-    <ClInclude Include="TurretBarrel.h" />
+    <ClInclude Include="Timer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Turret.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TurretBarrel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\resources\mesh_builder.inl">

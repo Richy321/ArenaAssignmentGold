@@ -24,6 +24,7 @@ namespace Arena
 		static const octet::vec3 defaultSize;
 
 		IObjectPool* objectPool;
+		Timer* timer;
 
 	public:
 		CollisionFlags::CollisionTypes collisionType = CollisionFlags::CollisionTypes::COL_NOTHING;
@@ -91,6 +92,7 @@ namespace Arena
 			context.app_scene.add_mesh_instance(GetMesh());
 			context.objectPool.AddPhysicsObject(this);
 			objectPool = &context.objectPool;
+			timer = &context.timer;
 		}
 
 		virtual void Update()
@@ -98,14 +100,16 @@ namespace Arena
 			UpdateNodeMatrixFromPhysics();
 		}
 
-		void Enable()
+		virtual void Enable()
 		{
 			rigidBody->setActivationState(ACTIVE_TAG);
 		}
 
-		void Disable()
+		virtual void Disable()
 		{
-			rigidBody->setActivationState(DISABLE_SIMULATION);
+			//rigidBody->setActivationState(DISABLE_SIMULATION); //this messed up when enabling/disabling and setting forces on the same physics update.
+			rigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
+			rigidBody->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
 			rigidBody->translate(btVector3(1000, 1000, -1000));
 		}
 

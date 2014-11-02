@@ -14,10 +14,11 @@ namespace Arena
 	public:
 		static const char* referenceName;
 		TurretBarrel* barrel;
+		PhysicsObject *owner;
 
-		Turret(GameWorldContext& context)
+		Turret(GameWorldContext& context, PhysicsObject *owner)
 		{
-			Initialise(octet::vec3(0.0f, 0.0f, 0.0f));
+			Initialise(octet::vec3(0.0f, 0.0f, 0.0f), owner);
 		}
 
 		virtual ~Turret()
@@ -25,11 +26,12 @@ namespace Arena
 		}
 
 
-		void Initialise(octet::vec3 position)
+		void Initialise(octet::vec3 position, PhysicsObject *owner)
 		{
 			mass = 0.01f;
 			octet::mesh *baseShape = new octet::mesh_sphere(octet::vec3(0.0f, 0.0f, 0.0f), 1.5f);
 			mat = new octet::material(octet::vec4(1.0f, 1.0f, 0.33f, 1.0f));
+			this->owner = owner;
 
 			PhysicsObject::Initialise(position, baseShape, baseShape->get_bullet_shape());
 		}
@@ -39,7 +41,7 @@ namespace Arena
 			PhysicsObject::addPhysicsObjectToWorld(context);
 
 			octet::material* mat = new octet::material(octet::vec4(1.0f, 0.54f, 0.2f, 0.1f));
-			barrel = new TurretBarrel(context, node, mat, barrelOffset);
+			barrel = new TurretBarrel(context, node, mat, barrelOffset, owner);
 		}
 
 		void FireProjectile(GameWorldContext& context)

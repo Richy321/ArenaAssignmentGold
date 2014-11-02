@@ -1,5 +1,6 @@
 #pragma once
 #include "IObjectPool.h"
+#include "Timer.h"
 
 namespace Arena
 {
@@ -9,8 +10,9 @@ namespace Arena
 		octet::visual_scene &app_scene;
 		btDiscreteDynamicsWorld &physicsWorld;
 		IObjectPool &objectPool;
+		Timer &timer;
 
-		GameWorldContext(octet::visual_scene& App, btDiscreteDynamicsWorld& PhysicsWorld, IObjectPool& ObjectPool) : app_scene(App), physicsWorld(PhysicsWorld), objectPool(ObjectPool)
+		GameWorldContext(octet::visual_scene& App, btDiscreteDynamicsWorld& PhysicsWorld, IObjectPool& ObjectPool, Timer& Timer) : app_scene(App), physicsWorld(PhysicsWorld), objectPool(ObjectPool), timer(Timer)
 		{
 		}
 	};

@@ -8,25 +8,27 @@ namespace Arena
 	class TurretBarrel
 	{
 	private:
+		float lastFireTime = -1.0f;
+		float weaponOffset = 4.0f;
+		octet::vec3 forward = octet::vec3(0, 0, -1);
+		octet::mesh_instance *mesh;
+		octet::scene_node *node;
+		octet::material *mat;
+		PhysicsObject *owner;
 
 	public:
 		static const char* referenceName;
 		float radius = 0.5f;
 		float halfExtents = 2.25f;
-		octet::mesh_instance* mesh;
-		octet::scene_node* node;
-		octet::material* mat;
-
-		octet::vec3 spawnPoint;
 
 		float fireForce = 1000.0f;
-		float weaponOffset = 1.0f;
-		octet::vec3 forward = octet::vec3(0, 0, -1);
+		float fireRate = 0.3f;
 
-		TurretBarrel(GameWorldContext context, octet::scene_node* node, octet::material* mat, octet::vec3 position)
+		TurretBarrel(GameWorldContext context, octet::scene_node* node, octet::material* mat, octet::vec3 position, PhysicsObject *owner)
 		{
 			this->node = node;
 			this->mat = mat;
+			this->owner = owner;
 			Initialise(position, context);
 		}
 
@@ -47,19 +49,26 @@ namespace Arena
 
 		void Fire(GameWorldContext& context)
 		{
-			Projectile *proj = context.objectPool.GetProjectileObject();
+			float runningTime = context.timer.GetRunningTime();
+			if (lastFireTime + fireRate < runningTime)
+			{
+				Projectile *proj = context.objectPool.GetProjectileObject();
+				proj->owner = owner;
 
- 			octet::vec3 newFwd = forward * node->access_nodeToParent().toQuaternion();
+				octet::vec3 newFwd = forward * node->access_nodeToParent().toQuaternion();
 
- 			newFwd = newFwd.normalize();
-			
-			proj->SetWorldTransform(node->access_nodeToParent());
-			proj->Translate(newFwd * weaponOffset);
+				newFwd = newFwd.normalize();
 
-			newFwd *= fireForce;
+				proj->SetWorldTransform(node->access_nodeToParent());
+				proj->Translate(newFwd * weaponOffset);
 
-			btVector3 force = get_btVector3(newFwd);
-			proj->GetRigidBody()->applyImpulse(force, btVector3(0.0f, 0.0f, 0.0f));
+				newFwd *= fireForce;
+				btVector3 force = get_btVector3(newFwd);
+
+				proj->GetRigidBody()->applyImpulse(force, btVector3(0.0f, 0.0f, 0.0f));
+
+				lastFireTime = runningTime;
+			}
 		}
 	};
 
