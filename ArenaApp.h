@@ -240,11 +240,13 @@ namespace Arena
 		{
 			Enemy *enemy = nullptr;
 			Player *player = nullptr;
+			Projectile *projectile = nullptr;
 
 			for (int i = 0; i < 2; i++)
 			{
 				btRigidBody *rigidBody = nullptr;
-				PhysicsObject* physObj = nullptr;
+				PhysicsObject *physObj = nullptr;
+				
 				if (i == 0)
 					physObj = (PhysicsObject*)btcollisionobject0->getCollisionObject()->getUserPointer();
 				else
@@ -255,13 +257,35 @@ namespace Arena
 
 				if (physObj->GetReferenceType() == Player::referenceName)
 					player = ((Player*)physObj);
+
+				if (physObj->GetReferenceType() == Projectile::referenceName)
+					projectile = ((Projectile*)physObj);
 			}
 
-			if (enemy != nullptr)
-				enemy->DestroyViaPool();
-
+			//Player & Enemy Collision
 			if (player != nullptr && enemy != nullptr)
-				player->takeDamage(enemy->getDamage());
+			{
+				player->TakeDamage(enemy->GetDamage());
+				enemy->DestroyViaPool();
+			}
+
+			//Projectile & Enemy
+			if (projectile != nullptr && enemy != nullptr)
+			{
+				enemy->TakeDamage(projectile->GetDamage());
+				projectile->DestroyViaPool();
+			}
+
+			//Projectile & Player
+			if (player != nullptr && projectile != nullptr)
+			{
+				if (player != projectile->owner)
+				{
+					player->TakeDamage(projectile->GetDamage());
+					projectile->DestroyViaPool();
+				}
+			}
+
 			return false;
 		}
 

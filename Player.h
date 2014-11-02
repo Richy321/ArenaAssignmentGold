@@ -9,10 +9,20 @@ namespace Arena
 	class Player : public PhysicsObject
 	{
 	private:
-		unsigned int health = 100;
-		float speed = 500.0f;
+		unsigned int health;
+		float speed;
 		octet::vec3 size;
-		
+
+		float takeDamageStartTime = -1.0f;
+		float takeDamageDuration = 0.5f;
+
+		octet::material *originalMat;
+		octet::material *damagedMat;
+
+		octet::vec4 originalColour;
+		octet::vec4 damageColour;
+
+		bool isTakingDamage = false;
 	public:
 		Player()
 		{
@@ -29,39 +39,16 @@ namespace Arena
 			return Player::referenceName;
 		}
 
-		void addXZConstraint(GameWorldContext &context)
-		{
-			btTransform local;
-			local.setIdentity();
-
-
-			btGeneric6DofConstraint* constr = new btGeneric6DofConstraint(*rigidBody, local, true);
-
-			context.physicsWorld.addConstraint(constr);
-
-			constr->setLinearLowerLimit(btVector3(-1000, -1000, -1000));
-			constr->setLinearUpperLimit(btVector3(1000, 1000, 1000));
-
-			constr->setAngularLowerLimit(btVector3(-SIMD_PI * 0.20f, 0, -SIMD_PI * 0.20f));
-			constr->setAngularUpperLimit(btVector3(SIMD_PI * 0.20f, 0, SIMD_PI * 0.20f));
-
-		}
-
-		void addTurretConstraint(GameWorldContext &context)
-		{
-			btVector3 axis = btVector3(0.0f, 1.0f, 0.0f);
-			btVector3 connectionPointPlayer = btVector3(0.0f, size.y(), 0.0f);
-			btVector3 connectionPointBase = btVector3(0.0f, 0.0f, 0.0f);
-
-			btHingeConstraint *turretBaseContraint = new btHingeConstraint(*rigidBody, *turret->GetRigidBody(), connectionPointPlayer, connectionPointBase, axis, axis);
-			context.physicsWorld.addConstraint(turretBaseContraint);
-		}
 		virtual void Initialise(octet::vec3 position, octet::vec3 size)
 		{
 			collisionType = CollisionFlags::CollisionTypes::COL_PLAYER;
 			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_POWERUP;
 			
-			mat = new octet::material(octet::vec4(0.0f, 0.75f, 0.0f, 1.0f));
+			damageColour = octet::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+			originalColour = octet::vec4(0.0f, 0.75f, 0.0f, 1.0f);
+
+			//damagedMat = new octet::material(octet::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			mat = new octet::material(originalColour);
 			octet::mesh *shape = new octet::mesh_box(size);
 			
 			this->size = size;
@@ -73,6 +60,34 @@ namespace Arena
 
 			rigidBody->setCollisionFlags(rigidBody->getCollisionFlags() |
 				btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+
+			speed = 500.0f;
+			health = 100.0f;
+		}
+		void addXZConstraint(GameWorldContext &context)
+		{
+			btTransform local;
+			local.setIdentity();
+
+			btGeneric6DofConstraint* constr = new btGeneric6DofConstraint(*rigidBody, local, true);
+
+			context.physicsWorld.addConstraint(constr);
+
+			constr->setLinearLowerLimit(btVector3(-1000, -1000, -1000));
+			constr->setLinearUpperLimit(btVector3(1000, 1000, 1000));
+
+			constr->setAngularLowerLimit(btVector3(-SIMD_PI * 0.20f, 0, -SIMD_PI * 0.20f));
+			constr->setAngularUpperLimit(btVector3(SIMD_PI * 0.20f, 0, SIMD_PI * 0.20f));
+		}
+
+		void addTurretConstraint(GameWorldContext &context)
+		{
+			btVector3 axis = btVector3(0.0f, 1.0f, 0.0f);
+			btVector3 connectionPointPlayer = btVector3(0.0f, size.y(), 0.0f);
+			btVector3 connectionPointBase = btVector3(0.0f, 0.0f, 0.0f);
+
+			btHingeConstraint *turretBaseContraint = new btHingeConstraint(*rigidBody, *turret->GetRigidBody(), connectionPointPlayer, connectionPointBase, axis, axis);
+			context.physicsWorld.addConstraint(turretBaseContraint);
 		}
 
 		void addPhysicsObjectToWorld(GameWorldContext& context) override
@@ -82,12 +97,23 @@ namespace Arena
 			
 			turret = new Turret(context, this);
 			turret->addPhysicsObjectToWorld(context);
+			
+			btTransform turretTrans = rigidBody->getWorldTransform();
+			btVector3 pos = rigidBody->getCenterOfMassPosition();
+			//pos.setY(pos.y() + size.y()/2);
+			turret->GetRigidBody()->setWorldTransform(turretTrans);
 			addTurretConstraint(context);
 		}
 
 		void Update()
 		{
 			PhysicsObject::Update();
+
+			if (isTakingDamage && timer->GetRunningTime() > takeDamageStartTime + takeDamageDuration)
+			{
+				isTakingDamage = false;
+				mat->set_diffuse(originalColour);
+			}
 		}
 
 		void Move(octet::vec3 moveVec)
@@ -102,21 +128,21 @@ namespace Arena
 		{
 			turret->Rotate(amount);
 		}
-		
-		octet::vec3 GetPosition()
-		{
-			return node->access_nodeToParent()[3].xyz();
-		}
-		
+			
 		unsigned int GetHealth()
 		{
 			return health;
 		}
 
-		void takeDamage(unsigned int damageValue)
+		void TakeDamage(unsigned int damageValue)
 		{
-			health -= damageValue;
-			mat->set_diffuse(octet::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			if (!isTakingDamage)
+			{
+				isTakingDamage = true;
+				health -= damageValue;
+				takeDamageStartTime = timer->GetRunningTime();
+				mat->set_diffuse(damageColour);
+			}
 		}
 		
 		void LookAt(octet::vec3 target)

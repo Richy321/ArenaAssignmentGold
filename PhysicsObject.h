@@ -22,6 +22,9 @@ namespace Arena
 		octet::ref<octet::mesh_instance> mesh;
 		octet::ref<octet::material> mat = nullptr;
 		static const octet::vec3 defaultSize;
+		
+
+		float maxSpeed = -1.0f;
 
 		IObjectPool* objectPool;
 		Timer* timer;
@@ -97,6 +100,15 @@ namespace Arena
 
 		virtual void Update()
 		{
+			//cap velocity
+			if (maxSpeed >= 0)
+			{
+				btVector3 vel = rigidBody->getLinearVelocity();
+				float speed = vel.length();
+				if (speed > maxSpeed)
+					rigidBody->setLinearVelocity(vel * (maxSpeed / speed));
+			}
+
 			UpdateNodeMatrixFromPhysics();
 		}
 
@@ -154,6 +166,11 @@ namespace Arena
 		virtual octet::scene_node *GetNode()
 		{
 			return node;
+		}
+
+		octet::vec3 GetPosition()
+		{
+			return node->access_nodeToParent()[3].xyz();
 		}
 		#pragma endregion
 	};

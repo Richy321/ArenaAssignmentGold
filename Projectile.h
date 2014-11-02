@@ -10,15 +10,17 @@ namespace Arena
 		unsigned int damage = 50;
 		float createdTime = -1.0f;
 		const float lifespan = 1.0f; //seconds
-		static const char* referenceName;
-
+		
 	public:
+		static const char* referenceName;
 		PhysicsObject *owner = nullptr;
 
 		virtual const char* GetReferenceType() override
 		{
 			return Projectile::referenceName;
 		}
+		
+		unsigned int GetDamage() { return damage; }
 
 		Projectile()
 		{
@@ -41,6 +43,9 @@ namespace Arena
 			btCollisionShape *collisionShape = new btSphereShape(btScalar(radius));
 
 			PhysicsObject::Initialise(position, shape, collisionShape, mat);
+
+			rigidBody->setCollisionFlags(rigidBody->getCollisionFlags() |
+				btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 		}
 
 		void Enable() override
