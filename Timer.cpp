@@ -8,7 +8,7 @@
 
 #include "Timer.h"
 /*----------------------------------------------------
-		CTimer::CTimer
+		CTimer::Timer
 				Default Constructor
 -----------------------------------------------------*/
 Timer::Timer()
@@ -24,7 +24,7 @@ Timer::Timer()
 
 
 /*----------------------------------------------------
-				CTimer::Start
+				Timer::Start
 				Starts the timer
 -----------------------------------------------------*/
 void Timer::Start()
@@ -40,7 +40,7 @@ void Timer::Start()
 }
 
 /*----------------------------------------------------
-				CTimer::Stop
+				Timer::Stop
 				Stops the Timer
 -----------------------------------------------------*/
 void Timer::Stop()
@@ -88,7 +88,7 @@ void Timer::Resume()
 }
 
 /*----------------------------------------------------
-				CTimer::Update
+				Timer::Update
 	Updates the frames per second + total running time
 -----------------------------------------------------*/
 

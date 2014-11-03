@@ -8,6 +8,14 @@ namespace Arena
 {
 	class Player : public PhysicsObject
 	{
+	public: 		
+		enum Direction
+		{
+			North = 1,
+			East,
+			South,
+			West
+		};
 	private:
 		unsigned int health;
 		float speed;
@@ -26,7 +34,11 @@ namespace Arena
 		octet::vec4 originalColour;
 		octet::vec4 damageColour;
 
+		octet::hash_map<Direction, bool> activeAcceleration;
 		bool isTakingDamage = false;
+
+		octet::vec3 dampening;
+
 	public:
 		Player()
 		{
@@ -67,6 +79,14 @@ namespace Arena
 
 			speed = 500.0f;
 			health = 100;
+
+			maxSpeed = 30;
+
+			activeAcceleration[Direction::North] = false;
+			activeAcceleration[Direction::East] = false;
+			activeAcceleration[Direction::South] = false;
+			activeAcceleration[Direction::West] = false;
+
 		}
 		void addXZConstraint(GameWorldContext &context)
 		{
@@ -117,14 +137,62 @@ namespace Arena
 				isTakingDamage = false;
 				mat->set_diffuse(originalColour);
 			}
+
+			UpdateAcceleration();
+
+			activeAcceleration[Direction::North] = false;
+			activeAcceleration[Direction::East] = false;
+			activeAcceleration[Direction::South] = false;
+			activeAcceleration[Direction::West] = false;
 		}
 
-		void Move(octet::vec3 moveVec)
+		void Move(octet::vec3 moveVec, Direction accelDir)
 		{
-			SetMovementDampening(0.0f);
+			activeAcceleration[accelDir] = true;
+		}
+		
+		void UpdateAcceleration()
+		{
+			btVector3 linearVelocity = rigidBody->getLinearVelocity();
+			octet::vec3 moveVec(0.0f, 0.0f, 0.0f);
+
+			dampening = octet::vec3(0.0f, 0.0f, 0.0f);
+
+			if (activeAcceleration[Direction::North] == true)
+				moveVec += octet::vec3(0.0f, 0.0f, -1.0f);
+			else if (linearVelocity.z() < 0)
+				dampening.z() += linearVelocity.z() - (linearVelocity.z() * (deceleration));
+
+			if (activeAcceleration[Direction::East] == true)
+				moveVec += octet::vec3(-1.0f, 0.0f, 0.0f);
+			else if (linearVelocity.x() < 0)
+				dampening.x() += linearVelocity.x() - (linearVelocity.x() * (deceleration));
+
+			if (activeAcceleration[Direction::South] == true)
+				moveVec += octet::vec3(0.0f, 0.0f, 1.0f);
+			else if (linearVelocity.z() > 0)
+				dampening.z() += linearVelocity.z() - (linearVelocity.z() * (deceleration));
+
+			if (activeAcceleration[Direction::West] == true)
+				moveVec += octet::vec3(1.0f, 0.0f, 0.0f);
+			else if (linearVelocity.x() > 0)
+				dampening.x() += linearVelocity.x() - (linearVelocity.x() * (deceleration));
+
 			moveVec.normalize();
-			btVector3 force = btVector3(moveVec.x() * speed, moveVec.y() * speed, moveVec.z() * speed);
-			rigidBody->applyForce(force, btVector3(0, 0, 0));
+			if (abs(moveVec.length()) > 0 || abs(dampening.length()) > 0)
+			{
+				if (abs(dampening.length()) > 0)
+				{
+					rigidBody->setLinearVelocity(rigidBody->getLinearVelocity() - get_btVector3(dampening));
+				}
+				btVector3 force;
+				/*if (abs(dampening.length()) > 0)
+					force = btVector3((moveVec.x() * speed) - dampening.x(), (moveVec.y() * speed) - dampening.y(), (moveVec.z() * speed) - dampening.z());
+				else*/
+				force = btVector3(moveVec.x() * speed, moveVec.y() * speed, moveVec.z() * speed);
+	
+				rigidBody->applyCentralForce(force);
+			}
 		}
 
 		void RotateTurret(float amount)
@@ -164,6 +232,13 @@ namespace Arena
 		{
 			rigidBody->setDamping(value, 0.0f);
 		}
+
+		octet::vec3 GetVelocity()
+		{
+			return octet::vec3(rigidBody->getLinearVelocity().x(), rigidBody->getLinearVelocity().y(), rigidBody->getLinearVelocity().z());
+		}
+
+		octet::vec3 GetDampening() { return dampening; }
 
 		void AddBarrel()
 		{

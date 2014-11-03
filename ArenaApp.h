@@ -20,6 +20,8 @@
 #include "PowerUp.h"
 #include "HUD.h"
 
+#include "Joystick.h"
+
 
 namespace Arena
 {
@@ -89,13 +91,13 @@ namespace Arena
 				(is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s')) )
 			{
 				if (is_key_down(octet::key_left) || is_key_down('A') || is_key_down('a'))
-					player->Move(octet::vec3(-1.0f, 0.0f, 0.0f));
+					player->Move(octet::vec3(-1.0f, 0.0f, 0.0f), Player::Direction::East);
 				if (is_key_down(octet::key_right) || is_key_down('D') || is_key_down('d'))
-					player->Move(octet::vec3(1.0f, 0.0f, 0.0f));
+					player->Move(octet::vec3(1.0f, 0.0f, 0.0f), Player::Direction::West);
 				if (is_key_down(octet::key_up) || is_key_down('W') || is_key_down('w'))
-					player->Move(octet::vec3(0.0f, 0.0f, -1.0f));
+					player->Move(octet::vec3(0.0f, 0.0f, -1.0f), Player::Direction::North);
 				if (is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s'))
-					player->Move(octet::vec3(0.0f, 0.0f, 1.0f));
+					player->Move(octet::vec3(0.0f, 0.0f, 1.0f), Player::Direction::South);
 			}
 			else
 			{

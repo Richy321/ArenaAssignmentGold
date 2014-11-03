@@ -21,14 +21,12 @@ namespace Arena
 		Type type = None;
 		PowerUp()
 		{
-
 		}
 
 		virtual ~PowerUp()
 		{
 		}
 
-		
 		virtual void Initialise(octet::vec3 position, octet::mesh *shape = nullptr, btCollisionShape* collisionShape = nullptr, octet::material* mat = nullptr) override
 		{
 			PhysicsObject::Initialise(position, shape, collisionShape, mat);

@@ -13,11 +13,14 @@ namespace Arena
 			Idle,
 			DumbChase,
 			Chase
+			//Pathfind
+			//Proximity
 		};
 
 	private:
 		unsigned int health = 100;
 		int damage = 5;
+		int points = 1;
 		PhysicsObject *target = nullptr;
 		AIMode mode = Idle;
 
@@ -76,15 +79,15 @@ namespace Arena
 					moveDir *= speed;
 					rigidBody->applyForce(get_btVector3(moveDir), btVector3(0.0f, 0.0f, 0.0f));
 				}
+				break;
 			case Chase:
 				if (target != nullptr)
 				{
 					octet::vec3 moveDir = target->GetPosition() - GetPosition();
 					moveDir = moveDir.normalize();
-					moveDir *= speed * 100;
+					moveDir *= speed * 50;
 					rigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
 					rigidBody->applyImpulse(get_btVector3(moveDir), btVector3(0.0f, 0.0f, 0.0f));
-					
 				}
 				break;
 			}
@@ -102,6 +105,7 @@ namespace Arena
 
 		int GetDamage() { return damage; }
 		int GetHealth() { return health; }
+		int GetPoints() { return points;  }
 		AIMode GetAIMode() { return mode; }
 		PhysicsObject* GetTarget() { return target; }
 

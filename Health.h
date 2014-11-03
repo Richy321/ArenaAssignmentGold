@@ -28,6 +28,7 @@ namespace PowerUps
 			float width = 0.33f;
 			float extents = 1.0f;
 
+			//TODO - consolidate to one mesh to remove overlapping verts/faces
 			octet::mesh *plusV = new octet::mesh_box(octet::vec3(width, width, extents));
 			octet::mesh *plusH = new octet::mesh_box(octet::vec3(extents, width, width));
 

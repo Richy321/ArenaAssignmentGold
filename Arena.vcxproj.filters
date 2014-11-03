@@ -505,6 +505,9 @@
     <ClInclude Include="TurretBarrel.h">
       <Filter>Source Files\Player</Filter>
     </ClInclude>
+    <ClInclude Include="Joystick.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\resources\mesh_builder.inl">
