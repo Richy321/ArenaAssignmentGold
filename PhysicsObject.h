@@ -23,7 +23,6 @@ namespace Arena
 		octet::ref<octet::material> mat = nullptr;
 		static const octet::vec3 defaultSize;
 		
-
 		float maxSpeed = -1.0f;
 
 		IObjectPool* objectPool;

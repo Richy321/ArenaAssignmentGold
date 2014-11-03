@@ -3,6 +3,9 @@
 #include "IObjectPool.h"
 #include "Enemy.h"
 #include "Projectile.h"
+#include "PowerUp.h"
+#include "AdditionalBarrel.h"
+#include "Health.h"
 
 namespace Arena
 {
@@ -19,16 +22,6 @@ namespace Arena
 
 	public:
 		octet::dynarray<PhysicsObject*> physicsObjects;
-		void AddPhysicsObject(PhysicsObject* physObj) override
-		{
-			physicsObjects.push_back(physObj);
-		}
-
-		void UpdatePhysicsObjects() override
-		{
-			for (unsigned int i = 0; i < physicsObjects.size(); i++)
-				physicsObjects[i]->Update();
-		}
 
 		ObjectPool(){}
 		ObjectPool(ObjectPool const&);
@@ -59,11 +52,21 @@ namespace Arena
 			}
 		}
 
+		void AddPhysicsObject(PhysicsObject* physObj) override
+		{
+			physicsObjects.push_back(physObj);
+		}
+
+		void UpdatePhysicsObjects() override
+		{
+			for (unsigned int i = 0; i < physicsObjects.size(); i++)
+				physicsObjects[i]->Update();
+		}
+
 		Enemy* GetEnemyObject()
 		{
 			return GetEnemyObject(octet::vec3(0.0f, 0.0f, 0.0f));
 		}
-
 		Enemy* GetEnemyObject(octet::vec3 position)
 		{
 			Enemy* enemy = nullptr;
@@ -84,20 +87,28 @@ namespace Arena
 			enemy->Enable();
 			return enemy;
 		}
-
 		Enemy* CreateNewEnemy()
 		{
 			Enemy* enemy = new Enemy();
 			enemy->addPhysicsObjectToWorld(*gameWorldContext);
 			return enemy;
 		}
-
-		Projectile* CreateNewProjectile()
+		octet::dynarray<Enemy*>& GetActiveEnemies() { return activeEnemies; }
+		void DestroyActiveEnemyObject(Enemy* enemy)
 		{
-			Projectile *projectile = new Projectile();
-			projectile->addPhysicsObjectToWorld(*gameWorldContext);
-			return projectile;
+			for (unsigned int i = 0; i < activeEnemies.size(); i++)
+			{
+				if (activeEnemies[i] == enemy)
+				{
+					enemy->Disable();
+					inactiveEnemies.push_back(activeEnemies[i]);
+					activeEnemies.erase(i);
+					return;
+				}
+			}
 		}
+		unsigned int GetActiveEnemyCount() { return activeEnemies.size(); }
+		unsigned int GetInactiveEnemyCount(){ return inactiveEnemies.size(); }
 
 		Projectile* GetProjectileObject()
 		{
@@ -117,21 +128,13 @@ namespace Arena
 			projectile->Enable();
 			return projectile;
 		}
-
-		void DestroyActiveEnemyObject(Enemy* enemy)
+		Projectile* CreateNewProjectile()
 		{
-			for (unsigned int i = 0; i < activeEnemies.size(); i++)
-			{
-				if (activeEnemies[i] == enemy)
-				{
-					enemy->Disable();
-					inactiveEnemies.push_back(activeEnemies[i]);
-					activeEnemies.erase(i);
-					return;
-				}
-			}
+			Projectile *projectile = new Projectile();
+			projectile->addPhysicsObjectToWorld(*gameWorldContext);
+			return projectile;
 		}
-
+		octet::dynarray<Projectile*>& GetActiveProjectiles() { return activeProjectiles; }
 		void DestroyActiveProjectileObject(Projectile* projectile)
 		{
 			for (unsigned int i = 0; i < activeProjectiles.size(); i++)
@@ -145,25 +148,42 @@ namespace Arena
 				}
 			}
 		}
+		unsigned int GetActiveProjectileCount() { return activeProjectiles.size(); }
+		unsigned int GetInactiveProjectileCount() { return inactiveProjectiles.size(); }
 
-		unsigned int GetActiveProjectileCount()
+		PowerUps::AdditionalBarrel* GetAdditionalBarrelObject()
 		{
-			return activeProjectiles.size();
+			PowerUps::AdditionalBarrel* barrel = CreateNewAdditionalBarrelPowerUp();
+			barrel->Enable();
+			return barrel;
 		}
-
-		unsigned int GetInactiveProjectileCount()
+		PowerUps::AdditionalBarrel* CreateNewAdditionalBarrelPowerUp()
 		{
-			return inactiveProjectiles.size();
+			PowerUps::AdditionalBarrel* barrel = new PowerUps::AdditionalBarrel();
+			barrel->addPhysicsObjectToWorld(*gameWorldContext);
+			return barrel;
 		}
-
-		unsigned int GetActiveEnemyCount()
+		void DestroyActiveAdditionalBarrelObject(PowerUps::AdditionalBarrel* additionalBarrel)
 		{
-			return activeEnemies.size();
+			additionalBarrel->Disable();
 		}
-
-		unsigned int GetInactiveEnemyCount()
+		
+		PowerUps::Health* GetHealthObject()
 		{
-			return inactiveEnemies.size();
+			
+			PowerUps::Health* health = CreateNewHealthPowerUp();
+			health->Enable();
+			return health;
+		}
+		PowerUps::Health* CreateNewHealthPowerUp()
+		{
+			PowerUps::Health* health = new PowerUps::Health();
+			health->addPhysicsObjectToWorld(*gameWorldContext);
+			return health;
+		}
+		void DestroyActiveHealthObject(PowerUps::Health* health)
+		{
+			health->Disable();
 		}
 	};
 }

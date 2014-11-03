@@ -216,21 +216,27 @@
     <ClInclude Include="..\..\shaders\shader.h" />
     <ClInclude Include="..\..\shaders\shaders.h" />
     <ClInclude Include="..\..\shaders\texture_shader.h" />
+    <ClInclude Include="AdditionalBarrel.h" />
     <ClInclude Include="ArenaApp.h" />
+    <ClInclude Include="ArenaLayout.h" />
     <ClInclude Include="CollisionFlags.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="GameWorldContext.h" />
+    <ClInclude Include="Health.h" />
     <ClInclude Include="Hud.h" />
     <ClInclude Include="HUDText.h" />
     <ClInclude Include="IObjectPool.h" />
     <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PowerUp.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Turret.h" />
     <ClInclude Include="TurretBarrel.h" />
+    <ClInclude Include="Wall.h" />
+    <ClInclude Include="WaveManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\resources\mesh_builder.inl" />

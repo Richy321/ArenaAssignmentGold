@@ -11,10 +11,14 @@ namespace Arena
 	private:
 		unsigned int health;
 		float speed;
+		float baseSpeed;
+		float deceleration = 0.9f;
+
 		octet::vec3 size;
+		unsigned int barrelCount = 1;
 
 		float takeDamageStartTime = -1.0f;
-		float takeDamageDuration = 0.5f;
+		float takeDamageDuration = 0.2f;
 
 		octet::material *originalMat;
 		octet::material *damagedMat;
@@ -42,7 +46,7 @@ namespace Arena
 		virtual void Initialise(octet::vec3 position, octet::vec3 size)
 		{
 			collisionType = CollisionFlags::CollisionTypes::COL_PLAYER;
-			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_POWERUP;
+			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_POWERUP | CollisionFlags::CollisionTypes::COL_PLAYER | CollisionFlags::CollisionTypes::COL_PROJECTILES;
 			
 			damageColour = octet::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 			originalColour = octet::vec4(0.0f, 0.75f, 0.0f, 1.0f);
@@ -62,7 +66,7 @@ namespace Arena
 				btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
 			speed = 500.0f;
-			health = 100.0f;
+			health = 100;
 		}
 		void addXZConstraint(GameWorldContext &context)
 		{
@@ -76,8 +80,8 @@ namespace Arena
 			constr->setLinearLowerLimit(btVector3(-1000, -1000, -1000));
 			constr->setLinearUpperLimit(btVector3(1000, 1000, 1000));
 
-			constr->setAngularLowerLimit(btVector3(-SIMD_PI * 0.20f, 0, -SIMD_PI * 0.20f));
-			constr->setAngularUpperLimit(btVector3(SIMD_PI * 0.20f, 0, SIMD_PI * 0.20f));
+			constr->setAngularLowerLimit(btVector3(-SIMD_PI * 0.05f, 0, -SIMD_PI * 0.05f));
+			constr->setAngularUpperLimit(btVector3(SIMD_PI * 0.05f, 0, SIMD_PI * 0.05f));
 		}
 
 		void addTurretConstraint(GameWorldContext &context)
@@ -100,7 +104,6 @@ namespace Arena
 			
 			btTransform turretTrans = rigidBody->getWorldTransform();
 			btVector3 pos = rigidBody->getCenterOfMassPosition();
-			//pos.setY(pos.y() + size.y()/2);
 			turret->GetRigidBody()->setWorldTransform(turretTrans);
 			addTurretConstraint(context);
 		}
@@ -134,6 +137,8 @@ namespace Arena
 			return health;
 		}
 
+		void SetHealth(unsigned int health) { this->health = health; }
+
 		void TakeDamage(unsigned int damageValue)
 		{
 			if (!isTakingDamage)
@@ -145,11 +150,6 @@ namespace Arena
 			}
 		}
 		
-		void LookAt(octet::vec3 target)
-		{
-			
-		}
-
 		void FireTurrets(GameWorldContext& context)
 		{
 			turret->FireProjectile(context);
@@ -163,6 +163,16 @@ namespace Arena
 		void SetMovementDampening(float value)
 		{
 			rigidBody->setDamping(value, 0.0f);
+		}
+
+		void AddBarrel()
+		{
+			turret->AddBarrel();
+		}
+
+		void ApplyDeceleration()
+		{
+			rigidBody->setLinearVelocity(rigidBody->getLinearVelocity() * deceleration);
 		}
 	};
 	const char * Player::referenceName = "Player";

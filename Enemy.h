@@ -6,14 +6,12 @@ namespace Arena
 	class Enemy : public PhysicsObject
 	{
 	public:
-		octet::vec3 up = octet::vec3(0, 1, 0);
-		octet::vec3 right = octet::vec3(0, 1, 0);
-		octet::vec3 forward = octet::vec3(0, 0, 1);
 		float speed;
 		
 		enum AIMode
 		{
 			Idle,
+			DumbChase,
 			Chase
 		};
 
@@ -52,9 +50,10 @@ namespace Arena
 			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
 
 			PhysicsObject::Initialise(position, shape, collisionShape, mat);
+			rigidBody->setActivationState(DISABLE_DEACTIVATION);
 
-			speed = 25.0f;
-			maxSpeed = 100.0f;
+			speed = 20;
+			maxSpeed = 30.0f;
 		}
 
 		void DestroyViaPool()
@@ -69,7 +68,7 @@ namespace Arena
 			{
 			case Idle:
 				break;
-			case Chase:
+			case DumbChase:
 				if (target != nullptr)
 				{
 					octet::vec3 moveDir = target->GetPosition() - GetPosition();
@@ -77,8 +76,18 @@ namespace Arena
 					moveDir *= speed;
 					rigidBody->applyForce(get_btVector3(moveDir), btVector3(0.0f, 0.0f, 0.0f));
 				}
+			case Chase:
+				if (target != nullptr)
+				{
+					octet::vec3 moveDir = target->GetPosition() - GetPosition();
+					moveDir = moveDir.normalize();
+					moveDir *= speed * 100;
+					rigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
+					rigidBody->applyImpulse(get_btVector3(moveDir), btVector3(0.0f, 0.0f, 0.0f));
+					
+				}
 				break;
-			}	
+			}
 			PhysicsObject::Update();
 		}
 
@@ -93,6 +102,11 @@ namespace Arena
 
 		int GetDamage() { return damage; }
 		int GetHealth() { return health; }
+		AIMode GetAIMode() { return mode; }
+		PhysicsObject* GetTarget() { return target; }
+
+		void SetAIMode(AIMode mode) { this->mode = mode; }
+		void SetTarget(PhysicsObject *target){ this->target = target; }
 	};
-	const char * Enemy::referenceName = "Enemy";
+	const char *Enemy::referenceName = "Enemy";
 }

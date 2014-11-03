@@ -16,8 +16,10 @@
 #include "Floor.h"
 #include "Projectile.h"
 #include "Timer.h"
-
+#include "WaveManager.h"
+#include "PowerUp.h"
 #include "HUD.h"
+
 
 namespace Arena
 {
@@ -35,10 +37,12 @@ namespace Arena
 		octet::camera_instance *camera;
 
 		Player *player;
+		Player *player2;
 		Floor *floor;
 		ObjectPool *objectPool;
 		Timer *timer;
-
+		WaveManager *waveManager;
+		
 		Hud *HUD;
 
 		btOverlapFilterCallback *filterCallback;
@@ -51,8 +55,6 @@ namespace Arena
 		int curMouseX = -1;
 		int curMouseY = -1;
 		float sensitivity = 0.3f;
-
-		bool debugMode = true;
 
 		void handleCameraMovement()
 		{
@@ -97,7 +99,7 @@ namespace Arena
 			}
 			else
 			{
-
+				player->ApplyDeceleration();
 			}
 
 			if (is_key_down(octet::key_down) || is_key_down('Q') || is_key_down('q') ||
@@ -116,6 +118,33 @@ namespace Arena
 
 			if (is_key_down(octet::key_space))
 				player->FireTurrets(*worldContext);
+
+			if (is_key_down(octet::key_f1))
+			{
+				for (unsigned int i = 0; i < objectPool->GetActiveEnemies().size(); i++)
+				{
+					objectPool->GetActiveEnemies()[i]->SetTarget(nullptr);
+					objectPool->GetActiveEnemies()[i]->SetAIMode(Enemy::AIMode::Idle);
+				}
+			}
+
+			if (is_key_down(octet::key_f2))
+			{
+				for (unsigned int i = 0; i < objectPool->GetActiveEnemies().size(); i++)
+				{
+					objectPool->GetActiveEnemies()[i]->SetTarget(player);
+					objectPool->GetActiveEnemies()[i]->SetAIMode(Enemy::AIMode::DumbChase);
+				}
+			}
+
+			if (is_key_down(octet::key_f3))
+			{
+				for (unsigned int i = 0; i < objectPool->GetActiveEnemies().size(); i++)
+				{
+					objectPool->GetActiveEnemies()[i]->SetTarget(player);
+					objectPool->GetActiveEnemies()[i]->SetAIMode(Enemy::AIMode::Chase);
+				}
+			}
 
 			if (is_key_down(octet::key_esc))
 			{
@@ -149,6 +178,7 @@ namespace Arena
 			solver = new btSequentialImpulseConstraintSolver();
 			world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, &config);
 			filterCallback = new ArenaApp::customFilterCallback();
+			
 			//world->getPairCache()->setOverlapFilterCallback(filterCallback); //register custom broadphase callback filter
 		}
 
@@ -163,6 +193,7 @@ namespace Arena
 			app_scene = new octet::visual_scene();
 			app_scene->create_default_camera_and_lights();
 			camera = app_scene->get_camera_instance(0);
+			camera->set_far_plane(1000.0f);
 			timer = new Timer();
 			timer->Start();
 
@@ -171,27 +202,22 @@ namespace Arena
 			worldContext = new GameWorldContext(*app_scene, *world, *objectPool, *timer);
 
 			floor = new Floor();
-			floor->addPhysicsObjectToWorld((*worldContext));
+			floor->addPhysicsObjectToWorld(*worldContext);
 
 			player = new Player();
-			player->addPhysicsObjectToWorld((*worldContext));
+			player->addPhysicsObjectToWorld(*worldContext);
 			
+			//player2 = new Player();
+			//player2->addPhysicsObjectToWorld(*worldContext);
+
 			HUD = new Hud();
 			HUD->initialise();
 
 			objectPool->Initialise(*worldContext, 25, 30);
+			
+			waveManager = new WaveManager(*worldContext, floor->width, floor->height);
+			waveManager->SpawnPhysicsExampleWave();
 
-			//add the boxes (as dynamic objects)
-			octet::mat4t modelToWorld;
-			modelToWorld.translate(-4.5f, 10.0f, 0);
-			octet::material *mat = new octet::material(octet::vec4(0, 1.0f, 0.5f, 1.0f));
-			for (int i = 0; i != 20; ++i) 
-			{
-				Enemy *enemy = worldContext->objectPool.GetEnemyObject();
-				modelToWorld.translate(3, 0, 0);
-				modelToWorld.rotateZ(360 / 20);
-				enemy->SetWorldTransform(modelToWorld);
-			}
 			gContactAddedCallback = contactCallback;
 		}
 
@@ -201,7 +227,7 @@ namespace Arena
 
 			octet::vec3 targetPos = target.GetPosition();
 			camera->get_node()->rotate(-90, octet::vec3(1, 0, 0));
-			camera->get_node()->translate(octet::vec3(targetPos.x(), -targetPos.z(), 50));
+			camera->get_node()->translate(octet::vec3(targetPos.x(), -targetPos.z(), 100));
 		}
 		/// this is called to draw the world
 		void draw_world(int x, int y, int w, int h) {
@@ -241,6 +267,7 @@ namespace Arena
 			Enemy *enemy = nullptr;
 			Player *player = nullptr;
 			Projectile *projectile = nullptr;
+			PowerUp *powerUp = nullptr;
 
 			for (int i = 0; i < 2; i++)
 			{
@@ -260,6 +287,11 @@ namespace Arena
 
 				if (physObj->GetReferenceType() == Projectile::referenceName)
 					projectile = ((Projectile*)physObj);
+
+				if (physObj->GetReferenceType() == PowerUp::referenceName)
+				{
+					powerUp = ((PowerUp*)physObj);
+				}
 			}
 
 			//Player & Enemy Collision
@@ -284,6 +316,13 @@ namespace Arena
 					player->TakeDamage(projectile->GetDamage());
 					projectile->DestroyViaPool();
 				}
+			}
+
+			//Powerup & Player
+			if (powerUp != nullptr && player != nullptr)
+			{
+				powerUp->ApplyPowerUp(*player);
+				powerUp->OnHit();
 			}
 
 			return false;

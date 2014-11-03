@@ -9,8 +9,9 @@ namespace Arena
 	{
 	private:
 		float lastFireTime = -1.0f;
-		float weaponOffset = 4.0f;
-		octet::vec3 forward = octet::vec3(0, 0, -1);
+		octet::vec3 forward = octet::vec3(0.0f, 0.0f, -1.0f);
+		float barrelOffset = 4.0f;
+		octet::vec3 offset = octet::vec3(0.0f, 0.0f, 0.0f);
 		octet::mesh_instance *mesh;
 		octet::scene_node *node;
 		octet::material *mat;
@@ -29,6 +30,7 @@ namespace Arena
 			this->node = node;
 			this->mat = mat;
 			this->owner = owner;
+			offset = position;
 			Initialise(position, context);
 		}
 
@@ -55,12 +57,16 @@ namespace Arena
 				Projectile *proj = context.objectPool.GetProjectileObject();
 				proj->owner = owner;
 
-				octet::vec3 newFwd = forward * node->access_nodeToParent().toQuaternion();
+				octet::vec3 newPos = forward + offset;
+				newPos += octet::vec3(0.0f, 0.0f, barrelOffset);
 
+				newPos = newPos * node->access_nodeToParent().toQuaternion();
+
+				octet::vec3 newFwd = forward * node->access_nodeToParent().toQuaternion();
 				newFwd = newFwd.normalize();
 
 				proj->SetWorldTransform(node->access_nodeToParent());
-				proj->Translate(newFwd * weaponOffset);
+				proj->Translate(newPos);
 
 				newFwd *= fireForce;
 				btVector3 force = get_btVector3(newFwd);
@@ -70,6 +76,8 @@ namespace Arena
 				lastFireTime = runningTime;
 			}
 		}
+
+		octet::mesh_instance& GetMeshInstance() { return *mesh; }
 	};
 
 	const char *TurretBarrel::referenceName = "TurretBarrel";

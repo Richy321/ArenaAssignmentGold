@@ -9,12 +9,14 @@ namespace Arena
 	class Turret : public PhysicsObject
 	{
 	private:
-		octet::vec3 barrelOffset = octet::vec3(0.0f, 0.0f, -1.0f);
+		octet::vec3 barrelOffset = octet::vec3(0.0f, 0.0f, -1.1f);
 
 	public:
 		static const char* referenceName;
-		TurretBarrel* barrel;
+		
+		octet::dynarray<TurretBarrel*> barrels;
 		PhysicsObject *owner;
+		GameWorldContext* context;
 
 		Turret(GameWorldContext& context, PhysicsObject *owner)
 		{
@@ -38,15 +40,19 @@ namespace Arena
 
 		void addPhysicsObjectToWorld(GameWorldContext& context) override
 		{
+			this->context = &context;
 			PhysicsObject::addPhysicsObjectToWorld(context);
 
 			octet::material* mat = new octet::material(octet::vec4(1.0f, 0.54f, 0.2f, 0.1f));
-			barrel = new TurretBarrel(context, node, mat, barrelOffset, owner);
+			TurretBarrel *barrel = new TurretBarrel(context, node, mat, barrelOffset, owner);
+
+			barrels.push_back(barrel);
 		}
 
 		void FireProjectile(GameWorldContext& context)
 		{
-			barrel->Fire(context);
+			for (unsigned int i = 0; i < barrels.size(); i++)
+				barrels[i]->Fire(context);
 		}
 
 		void Rotate(float amount)
@@ -58,6 +64,24 @@ namespace Arena
 		void SetDampening(float dampening)
 		{
 			rigidBody->setDamping(0.0f, dampening);
+		}
+
+		void AddBarrel()
+		{
+			if (barrels.size() == 1)
+			{
+				octet::vec3 newOffset = barrelOffset;
+				newOffset.x() += 0.5f;
+				TurretBarrel *barrel = new TurretBarrel(*context, node, mat, newOffset, owner);
+				barrels.push_back(barrel);
+			}
+			else if (barrels.size() == 2)
+			{
+				octet::vec3 newOffset = barrelOffset;
+				newOffset.x() -= 0.5f;
+				TurretBarrel *barrel = new TurretBarrel(*context, node, mat, newOffset, owner);
+				barrels.push_back(barrel);
+			}
 		}
 	};
 	const char * Turret::referenceName = "Turret";

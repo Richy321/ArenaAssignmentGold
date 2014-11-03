@@ -11,9 +11,13 @@ namespace Arena
 	private:
 	public:
 
+		const float width = 50.0f;
+		const float height = 50.0f;
+		const float thickness = 0.5f;
+
 		Floor()
 		{
-			Initialise(octet::vec3(0.0f, 0.0f, 0.0f), octet::vec3(200.0f, 0.5f, 200.0f));
+			Initialise(octet::vec3(0.0f, 0.0f, 0.0f), octet::vec3(width, thickness, height));
 		}
 
 		static const char* referenceName;
@@ -27,7 +31,7 @@ namespace Arena
 		{
 			mass = 0.0f;
 			collisionType = CollisionFlags::CollisionTypes::COL_WALL;
-			collisionMask = CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_PLAYER | CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_PROJECTILES;
+			collisionMask = CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_PLAYER | CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_PROJECTILES | CollisionFlags::CollisionTypes::COL_POWERUP;
 			
 			mat = new octet::material(octet::vec4(0.0f, 1.0f, 1.0f, 1.0f));
 			octet::mesh *shape = new octet::mesh_box(size);
@@ -35,7 +39,7 @@ namespace Arena
 
 			PhysicsObject::Initialise(position, shape, collisionShape, mat);
 
-			rigidBody->setFriction(0.5f);
+			rigidBody->setFriction(0.25f);
 		}
 
 		~Floor()

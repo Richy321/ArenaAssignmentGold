@@ -33,6 +33,18 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{22786083-47af-48b2-98c4-2963f667bc44}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\PowerUps">
+      <UniqueIdentifier>{52779894-8890-49a3-badd-bf7886c54791}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Enemies">
+      <UniqueIdentifier>{6b753d0d-edd6-4d44-a366-8415983dff23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Arena">
+      <UniqueIdentifier>{28c1b141-2dd2-49a1-b107-e1b18662901b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Player">
+      <UniqueIdentifier>{4b648440-9b88-4475-87c5-c21c7f1faf68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -430,12 +442,6 @@
     <ClInclude Include="..\..\containers\string.h">
       <Filter>containers</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="HUDText.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -446,9 +452,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="CollisionFlags.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Floor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="ObjectPool.h">
@@ -469,11 +472,38 @@
     <ClInclude Include="Timer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Turret.h">
+    <ClInclude Include="WaveManager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="PowerUp.h">
+      <Filter>Source Files\PowerUps</Filter>
+    </ClInclude>
+    <ClInclude Include="AdditionalBarrel.h">
+      <Filter>Source Files\PowerUps</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Source Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Health.h">
+      <Filter>Source Files\PowerUps</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall.h">
+      <Filter>Source Files\Arena</Filter>
+    </ClInclude>
+    <ClInclude Include="Floor.h">
+      <Filter>Source Files\Arena</Filter>
+    </ClInclude>
+    <ClInclude Include="ArenaLayout.h">
+      <Filter>Source Files\Arena</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Source Files\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Turret.h">
+      <Filter>Source Files\Player</Filter>
+    </ClInclude>
     <ClInclude Include="TurretBarrel.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

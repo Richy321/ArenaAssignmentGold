@@ -22,6 +22,8 @@ namespace Arena
 			healthValue = new HUDText(new octet::aabb(octet::vec3(250.0f, 300.0f, 0.0f), octet::vec3(10.0f, 20.0f, 30.0f)),font);
 			debugText = new HUDText(new octet::aabb(octet::vec3(-350.0f, -300.0f, 0.0f), octet::vec3(10.0f, 20.0f, 30.0f)), font);
 			poolingText = new HUDText(new octet::aabb(octet::vec3(250.0f, -250.0f, 0.0f), octet::vec3(100.0f, 40.0f, 30.0f)), font);
+			
+			
 			initialise();
 		}
 		virtual ~Hud() {}
