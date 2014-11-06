@@ -29,6 +29,8 @@ namespace Arena
 
 		virtual void Initialise(octet::vec3 position, octet::mesh *shape = nullptr, btCollisionShape* collisionShape = nullptr, octet::material* mat = nullptr) override
 		{
+			collisionType = CollisionFlags::CollisionTypes::COL_POWERUP;
+			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_PLAYER | CollisionFlags::CollisionTypes::COL_PROJECTILES;
 			PhysicsObject::Initialise(position, shape, collisionShape, mat);
 		}
 

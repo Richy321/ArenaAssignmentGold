@@ -19,9 +19,11 @@
 #include "WaveManager.h"
 #include "PowerUp.h"
 #include "HUD.h"
+#include "ArenaLayout.h"
 
 #include "Joystick.h"
-
+#include <functional>
+#include "GameMode.h"
 
 namespace Arena
 {
@@ -35,7 +37,6 @@ namespace Arena
 		btDbvtBroadphase *broadphase;                 /// handler for broadphase (rough) collision
 		btSequentialImpulseConstraintSolver *solver;  /// handler to resolve collisions
 		btDiscreteDynamicsWorld *world;               /// physics world, contains rigid bodies
-
 		octet::camera_instance *camera;
 
 		Player *player;
@@ -44,12 +45,15 @@ namespace Arena
 		ObjectPool *objectPool;
 		Timer *timer;
 		WaveManager *waveManager;
-		
+		ArenaLayout *arena;
+
 		Hud *HUD;
+		Joystick *joystickHandler;
+		GameWorldContext *worldContext;
 
 		btOverlapFilterCallback *filterCallback;
 
-		GameWorldContext *worldContext;
+		GameMode mode = GameMode::Solo;
 
 		//Mouse variables
 		int prevMouseX = -1;
@@ -57,6 +61,10 @@ namespace Arena
 		int curMouseX = -1;
 		int curMouseY = -1;
 		float sensitivity = 0.3f;
+		const int joypadThreshold = 50;
+
+		const float arenaWidth = 50.0f;
+		const float arenaHeight = 50.0f;
 
 		void handleCameraMovement()
 		{
@@ -83,12 +91,12 @@ namespace Arena
 			prevMouseY = curMouseY;
 		}
 
-		void handleInput()
+		void HandleKeyboardInput()
 		{
 			if ((is_key_down(octet::key_left) || is_key_down('A') || is_key_down('a')) ||
 				(is_key_down(octet::key_right) || is_key_down('D') || is_key_down('d')) ||
 				(is_key_down(octet::key_up) || is_key_down('W') || is_key_down('w')) ||
-				(is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s')) )
+				(is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s')))
 			{
 				if (is_key_down(octet::key_left) || is_key_down('A') || is_key_down('a'))
 					player->Move(octet::vec3(-1.0f, 0.0f, 0.0f), Player::Direction::East);
@@ -99,10 +107,6 @@ namespace Arena
 				if (is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s'))
 					player->Move(octet::vec3(0.0f, 0.0f, 1.0f), Player::Direction::South);
 			}
-			else
-			{
-				player->ApplyDeceleration();
-			}
 
 			if (is_key_down(octet::key_down) || is_key_down('Q') || is_key_down('q') ||
 				(is_key_down(octet::key_down) || is_key_down('E') || is_key_down('e')))
@@ -112,10 +116,6 @@ namespace Arena
 
 				if (is_key_down(octet::key_down) || is_key_down('E') || is_key_down('e'))
 					player->RotateTurret(-1.0f);
-			}
-			else
-			{
-				player->SetTurretDampening(2.5f);
 			}
 
 			if (is_key_down(octet::key_space))
@@ -148,6 +148,11 @@ namespace Arena
 				}
 			}
 
+			if (is_key_down(octet::key_f9))
+			{
+				objectPool->KillAllActiveEnemys();
+			}
+
 			if (is_key_down(octet::key_esc))
 			{
 				cleanup();
@@ -155,8 +160,51 @@ namespace Arena
 			}
 		}
 
+		void handleInput()
+		{
+			HandleKeyboardInput();
+			HandleJoystickInput();
+		}
+
+		void HandleJoystickInput()
+		{
+			for (int i = 0; i < joystickHandler->GetNumberOfDevicesFound(); i++)
+			{
+				if (joystickHandler->AcquireInputData(i))
+				{
+					DIJOYSTATE* state = joystickHandler->GetCurrentState();
+
+					if (i == 0)
+						HandlePlayerJoystickInput(player, state);
+					if (i == 1 && player2 != nullptr)
+						HandlePlayerJoystickInput(player2, state);
+				}
+			}
+		}
+
+		void HandlePlayerJoystickInput(Player* player, DIJOYSTATE* state)
+		{
+			if (state->lX < -joypadThreshold)
+				player->Move(octet::vec3(-1.0f, 0.0f, 0.0f), Player::Direction::East);
+			if (state->lX > joypadThreshold)
+				player->Move(octet::vec3(1.0f, 0.0f, 0.0f), Player::Direction::West);
+			if (state->lY > joypadThreshold)
+				player->Move(octet::vec3(0.0f, 0.0f, 1.0f), Player::Direction::South);
+			if (state->lY < -joypadThreshold)
+				player->Move(octet::vec3(0.0f, 0.0f, -1.0f), Player::Direction::North);
+
+			if (state->lRx > joypadThreshold)
+				player->RotateTurret(-1.0f);
+
+			if (state->lRx < -joypadThreshold)
+				player->RotateTurret(1.0f);
+
+			if (state->rgbButtons[4] || state->rgbButtons[5])
+				player->FireTurrets(*worldContext);
+		}
 		void cleanup()
 		{
+			joystickHandler->ShutDown();
 			delete world;
 			delete solver;
 			delete broadphase;
@@ -165,10 +213,13 @@ namespace Arena
 
 		void update()
 		{
-			handleInput();
-			cameraFollow((*player));
-			HUD->update(*player, *objectPool);
 			timer->Update();
+			handleInput();
+			if (mode == GameMode::Solo)
+				cameraFollow((*player));
+			
+			HUD->update(*player, *objectPool, *waveManager, mode);
+			waveManager->Update(*worldContext);
 		}
 
 	public:
@@ -180,13 +231,22 @@ namespace Arena
 			solver = new btSequentialImpulseConstraintSolver();
 			world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, &config);
 			filterCallback = new ArenaApp::customFilterCallback();
-			
+
 			//world->getPairCache()->setOverlapFilterCallback(filterCallback); //register custom broadphase callback filter
 		}
 
 		~ArenaApp()
 		{
 			cleanup();
+		}
+
+		void PlayerRespawn(Player& player)
+		{
+			octet::vec3 pos = arena->GetRandomSpawnPoint();
+
+			octet::mat4t transform;
+			transform.translate(pos.x(), pos.y() + 5.0f, pos.z());
+			player.SetWorldTransform(transform);
 		}
 
 		/// this is called once OpenGL is initialized
@@ -199,26 +259,59 @@ namespace Arena
 			timer = new Timer();
 			timer->Start();
 
+			mode = Solo;
+
+			joystickHandler = new Joystick();
+
 			objectPool = new ObjectPool();
-
 			worldContext = new GameWorldContext(*app_scene, *world, *objectPool, *timer);
+			
+			objectPool->Initialise(*worldContext, 25, 30);
 
-			floor = new Floor();
-			floor->addPhysicsObjectToWorld(*worldContext);
+			joystickHandler->InitInputDevice(this, this->window_handle);
+
+			arena = new ArenaLayout(arenaWidth, arenaHeight, *worldContext);
+			waveManager = new WaveManager(*arena, *worldContext);
 
 			player = new Player();
 			player->addPhysicsObjectToWorld(*worldContext);
-			
-			//player2 = new Player();
-			//player2->addPhysicsObjectToWorld(*worldContext);
+			player->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
+
+			switch (mode)
+			{
+			case Solo:
+				waveManager->state = WaveManager::BetweenWaves;
+				break;
+			case Versus:
+				waveManager->state = WaveManager::Inactive;
+				
+				player2 = new Player();
+				player2->addPhysicsObjectToWorld(*worldContext);
+				player2->Translate(octet::vec3(5.0f, 0.0f, 0.0f));
+				player2->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
+
+				camera->get_node()->loadIdentity();
+
+				camera->get_node()->rotate(-90, octet::vec3(1, 0, 0));
+				camera->get_node()->translate(octet::vec3(0.0f, 0.0f, 120));
+				break;
+			case Coop:
+				waveManager->state = WaveManager::BetweenWaves;
+				
+				player2 = new Player();
+				player2->addPhysicsObjectToWorld(*worldContext);
+				player2->Translate(octet::vec3(5.0f, 0.0f, 0.0f));
+				player2->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
+
+				camera->get_node()->loadIdentity();
+
+				camera->get_node()->rotate(-90, octet::vec3(1, 0, 0));
+				camera->get_node()->translate(octet::vec3(0.0f, 0.0f, 120));
+				break;
+			}
 
 			HUD = new Hud();
 			HUD->initialise();
-
-			objectPool->Initialise(*worldContext, 25, 30);
-			
-			waveManager = new WaveManager(*worldContext, floor->width, floor->height);
-			waveManager->SpawnPhysicsExampleWave();
 
 			gContactAddedCallback = contactCallback;
 		}
@@ -242,11 +335,11 @@ namespace Arena
 			get_viewport_size(vx, vy);
 			app_scene->begin_render(vx, vy);
 
-			HUD->draw(vx, vy);
+			HUD->draw(vx, vy, mode);
 
 			world->stepSimulation(1.0f / 30);
 
-			objectPool->UpdatePhysicsObjects();
+			objectPool->UpdatePhysicsObjects(*worldContext);
 
 			// update matrices. assume 30 fps .
 			app_scene->update(1.0f / 30);
@@ -296,6 +389,7 @@ namespace Arena
 				}
 			}
 
+
 			//Player & Enemy Collision
 			if (player != nullptr && enemy != nullptr)
 			{
@@ -338,8 +432,8 @@ namespace Arena
 				bool collides = (proxy0->m_collisionFilterGroup & proxy1->m_collisionFilterMask) != 0;
 				collides = collides && (proxy1->m_collisionFilterGroup & proxy0->m_collisionFilterMask);
 				
-				if ((proxy0->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_ENEMY && proxy1->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_PLAYER) ||
-					(proxy1->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_ENEMY && proxy0->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_PLAYER))
+				if ((proxy0->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_PROJECTILES && proxy1->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_PLAYER) ||
+					(proxy1->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_PROJECTILES && proxy0->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_PLAYER))
 				{
 					collides = false;
 				}

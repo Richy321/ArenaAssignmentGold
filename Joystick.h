@@ -5,7 +5,6 @@
 #include <guiddef.h>
 #include <dinput.h>
 #include <dinputd.h>
-#include <d3d11.h>
 
 #include "../../octet.h"
 namespace Arena
@@ -22,6 +21,7 @@ namespace Arena
          
          LPDIRECTINPUT8 directInput = nullptr;
          octet::dynarray<LPDIRECTINPUTDEVICE8> joysticks;
+		 octet::dynarray<DIJOYSTATE*> states;
 
          DIJOYSTATE curr_state;
 
@@ -38,8 +38,8 @@ namespace Arena
 
          //Chuck: Callback function of EnumDevices; called everytime direct input found a device (filtered),
          //diInstance is a pointer from directinput having info about the current device found
-         static BOOL CALLBACK EnumJoystickCallback(const DIDEVICEINSTANCE* diInstance, VOID* pContext){
-
+         static BOOL CALLBACK EnumJoystickCallback(const DIDEVICEINSTANCE* diInstance, VOID* pContext)
+		 {
             auto context = reinterpret_cast<Joystick*>(pContext);
 
             LPDIRECTINPUTDEVICE8 currInput;
@@ -81,9 +81,9 @@ namespace Arena
 
          }
 
-         void InitInputDevice(octet::app* ap)
+		 void InitInputDevice(octet::app* ap, HWND hwnd)
          {
-			HWND window = GetActiveWindow();
+			HWND window = hwnd;
 
 			HINSTANCE inst = GetWindowInstance(window);
 
@@ -171,26 +171,26 @@ namespace Arena
 			//hr = joystick->SetDataFormat(&c_dfDIJoystick); //Chuck: specify what kind of structure we will have when using ::GetDeviceState
 			}
 
-         bool AcquireInputData(int playerId){
+         bool AcquireInputData(int joystickId){
             
             HRESULT hr;
             //DIJOYSTATE js;
 
-            if (joysticks[playerId] == nullptr)
+			if (joysticks[joystickId] == nullptr)
                return false; //js;
 
             //Chuck: Poll the device to read the current state
-            hr = joysticks[playerId]->Poll();
+			hr = joysticks[joystickId]->Poll();
             if (FAILED(hr))
             {
                //Chuck: input is interrupted, we aren't tracking any state between polls, so
                // we don't have any special reset that needs to be done. We just re-acquire and try again.
-               hr = joysticks[playerId]->Acquire();
+				hr = joysticks[joystickId]->Acquire();
                return false;// js;
             }
 
             //Chuck: get the input's device state
-            hr = joysticks[playerId]->GetDeviceState(sizeof(DIJOYSTATE), &curr_state);
+			hr = joysticks[joystickId]->GetDeviceState(sizeof(DIJOYSTATE), &curr_state);
 
             if (FAILED(hr)){
                if (DEBUG_EN){
@@ -204,14 +204,40 @@ namespace Arena
             return true;// js;
          
          }
-         
-         DIJOYSTATE* GetCurrentState(){
-            return &curr_state;
-         }
+         /*
+		 void Update()
+		 {
+			 for (unsigned int i = 0; i < joysticks.size(); i++)
+			 {
+				 HRESULT hr = joysticks[i]->Poll();
+				 if (FAILED(hr))
+				 {
+					 //Chuck: input is interrupted, we aren't tracking any state between polls, so
+					 // we don't have any special reset that needs to be done. We just re-acquire and try again.
+					 hr = joysticks[i]->Acquire();
+					 return;
+				 }
+				 else
+				 {
 
-         int GetNumberOfDevicesFound(){
-            return joysticks.size();
-         }
+
+				 }
+
+				 hr = joysticks[i]->GetDeviceState(sizeof(DIJOYSTATE), &curr_state);
+
+				 if (FAILED(hr)){
+					 if (DEBUG_EN){
+						 printf("Failed on acquiring device data \n");
+					 }
+				 }
+				 else
+				 {
+			 }
+		 }
+		 */
+         DIJOYSTATE* GetCurrentState() { return &curr_state; }
+		 
+         int GetNumberOfDevicesFound() { return joysticks.size(); }
          
          void ShutDown()
          {
@@ -227,7 +253,6 @@ namespace Arena
                directInput->Release();
             }
          }
-
    };
 }
 

@@ -6,8 +6,7 @@ namespace Arena
 	class Enemy : public PhysicsObject
 	{
 	public:
-		float speed;
-		
+
 		enum AIMode
 		{
 			Idle,
@@ -18,11 +17,15 @@ namespace Arena
 		};
 
 	private:
-		unsigned int health = 100;
+		int health = 100;
 		int damage = 5;
 		int points = 1;
+		float speed;
+		float baseSpeed;
 		PhysicsObject *target = nullptr;
 		AIMode mode = Idle;
+		octet::vec4 originalColour;
+		octet::vec4 damageColour;
 
 	public:
 		static const char* referenceName;
@@ -48,24 +51,30 @@ namespace Arena
 			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_PLAYER |
 				CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_PROJECTILES;
 
-			mat = new octet::material(octet::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+			damageColour = octet::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+			originalColour = octet::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+			mat = new octet::material(originalColour);
 			octet::mesh *shape = new octet::mesh_box(size);
 			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
 
 			PhysicsObject::Initialise(position, shape, collisionShape, mat);
 			rigidBody->setActivationState(DISABLE_DEACTIVATION);
 
-			speed = 20;
+			
+			baseSpeed = 10;
+			speed = baseSpeed;
 			maxSpeed = 30.0f;
 		}
 
 		void DestroyViaPool()
 		{
+			mat->set_diffuse(originalColour);
 			objectPool->DestroyActiveEnemyObject(this);
 			Disable();
 		}
 
-		void Update() override
+		void Update(GameWorldContext& context) override
 		{
 			switch (mode)
 			{
@@ -85,19 +94,19 @@ namespace Arena
 				{
 					octet::vec3 moveDir = target->GetPosition() - GetPosition();
 					moveDir = moveDir.normalize();
-					moveDir *= speed * 50;
+					moveDir *= speed * 30;
 					rigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
 					rigidBody->applyImpulse(get_btVector3(moveDir), btVector3(0.0f, 0.0f, 0.0f));
 				}
 				break;
 			}
-			PhysicsObject::Update();
+			PhysicsObject::Update(context);
 		}
 
 		void TakeDamage(unsigned int damageValue)
 		{
 			health -= damageValue;
-			mat->set_diffuse(octet::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			mat->set_diffuse(damageColour);
 
 			if (health <= 0)
 				DestroyViaPool();

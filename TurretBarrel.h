@@ -10,7 +10,7 @@ namespace Arena
 	private:
 		float lastFireTime = -1.0f;
 		octet::vec3 forward = octet::vec3(0.0f, 0.0f, -1.0f);
-		float barrelOffset = 4.0f;
+		float barrelOffset = -2.0f;
 		octet::vec3 offset = octet::vec3(0.0f, 0.0f, 0.0f);
 		octet::mesh_instance *mesh;
 		octet::scene_node *node;

@@ -35,7 +35,7 @@ namespace Arena
 		virtual void Initialise(octet::vec3 position)
 		{
 			collisionType = CollisionFlags::CollisionTypes::COL_PROJECTILES;
-			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY;
+			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_PLAYER;
 
 			float radius = 0.5f;
 			mat = new octet::material(octet::vec4(0.0f, 0.75f, 0.0f, 1.0f));
@@ -46,6 +46,8 @@ namespace Arena
 
 			rigidBody->setCollisionFlags(rigidBody->getCollisionFlags() |
 				btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+
+			rigidBody->setRestitution(1.0f);
 		}
 
 		void Enable() override
@@ -61,9 +63,9 @@ namespace Arena
 			owner = nullptr;
 		}
 
-		void Update() override
+		void Update(GameWorldContext& context) override
 		{
-			PhysicsObject::Update();
+			PhysicsObject::Update(context);
 			if (createdTime >= 0.0f)
 			{
 				float runningTime = timer->GetRunningTime();

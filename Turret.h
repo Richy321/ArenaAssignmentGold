@@ -30,6 +30,10 @@ namespace Arena
 
 		void Initialise(octet::vec3 position, PhysicsObject *owner)
 		{
+			collisionType = CollisionFlags::CollisionTypes::COL_PLAYER;
+			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_POWERUP | CollisionFlags::CollisionTypes::COL_PROJECTILES;
+
+
 			mass = 0.01f;
 			octet::mesh *baseShape = new octet::mesh_sphere(octet::vec3(0.0f, 0.0f, 0.0f), 1.5f);
 			mat = new octet::material(octet::vec4(1.0f, 1.0f, 0.33f, 1.0f));

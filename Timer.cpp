@@ -127,3 +127,10 @@ float Timer::GetElapsedTime()
 	else
 		return m_timeElapsed;
 }
+
+long Timer::GetTime()
+{
+	INT64 time;
+	QueryPerformanceCounter((LARGE_INTEGER *)&time);
+	return time;
+}

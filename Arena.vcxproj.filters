@@ -45,6 +45,9 @@
     <Filter Include="Source Files\Player">
       <UniqueIdentifier>{4b648440-9b88-4475-87c5-c21c7f1faf68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Projectiles">
+      <UniqueIdentifier>{db9e8a6d-000b-4467-a0fa-d2e14ecb570c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -466,9 +469,6 @@
     <ClInclude Include="GameWorldContext.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Projectile.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -508,6 +508,13 @@
     <ClInclude Include="Joystick.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>Source Files\Projectiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Column.h">
+      <Filter>Source Files\Arena</Filter>
+    </ClInclude>
+    <ClInclude Include="GameMode.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\resources\mesh_builder.inl">

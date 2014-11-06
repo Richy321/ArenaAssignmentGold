@@ -19,9 +19,6 @@ namespace PowerUps
 
 		virtual void Initialise(octet::vec3 position)
 		{
-			collisionType = CollisionFlags::CollisionTypes::COL_POWERUP;
-			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_PLAYER | CollisionFlags::CollisionTypes::COL_PROJECTILES;
-
 			float radius = 0.5f;
 			float halfExtents = 2.25f;
 			octet::mesh *barrelShape = new octet::mesh_cylinder(octet::math::zcylinder(octet::vec3(0.0f, 0.0f, 0.0f), radius, halfExtents));

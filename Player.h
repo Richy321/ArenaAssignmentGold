@@ -3,9 +3,11 @@
 #include "../../octet.h"
 #include "PhysicsObject.h"
 #include "Turret.h"
+#include <functional>
 
 namespace Arena
 {
+	class ArenaApp;
 	class Player : public PhysicsObject
 	{
 	public: 		
@@ -16,8 +18,14 @@ namespace Arena
 			South,
 			West
 		};
+		enum State
+		{
+			Alive,
+			Dead
+		};
 	private:
-		unsigned int health;
+		int health;
+		int baseHealth;
 		float speed;
 		float baseSpeed;
 		float deceleration = 0.9f;
@@ -27,7 +35,9 @@ namespace Arena
 
 		float takeDamageStartTime = -1.0f;
 		float takeDamageDuration = 0.2f;
-
+		float respawnDelay = 2.0f;
+		float diedTime = -respawnDelay;
+		
 		octet::material *originalMat;
 		octet::material *damagedMat;
 
@@ -36,8 +46,16 @@ namespace Arena
 
 		octet::hash_map<Direction, bool> activeAcceleration;
 		bool isTakingDamage = false;
-
+		bool isTurretRotating = false;
 		octet::vec3 dampening;
+
+		btGeneric6DofConstraint* constrXY;
+		btHingeConstraint *constrTurretBase;
+
+		State curState = Dead;
+
+		int baseLives;
+		int remainingLives;
 
 	public:
 		Player()
@@ -47,6 +65,8 @@ namespace Arena
 		~Player() {}
 
 		Turret *turret;
+
+		std::function<void(Player&)> respawnCallback = nullptr;
 
 		static const char* referenceName;
 
@@ -77,31 +97,37 @@ namespace Arena
 			rigidBody->setCollisionFlags(rigidBody->getCollisionFlags() |
 				btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
-			speed = 500.0f;
-			health = 100;
+			baseSpeed = 1000.0f;
+			speed = baseSpeed;
 
-			maxSpeed = 30;
+			baseHealth = 100;
+			health = baseHealth;
+			
+			baseLives = 5;
+			remainingLives = baseLives;
+
+			maxSpeed = 90;
 
 			activeAcceleration[Direction::North] = false;
 			activeAcceleration[Direction::East] = false;
 			activeAcceleration[Direction::South] = false;
 			activeAcceleration[Direction::West] = false;
-
 		}
+
 		void addXZConstraint(GameWorldContext &context)
 		{
 			btTransform local;
 			local.setIdentity();
 
-			btGeneric6DofConstraint* constr = new btGeneric6DofConstraint(*rigidBody, local, true);
+			constrXY = new btGeneric6DofConstraint(*rigidBody, local, true);
 
-			context.physicsWorld.addConstraint(constr);
+			context.physicsWorld.addConstraint(constrXY);
 
-			constr->setLinearLowerLimit(btVector3(-1000, -1000, -1000));
-			constr->setLinearUpperLimit(btVector3(1000, 1000, 1000));
+			constrXY->setLinearLowerLimit(btVector3(-1000, -1000, -1000));
+			constrXY->setLinearUpperLimit(btVector3(1000, 1000, 1000));
 
-			constr->setAngularLowerLimit(btVector3(-SIMD_PI * 0.05f, 0, -SIMD_PI * 0.05f));
-			constr->setAngularUpperLimit(btVector3(SIMD_PI * 0.05f, 0, SIMD_PI * 0.05f));
+			constrXY->setAngularLowerLimit(btVector3(-SIMD_PI * 0.05f, 0, -SIMD_PI * 0.05f));
+			constrXY->setAngularUpperLimit(btVector3(SIMD_PI * 0.05f, 0, SIMD_PI * 0.05f));
 		}
 
 		void addTurretConstraint(GameWorldContext &context)
@@ -110,27 +136,49 @@ namespace Arena
 			btVector3 connectionPointPlayer = btVector3(0.0f, size.y(), 0.0f);
 			btVector3 connectionPointBase = btVector3(0.0f, 0.0f, 0.0f);
 
-			btHingeConstraint *turretBaseContraint = new btHingeConstraint(*rigidBody, *turret->GetRigidBody(), connectionPointPlayer, connectionPointBase, axis, axis);
-			context.physicsWorld.addConstraint(turretBaseContraint);
+			constrTurretBase = new btHingeConstraint(*rigidBody, *turret->GetRigidBody(), connectionPointPlayer, connectionPointBase, axis, axis);
+			context.physicsWorld.addConstraint(constrTurretBase);
 		}
 
 		void addPhysicsObjectToWorld(GameWorldContext& context) override
 		{
-			addXZConstraint(context);
 			PhysicsObject::addPhysicsObjectToWorld(context);
 			
 			turret = new Turret(context, this);
 			turret->addPhysicsObjectToWorld(context);
 			
+			AttachConstraints(context);
+		}
+
+		void AttachConstraints(GameWorldContext& context)
+		{
+			addXZConstraint(context);
+
 			btTransform turretTrans = rigidBody->getWorldTransform();
 			btVector3 pos = rigidBody->getCenterOfMassPosition();
 			turret->GetRigidBody()->setWorldTransform(turretTrans);
 			addTurretConstraint(context);
 		}
 
-		void Update()
+		void Update(GameWorldContext& context) override
 		{
-			PhysicsObject::Update();
+			PhysicsObject::Update(context);
+
+			if (curState == Alive)
+			{
+				if (health < 0)
+				{
+					curState = Dead;
+					diedTime = context.timer.GetRunningTime();
+					Die(context);
+				}
+			}
+			else if (curState == Dead)
+			{
+				float time = context.timer.GetRunningTime();
+				if (time > diedTime + respawnDelay)
+					Respawn(context);
+			}
 
 			if (isTakingDamage && timer->GetRunningTime() > takeDamageStartTime + takeDamageDuration)
 			{
@@ -140,10 +188,14 @@ namespace Arena
 
 			UpdateAcceleration();
 
+			if (!isTurretRotating)
+				SetTurretDampening(1.5f);
+
 			activeAcceleration[Direction::North] = false;
 			activeAcceleration[Direction::East] = false;
 			activeAcceleration[Direction::South] = false;
 			activeAcceleration[Direction::West] = false;
+			isTurretRotating = false;
 		}
 
 		void Move(octet::vec3 moveVec, Direction accelDir)
@@ -186,9 +238,6 @@ namespace Arena
 					rigidBody->setLinearVelocity(rigidBody->getLinearVelocity() - get_btVector3(dampening));
 				}
 				btVector3 force;
-				/*if (abs(dampening.length()) > 0)
-					force = btVector3((moveVec.x() * speed) - dampening.x(), (moveVec.y() * speed) - dampening.y(), (moveVec.z() * speed) - dampening.z());
-				else*/
 				force = btVector3(moveVec.x() * speed, moveVec.y() * speed, moveVec.z() * speed);
 	
 				rigidBody->applyCentralForce(force);
@@ -198,12 +247,10 @@ namespace Arena
 		void RotateTurret(float amount)
 		{
 			turret->Rotate(amount);
+			isTurretRotating = true;
 		}
-			
-		unsigned int GetHealth()
-		{
-			return health;
-		}
+
+		unsigned int GetHealth() { return health; }
 
 		void SetHealth(unsigned int health) { this->health = health; }
 
@@ -218,20 +265,11 @@ namespace Arena
 			}
 		}
 		
-		void FireTurrets(GameWorldContext& context)
-		{
-			turret->FireProjectile(context);
-		}
+		void FireTurrets(GameWorldContext& context) { turret->FireProjectile(context); }
 
-		void SetTurretDampening(float value)
-		{
-			turret->SetDampening(value);
-		}
+		void SetTurretDampening(float value) { turret->SetDampening(value);}
 
-		void SetMovementDampening(float value)
-		{
-			rigidBody->setDamping(value, 0.0f);
-		}
+		void SetMovementDampening(float value) { rigidBody->setDamping(value, 0.0f); }
 
 		octet::vec3 GetVelocity()
 		{
@@ -248,6 +286,31 @@ namespace Arena
 		void ApplyDeceleration()
 		{
 			rigidBody->setLinearVelocity(rigidBody->getLinearVelocity() * deceleration);
+		}
+
+		void Die(GameWorldContext& context)
+		{
+			context.physicsWorld.removeConstraint(constrXY);
+			context.physicsWorld.removeConstraint(constrTurretBase);
+
+			rigidBody->applyCentralImpulse(btVector3(0.0f, 0.5f, 0.0f));
+			turret->SetDampening(0.0f);
+			turret->GetRigidBody()->applyCentralImpulse(btVector3(0.0f, 0.5f, 0.0f));
+			turret->GetRigidBody()->applyTorqueImpulse(btVector3(1.0f, 11.0f, 1.0f));
+
+			remainingLives--;
+		}
+
+		void Respawn(GameWorldContext& context)
+		{
+			if (respawnCallback != nullptr)
+				respawnCallback(*this);
+
+			rigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
+			rigidBody->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
+			AttachConstraints(context);
+			curState = Alive;
+			health = baseHealth;
 		}
 	};
 	const char * Player::referenceName = "Player";

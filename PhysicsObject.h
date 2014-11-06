@@ -97,7 +97,7 @@ namespace Arena
 			timer = &context.timer;
 		}
 
-		virtual void Update()
+		virtual void Update(GameWorldContext& context)
 		{
 			//cap velocity
 			if (maxSpeed >= 0)

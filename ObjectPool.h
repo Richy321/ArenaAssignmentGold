@@ -57,10 +57,10 @@ namespace Arena
 			physicsObjects.push_back(physObj);
 		}
 
-		void UpdatePhysicsObjects() override
+		void UpdatePhysicsObjects(GameWorldContext& context) override
 		{
 			for (unsigned int i = 0; i < physicsObjects.size(); i++)
-				physicsObjects[i]->Update();
+				physicsObjects[i]->Update(context);
 		}
 
 		Enemy* GetEnemyObject()
@@ -107,7 +107,7 @@ namespace Arena
 				}
 			}
 		}
-		unsigned int GetActiveEnemyCount() { return activeEnemies.size(); }
+		unsigned int GetActiveEnemyCount() override { return activeEnemies.size(); }
 		unsigned int GetInactiveEnemyCount(){ return inactiveEnemies.size(); }
 
 		Projectile* GetProjectileObject()
@@ -184,6 +184,12 @@ namespace Arena
 		void DestroyActiveHealthObject(PowerUps::Health* health)
 		{
 			health->Disable();
+		}
+
+		void KillAllActiveEnemys()
+		{
+			for (int i = activeEnemies.size()-1; i >= 0; i--)
+				activeEnemies[i]->DestroyViaPool();
 		}
 	};
 }

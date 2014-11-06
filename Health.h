@@ -22,9 +22,6 @@ namespace PowerUps
 
 		virtual void Initialise(octet::vec3 position)
 		{
-			collisionType = CollisionFlags::CollisionTypes::COL_POWERUP;
-			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_PLAYER | CollisionFlags::CollisionTypes::COL_PROJECTILES;
-
 			float width = 0.33f;
 			float extents = 1.0f;
 

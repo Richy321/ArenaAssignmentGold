@@ -26,6 +26,7 @@ public:
 	float GetFPS() { return m_fps; }
 	float GetRunningTime() { return m_runningTime; }
 	float GetElapsedTime();
+	long GetTime();
 	
 private:
 	INT64		m_ticksPerSecond;	//frequency of the counter per second.
