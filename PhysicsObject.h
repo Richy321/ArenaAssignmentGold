@@ -29,6 +29,13 @@ namespace Arena
 		Timer* timer;
 
 	public:
+
+		enum ActiveState
+		{
+			Enabled,
+			Disabled
+		} activeState = ActiveState::Enabled;
+
 		CollisionFlags::CollisionTypes collisionType = CollisionFlags::CollisionTypes::COL_NOTHING;
 		int collisionMask = CollisionFlags::CollisionTypes::COL_WALL;
 
@@ -113,11 +120,13 @@ namespace Arena
 
 		virtual void Enable()
 		{
+			activeState = Enabled;
 			rigidBody->setActivationState(ACTIVE_TAG);
 		}
 
 		virtual void Disable()
 		{
+			activeState = Disabled;
 			//rigidBody->setActivationState(DISABLE_SIMULATION); //this messed up when enabling/disabling and setting forces on the same physics update.
 			rigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
 			rigidBody->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));

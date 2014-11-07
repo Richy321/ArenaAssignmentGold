@@ -17,7 +17,8 @@ namespace Arena
 		};
 
 	protected:
-		int health = 100;
+		int baseHealth = 100;
+		int health = baseHealth;
 		int damage = 5;
 		int points = 1;
 		float speed;
@@ -26,6 +27,14 @@ namespace Arena
 		AIMode mode = Idle;
 		octet::vec4 originalColour;
 		octet::vec4 damageColour;
+		float deadTime = 0.0f;
+		float deathDelay = 5.0f;
+
+		enum state
+		{
+			Alive,
+			Dead
+		} state = Alive;
 
 	public:
 		static const char* referenceName;
@@ -41,7 +50,10 @@ namespace Arena
 			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_PLAYER |
 				CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_PROJECTILES;
 
-			Initialise();
+			damageColour = octet::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+			originalColour = octet::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+			//Initialise();
 		}
 
 		~Enemy()
@@ -54,30 +66,39 @@ namespace Arena
 			octet::vec3 position = octet::vec3(0.0f, 0.0f, 0.0f);
 			octet::vec3 size = octet::vec3(2.5f);
 
-			damageColour = octet::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-			originalColour = octet::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-
 			mat = new octet::material(originalColour);
 			octet::mesh *shape = new octet::mesh_box(size);
 			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
 
 			PhysicsObject::Initialise(position, shape, collisionShape, mat);
 			rigidBody->setActivationState(DISABLE_DEACTIVATION);
-
 			
+			Reset();
+		}
+
+		virtual void Reset()
+		{
 			baseSpeed = 10;
 			speed = baseSpeed;
 			maxSpeed = 30.0f;
+			state = Alive;
 		}
 
-		void DestroyViaPool()
+		virtual void Die(GameWorldContext& context)
+		{
+			state = Dead;
+			deadTime = context.timer.GetRunningTime();
+			DestroyViaPool();
+		}
+
+		virtual void DestroyViaPool()
 		{
 			mat->set_diffuse(originalColour);
 			objectPool->DestroyActiveEnemyObject(this);
 			Disable();
 		}
 
-		void Update(GameWorldContext& context) override
+		virtual void Update(GameWorldContext& context) override
 		{
 			switch (mode)
 			{
@@ -103,18 +124,24 @@ namespace Arena
 				}
 				break;
 			}
+			if (state == Alive)
+				if (health <= 0)
+					Die(context);
+
 			PhysicsObject::Update(context);
 		}
 
-		void TakeDamage(unsigned int damageValue)
+		virtual void TakeDamage(unsigned int damageValue)
 		{
 			health -= damageValue;
 			mat->set_diffuse(damageColour);
-
-			if (health <= 0)
-				DestroyViaPool();
 		}
 
+		virtual void Enable()
+		{
+			PhysicsObject::Enable();
+			Reset();
+		}
 		int GetDamage() { return damage; }
 		int GetHealth() { return health; }
 		int GetPoints() { return points;  }

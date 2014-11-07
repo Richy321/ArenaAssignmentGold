@@ -239,10 +239,12 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PowerUp.h" />
     <ClInclude Include="Projectile.h" />
-    <ClInclude Include="SpotEnemy.h" />
+    <ClInclude Include="SphereEnemy.h" />
+    <ClInclude Include="VaryingColourEnemy.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Turret.h" />
     <ClInclude Include="TurretBarrel.h" />
+    <ClInclude Include="ExplodeEnemy.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="WaveManager.h" />
   </ItemGroup>

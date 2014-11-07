@@ -7,6 +7,10 @@
 #include "AdditionalBarrel.h"
 #include "Health.h"
 
+#include "VaryingColourEnemy.h"
+#include "ExplodeEnemy.h"
+#include "SphereEnemy.h"
+
 namespace Arena
 {
 	class ObjectPool : public IObjectPool
@@ -20,12 +24,13 @@ namespace Arena
 
 		GameWorldContext* gameWorldContext;
 
+		ObjectPool(ObjectPool const&);
+		void operator=(ObjectPool const&);
 	public:
 		octet::dynarray<PhysicsObject*> physicsObjects;
 
 		ObjectPool(){}
-		ObjectPool(ObjectPool const&);
-		void operator=(ObjectPool const&);
+
 
 		virtual ~ObjectPool() override { }
 
@@ -60,12 +65,15 @@ namespace Arena
 		void UpdatePhysicsObjects(GameWorldContext& context) override
 		{
 			for (unsigned int i = 0; i < physicsObjects.size(); i++)
-				physicsObjects[i]->Update(context);
+					physicsObjects[i]->Update(context);
 		}
 
 		Enemy* GetEnemyObject()
 		{
-			return GetEnemyObject(octet::vec3(0.0f, 0.0f, 0.0f));
+			Enemy *enemy = GetEnemyObject(octet::vec3(0.0f, 0.0f, 0.0f));
+			enemy->Reset();
+
+			return enemy;
 		}
 		Enemy* GetEnemyObject(octet::vec3 position)
 		{
@@ -89,7 +97,7 @@ namespace Arena
 		}
 		Enemy* CreateNewEnemy()
 		{
-			Enemy* enemy = new Enemy();
+			SphereEnemy* enemy = new SphereEnemy();
 			enemy->addPhysicsObjectToWorld(*gameWorldContext);
 			return enemy;
 		}

@@ -56,7 +56,7 @@ namespace Arena
 
 		GameMode mode = GameMode::Solo;
 
-		octet::random rnd;
+		octet::random* rnd;
 
 		//Mouse variables
 		int prevMouseX = -1;
@@ -308,7 +308,8 @@ namespace Arena
 			joystickHandler = new Joystick();
 
 			objectPool = new ObjectPool();
-			worldContext = new GameWorldContext(*app_scene, *world, *objectPool, *timer);
+			rnd = new octet::random(timer->GetTime());
+			worldContext = new GameWorldContext(*app_scene, *world, *objectPool, *timer, *rnd);
 			
 			objectPool->Initialise(*worldContext, 25, 30);
 
@@ -323,8 +324,6 @@ namespace Arena
 
 			HUD = new Hud();
 			HUD->initialise();
-
-			rnd = octet::random(timer->GetTime());
 
 			gContactAddedCallback = contactCallback;
 		}
@@ -388,7 +387,7 @@ namespace Arena
 
 			objectPool->UpdatePhysicsObjects(*worldContext);
 
-			// update matrices. assume 30 fps .
+			// update matrices. assume 30 fps.
 			app_scene->update(1.0f / 30);
 			// draw the scene
 			app_scene->render((float)vx / vy);
@@ -410,6 +409,7 @@ namespace Arena
 			Player *player = nullptr;
 			Projectile *projectile = nullptr;
 			PowerUp *powerUp = nullptr;
+			Floor *floor = nullptr;
 
 			for (int i = 0; i < 2; i++)
 			{
@@ -434,6 +434,11 @@ namespace Arena
 				{
 					powerUp = ((PowerUp*)physObj);
 				}
+
+				if (physObj->GetReferenceType() == Floor::referenceName)
+				{
+					floor = ((Floor*)physObj);
+				}
 			}
 
 
@@ -441,7 +446,7 @@ namespace Arena
 			if (player != nullptr && enemy != nullptr)
 			{
 				player->TakeDamage(enemy->GetDamage());
-				enemy->DestroyViaPool();
+				enemy->TakeDamage(player->collisionDamage);
 			}
 
 			//Projectile & Enemy

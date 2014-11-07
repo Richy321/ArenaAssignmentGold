@@ -517,13 +517,19 @@
     <ClInclude Include="Column.h">
       <Filter>Source Files\Arena</Filter>
     </ClInclude>
-    <ClInclude Include="SpotEnemy.h">
-      <Filter>Source Files\Enemies</Filter>
-    </ClInclude>
     <ClInclude Include="GameMode.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="ObjectPoolT.h" />
+    <ClInclude Include="VaryingColourEnemy.h">
+      <Filter>Source Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplodeEnemy.h">
+      <Filter>Source Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereEnemy.h">
+      <Filter>Source Files\Enemies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\resources\mesh_builder.inl">

@@ -11,8 +11,9 @@ namespace Arena
 		btDiscreteDynamicsWorld &physicsWorld;
 		IObjectPool &objectPool;
 		Timer &timer;
+		octet::random& rnd;
 
-		GameWorldContext(octet::visual_scene& App, btDiscreteDynamicsWorld& PhysicsWorld, IObjectPool& ObjectPool, Timer& Timer) : app_scene(App), physicsWorld(PhysicsWorld), objectPool(ObjectPool), timer(Timer)
+		GameWorldContext(octet::visual_scene& App, btDiscreteDynamicsWorld& PhysicsWorld, IObjectPool& ObjectPool, Timer& Timer, octet::random& Random) : app_scene(App), physicsWorld(PhysicsWorld), objectPool(ObjectPool), timer(Timer), rnd(Random)
 		{
 		}
 	};

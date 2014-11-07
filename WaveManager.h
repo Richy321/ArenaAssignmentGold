@@ -20,8 +20,8 @@ namespace Arena
 		ArenaLayout &arena;
 		int currentWave = 0;
 		const float powerUpSpawnFrequency = 20.0f;
-		const int maxEnemyCount = 20;
-		const int minEnemyCount = 5;
+		const int maxEnemyCount = 1;
+		const int minEnemyCount = 1;
 
 		float remainingWaveDelayTime = 0.0f;
 
