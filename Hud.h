@@ -8,12 +8,13 @@ namespace Arena
 	class Hud
 	{
 	private:
-		HUDText *healthValue;
 		HUDText *debugText;
 		HUDText *debugText2;
 		HUDText *poolingText;
 		HUDText *optionsText;
 		HUDText *waveCountdownText;
+		HUDText *player1Stats;
+
 		octet::bitmap_font *font;
 		octet::ref<octet::text_overlay> overlay;
 
@@ -23,12 +24,13 @@ namespace Arena
 			overlay = new octet::text_overlay();
 			font = overlay->get_default_font();
 
-			healthValue = new HUDText(new octet::aabb(octet::vec3(250.0f, 300.0f, 0.0f), octet::vec3(50.0f, 20.0f, 30.0f)), font);
 			debugText = new HUDText(new octet::aabb(octet::vec3(-350.0f, -300.0f, 0.0f), octet::vec3(20.0f, 20.0f, 50.0f)), font);
 			debugText2 = new HUDText(new octet::aabb(octet::vec3(-350.0f, -350.0f, 0.0f), octet::vec3(20.0f, 20.0f, 50.0f)), font);
 			poolingText = new HUDText(new octet::aabb(octet::vec3(250.0f, -250.0f, 0.0f), octet::vec3(100.0f, 40.0f, 30.0f)), font);
 			waveCountdownText = new HUDText(new octet::aabb(octet::vec3(0.0f, 0.0f, 0.0f), octet::vec3(50.0f, 20.0f, 50.0f)), font);
-			optionsText = new HUDText(new octet::aabb(octet::vec3(0.0f, 0.0f, 0.0f), octet::vec3(50.0f, 20.0f, 50.0f)), font);
+			optionsText = new HUDText(new octet::aabb(octet::vec3(35.0f, 25.0f, 0.0f), octet::vec3(70.0f, 50.0f, 0.0f)), font);
+
+			player1Stats = new HUDText(new octet::aabb(octet::vec3(250.0f, 300.0f, 0.0f), octet::vec3(90.0f, 50.0f, 0.0f)), font);
 
 			initialise();
 		}
@@ -36,21 +38,22 @@ namespace Arena
 
 		void initialise()
 		{			
-			overlay->add_mesh_text(healthValue->mesh);
 			overlay->add_mesh_text(debugText->mesh);
 			overlay->add_mesh_text(debugText2->mesh);
 			overlay->add_mesh_text(poolingText->mesh);
 			overlay->add_mesh_text(waveCountdownText->mesh);
 			overlay->add_mesh_text(optionsText->mesh);
+			overlay->add_mesh_text(player1Stats->mesh);
 		}
 
 		void draw(int vx, int vy, GameMode mode)
 		{
 			debugText->draw();
 			debugText2->draw();
-			healthValue->draw();
 			poolingText->draw();
 			waveCountdownText->draw();
+			player1Stats->draw();
+
 			if (mode == GameMode::None)
 				optionsText->draw();
 			else
@@ -65,10 +68,7 @@ namespace Arena
 		void update(Player& player, ObjectPool& objPool, WaveManager& waveManager, GameMode mode)
 		{
 			static char tmp[64];
-
-			snprintf(tmp, sizeof(tmp), "health - %d", player.GetHealth());
-			healthValue->text = tmp;
-			
+		
 			debugText->text = player.GetVelocity().toString(tmp, sizeof(tmp));
 			debugText2->text = player.GetDampening().toString(tmp, sizeof(tmp));
 			snprintf(tmp, sizeof(tmp), "EnemyPool - %u/%u\nProjPool - %u/%u", objPool.GetActiveEnemyCount(), objPool.GetInactiveEnemyCount(), objPool.GetActiveProjectileCount(), objPool.GetInactiveProjectileCount());
@@ -77,7 +77,7 @@ namespace Arena
 			float waveDelayTimeRemaining = waveManager.remainingWaveDelayTime;
 			if (waveDelayTimeRemaining > 0.0f)
 			{
-  				snprintf(tmp, sizeof(tmp), "Next Wave in %.2f seconds", waveDelayTimeRemaining);
+  				snprintf(tmp, sizeof(tmp), "Next Wave(%d) in %.2f seconds", waveManager.currentWave, waveDelayTimeRemaining);
 				waveCountdownText->text = tmp;
 			}
 			else
@@ -90,6 +90,9 @@ namespace Arena
 			}
 			else
 				optionsText->text = "";
+
+			snprintf(tmp, sizeof(tmp), "Player1 Lives: %d\n       Health: %d", player.GetRemainingLives(), player.GetHealth());
+			player1Stats->text = tmp;
 		}
 	};
 }

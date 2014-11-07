@@ -5,6 +5,7 @@
 
 #include "AdditionalBarrel.h"
 #include "Health.h"
+#include "GameMode.h"
 
 namespace Arena
 {
@@ -48,7 +49,7 @@ namespace Arena
 		{
 			rnd = octet::random(context.timer.GetTime());
 		}
-		void SpawnWave(GameWorldContext& context)
+		void SpawnWave(GameWorldContext& context, Player* target, Player* target2, GameMode mode)
 		{
 			octet::mat4t modelToWorld;
 			float multiplyer = 1 + currentWave * 0.2f;
@@ -61,6 +62,17 @@ namespace Arena
 				modelToWorld.translate(pos.x(), pos.y(), pos.z());
 				enemy->SetWorldTransform(modelToWorld);
 				enemy->SetAIMode(Enemy::Chase);
+
+				Player *curTarget = nullptr;
+				if (mode == Solo)
+					curTarget = target;
+				else if (mode == Coop)
+				{
+					int rndInt = rnd.get(0, 2);
+					curTarget = rndInt == 0 ? target : target2;
+				}
+
+				enemy->SetTarget(curTarget);
 			}
 			SpawnRandomPowerUp(context);
 		}
@@ -110,9 +122,8 @@ namespace Arena
 			}
 		}
 
-		void Update(GameWorldContext& context)
+		void Update(GameWorldContext& context, Player* target, Player* target2, GameMode mode)
 		{
-			
 			if (context.timer.GetRunningTime() > lastPowerUpSpawnTime + powerUpSpawnFrequency)
 				SpawnRandomPowerUp(context);
 
@@ -131,7 +142,7 @@ namespace Arena
 				float curRunTime = context.timer.GetRunningTime();
 				if (curRunTime > lastWaveFinishedTime + waveSpawnDelay)
 				{
-					SpawnWave(context);
+					SpawnWave(context, target, target2, mode);
 					state = Active;
 				}
 				else

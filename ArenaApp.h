@@ -10,6 +10,7 @@
 #include "GameWorldContext.h"
 
 #include "ObjectPool.h"
+#include "ObjectPoolT.h"
 #include "PhysicsObject.h"
 #include "Player.h"
 #include "Enemy.h"
@@ -39,8 +40,8 @@ namespace Arena
 		btDiscreteDynamicsWorld *world;               /// physics world, contains rigid bodies
 		octet::camera_instance *camera;
 
-		Player *player;
-		Player *player2;
+		Player *player = nullptr;
+		Player *player2 = nullptr;
 		Floor *floor;
 		ObjectPool *objectPool;
 		Timer *timer;
@@ -54,6 +55,8 @@ namespace Arena
 		btOverlapFilterCallback *filterCallback;
 
 		GameMode mode = GameMode::Solo;
+
+		octet::random rnd;
 
 		//Mouse variables
 		int prevMouseX = -1;
@@ -93,58 +96,82 @@ namespace Arena
 
 		void HandleKeyboardInput()
 		{
-			if ((is_key_down(octet::key_left) || is_key_down('A') || is_key_down('a')) ||
-				(is_key_down(octet::key_right) || is_key_down('D') || is_key_down('d')) ||
-				(is_key_down(octet::key_up) || is_key_down('W') || is_key_down('w')) ||
-				(is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s')))
+			if (mode != None)
 			{
-				if (is_key_down(octet::key_left) || is_key_down('A') || is_key_down('a'))
-					player->Move(octet::vec3(-1.0f, 0.0f, 0.0f), Player::Direction::East);
-				if (is_key_down(octet::key_right) || is_key_down('D') || is_key_down('d'))
-					player->Move(octet::vec3(1.0f, 0.0f, 0.0f), Player::Direction::West);
-				if (is_key_down(octet::key_up) || is_key_down('W') || is_key_down('w'))
-					player->Move(octet::vec3(0.0f, 0.0f, -1.0f), Player::Direction::North);
-				if (is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s'))
-					player->Move(octet::vec3(0.0f, 0.0f, 1.0f), Player::Direction::South);
+				if ((is_key_down(octet::key_left) || is_key_down('A') || is_key_down('a')) ||
+					(is_key_down(octet::key_right) || is_key_down('D') || is_key_down('d')) ||
+					(is_key_down(octet::key_up) || is_key_down('W') || is_key_down('w')) ||
+					(is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s')))
+				{
+					if (is_key_down(octet::key_left) || is_key_down('A') || is_key_down('a'))
+						player->Move(octet::vec3(-1.0f, 0.0f, 0.0f), Player::Direction::East);
+					if (is_key_down(octet::key_right) || is_key_down('D') || is_key_down('d'))
+						player->Move(octet::vec3(1.0f, 0.0f, 0.0f), Player::Direction::West);
+					if (is_key_down(octet::key_up) || is_key_down('W') || is_key_down('w'))
+						player->Move(octet::vec3(0.0f, 0.0f, -1.0f), Player::Direction::North);
+					if (is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s'))
+						player->Move(octet::vec3(0.0f, 0.0f, 1.0f), Player::Direction::South);
+				}
+
+				if (is_key_down(octet::key_down) || is_key_down('Q') || is_key_down('q') ||
+					(is_key_down(octet::key_down) || is_key_down('E') || is_key_down('e')))
+				{
+					if (is_key_down(octet::key_down) || is_key_down('Q') || is_key_down('q'))
+						player->RotateTurret(1.0f);
+
+					if (is_key_down(octet::key_down) || is_key_down('E') || is_key_down('e'))
+						player->RotateTurret(-1.0f);
+				}
+
+				if (is_key_down(octet::key_space))
+					player->FireTurrets(*worldContext);
 			}
-
-			if (is_key_down(octet::key_down) || is_key_down('Q') || is_key_down('q') ||
-				(is_key_down(octet::key_down) || is_key_down('E') || is_key_down('e')))
-			{
-				if (is_key_down(octet::key_down) || is_key_down('Q') || is_key_down('q'))
-					player->RotateTurret(1.0f);
-
-				if (is_key_down(octet::key_down) || is_key_down('E') || is_key_down('e'))
-					player->RotateTurret(-1.0f);
-			}
-
-			if (is_key_down(octet::key_space))
-				player->FireTurrets(*worldContext);
 
 			if (is_key_down(octet::key_f1))
 			{
-				for (unsigned int i = 0; i < objectPool->GetActiveEnemies().size(); i++)
+				if (mode == None)
 				{
-					objectPool->GetActiveEnemies()[i]->SetTarget(nullptr);
-					objectPool->GetActiveEnemies()[i]->SetAIMode(Enemy::AIMode::Idle);
+					InitGameMode(Solo);
+				}
+				else
+				{
+					for (unsigned int i = 0; i < objectPool->GetActiveEnemies().size(); i++)
+					{
+						objectPool->GetActiveEnemies()[i]->SetTarget(nullptr);
+						objectPool->GetActiveEnemies()[i]->SetAIMode(Enemy::AIMode::Idle);
+					}
 				}
 			}
 
 			if (is_key_down(octet::key_f2))
 			{
-				for (unsigned int i = 0; i < objectPool->GetActiveEnemies().size(); i++)
+				if (mode == None)
 				{
-					objectPool->GetActiveEnemies()[i]->SetTarget(player);
-					objectPool->GetActiveEnemies()[i]->SetAIMode(Enemy::AIMode::DumbChase);
+					InitGameMode(Versus);
+				}
+				else
+				{
+					for (unsigned int i = 0; i < objectPool->GetActiveEnemies().size(); i++)
+					{
+						objectPool->GetActiveEnemies()[i]->SetTarget(player);
+						objectPool->GetActiveEnemies()[i]->SetAIMode(Enemy::AIMode::DumbChase);
+					}
 				}
 			}
 
 			if (is_key_down(octet::key_f3))
 			{
-				for (unsigned int i = 0; i < objectPool->GetActiveEnemies().size(); i++)
+				if (mode == None)
 				{
-					objectPool->GetActiveEnemies()[i]->SetTarget(player);
-					objectPool->GetActiveEnemies()[i]->SetAIMode(Enemy::AIMode::Chase);
+					InitGameMode(Coop);
+				}
+				else
+				{
+					for (unsigned int i = 0; i < objectPool->GetActiveEnemies().size(); i++)
+					{
+						objectPool->GetActiveEnemies()[i]->SetTarget(player);
+						objectPool->GetActiveEnemies()[i]->SetAIMode(Enemy::AIMode::Chase);
+					}
 				}
 			}
 
@@ -174,9 +201,9 @@ namespace Arena
 				{
 					DIJOYSTATE* state = joystickHandler->GetCurrentState();
 
-					if (i == 0)
+					if (i == 0 && player != nullptr)
 						HandlePlayerJoystickInput(player, state);
-					if (i == 1 && player2 != nullptr)
+					if (i == 1 && player2 != nullptr && (mode == Coop || mode == Versus))
 						HandlePlayerJoystickInput(player2, state);
 				}
 			}
@@ -213,13 +240,26 @@ namespace Arena
 
 		void update()
 		{
+			if (mode != None)
+			{
+				int livesCount = 0;
+				if (player != nullptr)
+					livesCount += player->GetRemainingLives();
+				if (player2 != nullptr && (mode == Coop || mode == Versus))
+					livesCount += player2->GetRemainingLives();
+
+				if (livesCount == 0)
+					mode = None;
+			}
+			
 			timer->Update();
 			handleInput();
 			if (mode == GameMode::Solo)
 				cameraFollow((*player));
 			
 			HUD->update(*player, *objectPool, *waveManager, mode);
-			waveManager->Update(*worldContext);
+
+			waveManager->Update(*worldContext, player, player2, mode);
 		}
 
 	public:
@@ -259,7 +299,11 @@ namespace Arena
 			timer = new Timer();
 			timer->Start();
 
-			mode = Solo;
+			camera->get_node()->loadIdentity();
+			camera->get_node()->rotate(-90, octet::vec3(1, 0, 0));
+			camera->get_node()->translate(octet::vec3(0.0f, 0.0f, 130));
+
+			mode = None;
 
 			joystickHandler = new Joystick();
 
@@ -277,43 +321,46 @@ namespace Arena
 			player->addPhysicsObjectToWorld(*worldContext);
 			player->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
 
-			switch (mode)
+			HUD = new Hud();
+			HUD->initialise();
+
+			rnd = octet::random(timer->GetTime());
+
+			gContactAddedCallback = contactCallback;
+		}
+
+		void InitGameMode(GameMode newMode)
+		{
+			switch (newMode)
 			{
 			case Solo:
+				player->Initialise();
 				waveManager->state = WaveManager::BetweenWaves;
 				break;
 			case Versus:
 				waveManager->state = WaveManager::Inactive;
-				
-				player2 = new Player();
-				player2->addPhysicsObjectToWorld(*worldContext);
+				if (player2 == nullptr)
+				{
+					player2 = new Player();
+					player2->addPhysicsObjectToWorld(*worldContext);
+					player2->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
+				}
+				player2->Initialise();
 				player2->Translate(octet::vec3(5.0f, 0.0f, 0.0f));
-				player2->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
-
-				camera->get_node()->loadIdentity();
-
-				camera->get_node()->rotate(-90, octet::vec3(1, 0, 0));
-				camera->get_node()->translate(octet::vec3(0.0f, 0.0f, 120));
 				break;
 			case Coop:
 				waveManager->state = WaveManager::BetweenWaves;
-				
-				player2 = new Player();
-				player2->addPhysicsObjectToWorld(*worldContext);
+				if (player2 == nullptr)
+				{
+					player2 = new Player();
+					player2->addPhysicsObjectToWorld(*worldContext);
+					player2->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
+				}
+				player2->Initialise();
 				player2->Translate(octet::vec3(5.0f, 0.0f, 0.0f));
-				player2->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
-
-				camera->get_node()->loadIdentity();
-
-				camera->get_node()->rotate(-90, octet::vec3(1, 0, 0));
-				camera->get_node()->translate(octet::vec3(0.0f, 0.0f, 120));
 				break;
 			}
-
-			HUD = new Hud();
-			HUD->initialise();
-
-			gContactAddedCallback = contactCallback;
+			mode = newMode;
 		}
 
 		void cameraFollow(Player& target)

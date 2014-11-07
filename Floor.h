@@ -30,7 +30,8 @@ namespace Arena
 			collisionMask = CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_PLAYER | 
 				CollisionFlags::CollisionTypes::COL_PROJECTILES | CollisionFlags::CollisionTypes::COL_POWERUP;
 			
-			mat = new octet::material(octet::vec4(0.0f, 1.0f, 1.0f, 1.0f));
+			octet::image *bitmap = new octet::image("src/examples/arena/assets/asphaltSeemless_alt.jpg");
+			mat = new octet::material(bitmap);
 			octet::mesh *shape = new octet::mesh_box(size);
 			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
 

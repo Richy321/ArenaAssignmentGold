@@ -16,7 +16,7 @@ namespace Arena
 			//Proximity
 		};
 
-	private:
+	protected:
 		int health = 100;
 		int damage = 5;
 		int points = 1;
@@ -37,7 +37,11 @@ namespace Arena
 
 		Enemy()
 		{
-			Initialise(octet::vec3(0.0f, 0.0f, 0.0f), octet::vec3(2.5f));
+			collisionType = CollisionFlags::CollisionTypes::COL_ENEMY;
+			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_PLAYER |
+				CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_PROJECTILES;
+
+			Initialise();
 		}
 
 		~Enemy()
@@ -45,11 +49,10 @@ namespace Arena
 
 		}
 
-		void Initialise(octet::vec3 position, octet::vec3 size)
+		virtual void Initialise()
 		{
-			collisionType = CollisionFlags::CollisionTypes::COL_ENEMY;
-			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_PLAYER |
-				CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_PROJECTILES;
+			octet::vec3 position = octet::vec3(0.0f, 0.0f, 0.0f);
+			octet::vec3 size = octet::vec3(2.5f);
 
 			damageColour = octet::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 			originalColour = octet::vec4(0.0f, 1.0f, 0.0f, 1.0f);

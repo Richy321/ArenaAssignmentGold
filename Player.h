@@ -60,7 +60,31 @@ namespace Arena
 	public:
 		Player()
 		{
-			Initialise(octet::vec3(0.0f, 10.0f, -10.0f), octet::vec3(2.0f, 2.0f, 2.0f));
+			octet::vec3 position = octet::vec3(0.0f, 10.0f, -10.0f);
+			octet::vec3 size = octet::vec3(2.0f, 2.0f, 2.0f);
+
+			collisionType = CollisionFlags::CollisionTypes::COL_PLAYER;
+			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_POWERUP | CollisionFlags::CollisionTypes::COL_PLAYER | CollisionFlags::CollisionTypes::COL_PROJECTILES;
+
+			damageColour = octet::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+			originalColour = octet::vec4(0.0f, 0.75f, 0.0f, 1.0f);
+
+			//damagedMat = new octet::material(octet::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			mat = new octet::material(originalColour);
+			octet::mesh *shape = new octet::mesh_box(size);
+
+			this->size = size;
+			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
+
+			PhysicsObject::Initialise(position, shape, collisionShape, mat);
+
+			rigidBody->setActivationState(DISABLE_DEACTIVATION);
+
+			rigidBody->setCollisionFlags(rigidBody->getCollisionFlags() |
+				btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+
+
+			Initialise();
 		}
 		~Player() {}
 
@@ -75,28 +99,8 @@ namespace Arena
 			return Player::referenceName;
 		}
 
-		virtual void Initialise(octet::vec3 position, octet::vec3 size)
+		virtual void Initialise()
 		{
-			collisionType = CollisionFlags::CollisionTypes::COL_PLAYER;
-			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_POWERUP | CollisionFlags::CollisionTypes::COL_PLAYER | CollisionFlags::CollisionTypes::COL_PROJECTILES;
-			
-			damageColour = octet::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-			originalColour = octet::vec4(0.0f, 0.75f, 0.0f, 1.0f);
-
-			//damagedMat = new octet::material(octet::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-			mat = new octet::material(originalColour);
-			octet::mesh *shape = new octet::mesh_box(size);
-			
-			this->size = size;
-			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
-
-			PhysicsObject::Initialise(position, shape, collisionShape, mat);
-
-			rigidBody->setActivationState(DISABLE_DEACTIVATION);
-
-			rigidBody->setCollisionFlags(rigidBody->getCollisionFlags() |
-				btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
-
 			baseSpeed = 1000.0f;
 			speed = baseSpeed;
 
@@ -270,6 +274,8 @@ namespace Arena
 		void SetTurretDampening(float value) { turret->SetDampening(value);}
 
 		void SetMovementDampening(float value) { rigidBody->setDamping(value, 0.0f); }
+
+		int GetRemainingLives() { return remainingLives; }
 
 		octet::vec3 GetVelocity()
 		{

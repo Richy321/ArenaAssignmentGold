@@ -48,6 +48,9 @@
     <Filter Include="Source Files\Projectiles">
       <UniqueIdentifier>{db9e8a6d-000b-4467-a0fa-d2e14ecb570c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\CustomShaders">
+      <UniqueIdentifier>{0619305b-60c1-438d-a466-4156bfd5accc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -514,7 +517,13 @@
     <ClInclude Include="Column.h">
       <Filter>Source Files\Arena</Filter>
     </ClInclude>
-    <ClInclude Include="GameMode.h" />
+    <ClInclude Include="SpotEnemy.h">
+      <Filter>Source Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="GameMode.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectPoolT.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\resources\mesh_builder.inl">
