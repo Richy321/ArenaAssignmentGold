@@ -17,21 +17,21 @@ namespace Arena
 		float toExtrude = 50.0f;
 		bool playingExplosionSound = false;
 
-		ExplodeEnemy()
+		ExplodeEnemy(GameWorldContext& context)
 		{
-			Initialise();
+			Initialise(context);
 		}
 
 		virtual ~ExplodeEnemy()
 		{
 		}
 
-		virtual void Initialise() override
+		virtual void Initialise(GameWorldContext& context)
 		{
 			octet::vec3 position = octet::vec3(0.0f, 0.0f, 0.0f);
 			octet::vec3 size = octet::vec3(2.5f);
 
-			InitialiseExplodeShaderMaterial();
+			InitialiseExplodeShaderMaterial(context);
 
 			octet::mesh *shape = new octet::mesh_box(size);
 			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
@@ -42,17 +42,20 @@ namespace Arena
 			Reset();
 		}
 
-		virtual void InitialiseExplodeShaderMaterial()
+		virtual void InitialiseExplodeShaderMaterial(GameWorldContext& context)
 		{
 			originalColour = octet::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-			octet::param_shader *shader = new octet::param_shader("src/examples/arena/shaders/MeshTwitch.vs", "shaders/default_solid.fs");
+			octet::image* img = context.objectPool.GetTexture("SciFiCube");
+			octet::param_shader *shader = new octet::param_shader("src/examples/arena/shaders/MeshTwitch.vs", "shaders/default_textured.fs");
+
 
 			octet::atom_t atom_progress = octet::app_utils::get_atom("progress");
 			octet::atom_t atom_toExtrude = octet::app_utils::get_atom("toExtrudeUniform");
 			octet::atom_t atom_fromExtrude = octet::app_utils::get_atom("fromExtrudeUniform");
 
-			mat = new octet::material(originalColour, shader);
+
+			mat = new octet::material(img, NULL, shader);
 
 			float val = 0.0f;
 			progress = mat->add_uniform(&val, atom_progress, GL_FLOAT, 1, octet::param::stage_vertex);

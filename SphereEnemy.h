@@ -6,20 +6,20 @@ namespace Arena
 	{
 	public:
 
-		SphereEnemy()
+		SphereEnemy(GameWorldContext& context) : ExplodeEnemy(context)
 		{
-			Initialise();
+			Initialise(context);
 		}
 
 		virtual ~SphereEnemy()
 		{
 		}
 
-		virtual void Initialise() override
+		virtual void Initialise(GameWorldContext& context) override
 		{
 			octet::vec3 position = octet::vec3(0.0f, 0.0f, 0.0f);
 
-			InitialiseExplodeShaderMaterial();
+			InitialiseExplodeShaderMaterial(context);
 
 			octet::mesh *shape = new octet::mesh_sphere(octet::vec3(0.0f, 0.0f, 0.0f), 2.5f, 5);
 

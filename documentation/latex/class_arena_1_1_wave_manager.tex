@@ -1,0 +1,72 @@
+\hypertarget{class_arena_1_1_wave_manager}{\section{Arena\+:\+:Wave\+Manager Class Reference}
+\label{class_arena_1_1_wave_manager}\index{Arena\+::\+Wave\+Manager@{Arena\+::\+Wave\+Manager}}
+}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_wave_manager_ad16e962262d0e32425e255947a0a12e8}{enum \{ {\bfseries max\+Power\+Ups\+Per\+Type} = 5
+ \}}\label{class_arena_1_1_wave_manager_ad16e962262d0e32425e255947a0a12e8}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_a7e3463cc0884056a5a852eaadc9bb3b3}{enum {\bfseries state} \{ {\bfseries Active}, 
+{\bfseries Between\+Waves}, 
+{\bfseries Inactive}
+ \}}\label{class_arena_1_1_wave_manager_a7e3463cc0884056a5a852eaadc9bb3b3}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_wave_manager_a4550eb024bbe46aff142297effeeee83}{{\bfseries Wave\+Manager} (\hyperlink{class_arena_1_1_arena_layout}{Arena\+Layout} \&Arena, \hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_wave_manager_a4550eb024bbe46aff142297effeeee83}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_a59bcd90555d0b5694953f63063b7b54b}{void {\bfseries Initialise} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_wave_manager_a59bcd90555d0b5694953f63063b7b54b}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_ac8015608d609702008c9039eddcee047}{void {\bfseries Spawn\+Wave} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context, \hyperlink{class_arena_1_1_player}{Player} $\ast$target, \hyperlink{class_arena_1_1_player}{Player} $\ast$target2, Game\+Mode mode)}\label{class_arena_1_1_wave_manager_ac8015608d609702008c9039eddcee047}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_ad80c0411190c519d0827481eb2b20eba}{void {\bfseries Spawn\+Physics\+Example\+Wave} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_wave_manager_ad80c0411190c519d0827481eb2b20eba}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_aaf531cfbaff348cba8986e68fbad95e5}{void {\bfseries Spawn\+Random\+Power\+Up} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} context)}\label{class_arena_1_1_wave_manager_aaf531cfbaff348cba8986e68fbad95e5}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_a2363e33a0513b4f159e60a00f3a80c19}{void {\bfseries Spawn\+Power\+Up} (octet\+::vec3 position, Power\+Up\+::\+Type powerup\+Type, \hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_wave_manager_a2363e33a0513b4f159e60a00f3a80c19}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_ab1a1c80a3d308ac0cc70faa61ecec8e3}{void {\bfseries Update} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context, \hyperlink{class_arena_1_1_player}{Player} $\ast$target, \hyperlink{class_arena_1_1_player}{Player} $\ast$target2, Game\+Mode mode)}\label{class_arena_1_1_wave_manager_ab1a1c80a3d308ac0cc70faa61ecec8e3}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_wave_manager_a631cabcb38f6bf0f34b66eeeb34e637b}{\hyperlink{class_arena_1_1_arena_layout}{Arena\+Layout} \& {\bfseries arena}}\label{class_arena_1_1_wave_manager_a631cabcb38f6bf0f34b66eeeb34e637b}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_a4d5c0b5708e06ec98b7049e6c2b79456}{int {\bfseries current\+Wave} = 0}\label{class_arena_1_1_wave_manager_a4d5c0b5708e06ec98b7049e6c2b79456}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_aa95ee2791287f122b47cc5e50e901e1d}{const float {\bfseries power\+Up\+Spawn\+Frequency} = 20.\+0f}\label{class_arena_1_1_wave_manager_aa95ee2791287f122b47cc5e50e901e1d}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_a696fbd7b6b9c1fa423d248eb1bf0fecc}{const int {\bfseries max\+Enemy\+Count} = 20}\label{class_arena_1_1_wave_manager_a696fbd7b6b9c1fa423d248eb1bf0fecc}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_aab528a9a63074e504314bd92996c46da}{const int {\bfseries min\+Enemy\+Count} = 1}\label{class_arena_1_1_wave_manager_aab528a9a63074e504314bd92996c46da}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_a48489cdf8e5d19074e3cf19cb7bb651c}{float {\bfseries remaining\+Wave\+Delay\+Time} = 0.\+0f}\label{class_arena_1_1_wave_manager_a48489cdf8e5d19074e3cf19cb7bb651c}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_a5b32f0c7b876e2286a0d18d73ffeb868}{enum Arena\+::\+Wave\+Manager\+::state {\bfseries state} = Inactive}\label{class_arena_1_1_wave_manager_a5b32f0c7b876e2286a0d18d73ffeb868}
+
+\item 
+\hypertarget{class_arena_1_1_wave_manager_a8e433f39cd4c7998f6aead32e0c88d5d}{octet\+::random {\bfseries rnd}}\label{class_arena_1_1_wave_manager_a8e433f39cd4c7998f6aead32e0c88d5d}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Wave\+Manager.\+h\end{DoxyCompactItemize}

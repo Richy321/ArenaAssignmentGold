@@ -1,0 +1,123 @@
+\hypertarget{class_arena_1_1_player}{\section{Arena\+:\+:Player Class Reference}
+\label{class_arena_1_1_player}\index{Arena\+::\+Player@{Arena\+::\+Player}}
+}
+Inheritance diagram for Arena\+:\+:Player\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_arena_1_1_player}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_player_a4f0bbae55a9ca69f6766c86af851843b}{enum {\bfseries Direction} \{ {\bfseries North} = 1, 
+{\bfseries East}, 
+{\bfseries South}, 
+{\bfseries West}
+ \}}\label{class_arena_1_1_player_a4f0bbae55a9ca69f6766c86af851843b}
+
+\item 
+\hypertarget{class_arena_1_1_player_a840d249fa3c4b97afe536126d5b272f6}{enum {\bfseries State} \{ {\bfseries Alive}, 
+{\bfseries Dead}
+ \}}\label{class_arena_1_1_player_a840d249fa3c4b97afe536126d5b272f6}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_player_aa22c5cdce358781bc98892b1e2829bf2}{virtual const char $\ast$ {\bfseries Get\+Reference\+Type} () override}\label{class_arena_1_1_player_aa22c5cdce358781bc98892b1e2829bf2}
+
+\item 
+\hypertarget{class_arena_1_1_player_a9b5949b4c56768c6132397360587af47}{virtual void {\bfseries Initialise} ()}\label{class_arena_1_1_player_a9b5949b4c56768c6132397360587af47}
+
+\item 
+\hypertarget{class_arena_1_1_player_ac5c4458824f47742bb3816cc3a693ccd}{void {\bfseries add\+X\+Z\+Constraint} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_player_ac5c4458824f47742bb3816cc3a693ccd}
+
+\item 
+\hypertarget{class_arena_1_1_player_a4d4c157ae313fc2b9560225e066b7590}{void {\bfseries add\+Turret\+Constraint} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_player_a4d4c157ae313fc2b9560225e066b7590}
+
+\item 
+\hypertarget{class_arena_1_1_player_a8816424a271312fd584b8cda77c9d959}{void {\bfseries add\+Physics\+Object\+To\+World} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context) override}\label{class_arena_1_1_player_a8816424a271312fd584b8cda77c9d959}
+
+\item 
+\hypertarget{class_arena_1_1_player_a4fd4eb5692672d246124137d46648093}{void {\bfseries Attach\+Constraints} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_player_a4fd4eb5692672d246124137d46648093}
+
+\item 
+\hypertarget{class_arena_1_1_player_ad050b166333495653886d883dae4da4a}{void {\bfseries Update} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context) override}\label{class_arena_1_1_player_ad050b166333495653886d883dae4da4a}
+
+\item 
+\hypertarget{class_arena_1_1_player_af4a1b3d8a444e4a417d29806d5b2c4e3}{void {\bfseries Move} (octet\+::vec3 move\+Vec, Direction accel\+Dir)}\label{class_arena_1_1_player_af4a1b3d8a444e4a417d29806d5b2c4e3}
+
+\item 
+\hypertarget{class_arena_1_1_player_a376aa62b0d4d2bf358155300f2be8525}{void {\bfseries Update\+Acceleration} ()}\label{class_arena_1_1_player_a376aa62b0d4d2bf358155300f2be8525}
+
+\item 
+\hypertarget{class_arena_1_1_player_adc499cdfaba72bce0fe200ddb993adb3}{void {\bfseries Rotate\+Turret} (float amount)}\label{class_arena_1_1_player_adc499cdfaba72bce0fe200ddb993adb3}
+
+\item 
+\hypertarget{class_arena_1_1_player_a105dfdea93133a3e952d204b73677fd6}{unsigned int {\bfseries Get\+Health} ()}\label{class_arena_1_1_player_a105dfdea93133a3e952d204b73677fd6}
+
+\item 
+\hypertarget{class_arena_1_1_player_a1a9e5f5835b1d2daf954cadf7a2c13c0}{void {\bfseries Set\+Health} (unsigned int health)}\label{class_arena_1_1_player_a1a9e5f5835b1d2daf954cadf7a2c13c0}
+
+\item 
+\hypertarget{class_arena_1_1_player_ae059c8218e19ef39447c4d6325be79b9}{void {\bfseries Take\+Damage} (unsigned int damage\+Value)}\label{class_arena_1_1_player_ae059c8218e19ef39447c4d6325be79b9}
+
+\item 
+\hypertarget{class_arena_1_1_player_a30b0f9546f67c561f40f46f18f386f4b}{void {\bfseries Fire\+Turrets} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_player_a30b0f9546f67c561f40f46f18f386f4b}
+
+\item 
+\hypertarget{class_arena_1_1_player_a84193884efbb3cec45ab0d3364cacc15}{void {\bfseries Set\+Turret\+Dampening} (float value)}\label{class_arena_1_1_player_a84193884efbb3cec45ab0d3364cacc15}
+
+\item 
+\hypertarget{class_arena_1_1_player_aeb4cdcd09fd10f1d9117dc59ecf9985d}{void {\bfseries Set\+Movement\+Dampening} (float value)}\label{class_arena_1_1_player_aeb4cdcd09fd10f1d9117dc59ecf9985d}
+
+\item 
+\hypertarget{class_arena_1_1_player_a9b32bddf5f59ed88b9efd485e15ce347}{int {\bfseries Get\+Remaining\+Lives} ()}\label{class_arena_1_1_player_a9b32bddf5f59ed88b9efd485e15ce347}
+
+\item 
+\hypertarget{class_arena_1_1_player_ab093919e83236c721beeae9f9d29621b}{octet\+::vec3 {\bfseries Get\+Velocity} ()}\label{class_arena_1_1_player_ab093919e83236c721beeae9f9d29621b}
+
+\item 
+\hypertarget{class_arena_1_1_player_a37328c92147483bbbed26c9510767630}{octet\+::vec3 {\bfseries Get\+Dampening} ()}\label{class_arena_1_1_player_a37328c92147483bbbed26c9510767630}
+
+\item 
+\hypertarget{class_arena_1_1_player_aa909d09aeec8fdfff91e8560157604f9}{void {\bfseries Add\+Barrel} ()}\label{class_arena_1_1_player_aa909d09aeec8fdfff91e8560157604f9}
+
+\item 
+\hypertarget{class_arena_1_1_player_acd5c1127e541903daf6de6e493f395c2}{void {\bfseries Apply\+Deceleration} ()}\label{class_arena_1_1_player_acd5c1127e541903daf6de6e493f395c2}
+
+\item 
+\hypertarget{class_arena_1_1_player_a36b05e4e889e2c4cf3b4b32f9e8ad6e8}{void {\bfseries Die} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_player_a36b05e4e889e2c4cf3b4b32f9e8ad6e8}
+
+\item 
+\hypertarget{class_arena_1_1_player_aca494aed5b70e78c31f68f6046f95fb2}{void {\bfseries Respawn} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_player_aca494aed5b70e78c31f68f6046f95fb2}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_player_ae8b0acc9c546a21e20c705e40a64ee29}{enum Arena\+::\+Player\+::\+State {\bfseries cur\+State} = Dead}\label{class_arena_1_1_player_ae8b0acc9c546a21e20c705e40a64ee29}
+
+\item 
+\hypertarget{class_arena_1_1_player_a8e9ca1b2e58fd3ab80e410b5dee3ba37}{unsigned int {\bfseries collision\+Damage} = 20}\label{class_arena_1_1_player_a8e9ca1b2e58fd3ab80e410b5dee3ba37}
+
+\item 
+\hypertarget{class_arena_1_1_player_a0adc096e775af7e9b69d8ba21cc279b9}{\hyperlink{class_arena_1_1_turret}{Turret} $\ast$ {\bfseries turret}}\label{class_arena_1_1_player_a0adc096e775af7e9b69d8ba21cc279b9}
+
+\item 
+\hypertarget{class_arena_1_1_player_a35d3903e1a32c8fb3591787b91a14080}{std\+::function$<$ void(\hyperlink{class_arena_1_1_player}{Player} \&)$>$ {\bfseries respawn\+Callback} = nullptr}\label{class_arena_1_1_player_a35d3903e1a32c8fb3591787b91a14080}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_player_a10fbc13ca917fd12d711f8fb363b4da9}{static const char $\ast$ {\bfseries reference\+Name} = \char`\"{}Player\char`\"{}}\label{class_arena_1_1_player_a10fbc13ca917fd12d711f8fb363b4da9}
+
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Player.\+h\end{DoxyCompactItemize}

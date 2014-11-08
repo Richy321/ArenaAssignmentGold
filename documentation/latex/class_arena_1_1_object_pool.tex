@@ -1,0 +1,110 @@
+\hypertarget{class_arena_1_1_object_pool}{\section{Arena\+:\+:Object\+Pool Class Reference}
+\label{class_arena_1_1_object_pool}\index{Arena\+::\+Object\+Pool@{Arena\+::\+Object\+Pool}}
+}
+Inheritance diagram for Arena\+:\+:Object\+Pool\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_arena_1_1_object_pool}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_object_pool_afb3f50d1f2e0e15f2ed7cb8d0b453271}{void {\bfseries Initialise} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context, int enemy\+Capacity, int projectile\+Capacity, int health\+Capacity, int additional\+Barrel\+Capacity)}\label{class_arena_1_1_object_pool_afb3f50d1f2e0e15f2ed7cb8d0b453271}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a87fe95adfb9a684909a68a5b8916b8c2}{void {\bfseries Initialise\+Textures} ()}\label{class_arena_1_1_object_pool_a87fe95adfb9a684909a68a5b8916b8c2}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_ab0e0697eaf1b590f7911b8b4a7e416b0}{octet\+::image $\ast$ {\bfseries Get\+Texture} (char $\ast$name)}\label{class_arena_1_1_object_pool_ab0e0697eaf1b590f7911b8b4a7e416b0}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a1f79805449ee86c3e7baef01fda3f465}{void {\bfseries Add\+Physics\+Object} (\hyperlink{class_arena_1_1_physics_object}{Physics\+Object} $\ast$phys\+Obj) override}\label{class_arena_1_1_object_pool_a1f79805449ee86c3e7baef01fda3f465}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_aba06874cee24710afe4bcf565cdee704}{void {\bfseries Update\+Physics\+Objects} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context) override}\label{class_arena_1_1_object_pool_aba06874cee24710afe4bcf565cdee704}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a0544bc5a27104c9ca2f5bece1b364ea6}{\hyperlink{class_arena_1_1_enemy}{Enemy} $\ast$ {\bfseries Get\+Enemy\+Object} ()}\label{class_arena_1_1_object_pool_a0544bc5a27104c9ca2f5bece1b364ea6}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a2b60f0da17508f69fef47e38727f0d92}{\hyperlink{class_arena_1_1_enemy}{Enemy} $\ast$ {\bfseries Get\+Enemy\+Object} (octet\+::vec3 position)}\label{class_arena_1_1_object_pool_a2b60f0da17508f69fef47e38727f0d92}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a7ae80096d179f4f8369cf500b40390ef}{\hyperlink{class_arena_1_1_enemy}{Enemy} $\ast$ {\bfseries Create\+New\+Enemy} ()}\label{class_arena_1_1_object_pool_a7ae80096d179f4f8369cf500b40390ef}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a443c2b46a04f1c878e3593a18e780a90}{octet\+::dynarray$<$ \hyperlink{class_arena_1_1_enemy}{Enemy} $\ast$ $>$ \& {\bfseries Get\+Active\+Enemies} () override}\label{class_arena_1_1_object_pool_a443c2b46a04f1c878e3593a18e780a90}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a4fa7d0286caaa1781ac8aaebd357defc}{void {\bfseries Destroy\+Active\+Enemy\+Object} (\hyperlink{class_arena_1_1_enemy}{Enemy} $\ast$enemy)}\label{class_arena_1_1_object_pool_a4fa7d0286caaa1781ac8aaebd357defc}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_ad7c5ee462b8eb881384eb9cf62ec88a7}{unsigned int {\bfseries Get\+Active\+Enemy\+Count} () override}\label{class_arena_1_1_object_pool_ad7c5ee462b8eb881384eb9cf62ec88a7}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a9c10adf0227c85851ff11025010f04cb}{unsigned int {\bfseries Get\+Inactive\+Enemy\+Count} ()}\label{class_arena_1_1_object_pool_a9c10adf0227c85851ff11025010f04cb}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_aebd241ba5d68a4f3d625c1dedbc83dd6}{\hyperlink{class_arena_1_1_projectile}{Projectile} $\ast$ {\bfseries Get\+Projectile\+Object} ()}\label{class_arena_1_1_object_pool_aebd241ba5d68a4f3d625c1dedbc83dd6}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_ad689a6bbc0a7127febb8223ac803bf92}{\hyperlink{class_arena_1_1_projectile}{Projectile} $\ast$ {\bfseries Create\+New\+Projectile} ()}\label{class_arena_1_1_object_pool_ad689a6bbc0a7127febb8223ac803bf92}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_ae267be33855938f58987567f88306670}{octet\+::dynarray$<$ \hyperlink{class_arena_1_1_projectile}{Projectile} $\ast$ $>$ \& {\bfseries Get\+Active\+Projectiles} ()}\label{class_arena_1_1_object_pool_ae267be33855938f58987567f88306670}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_ac93918883a7b94f94960f9c39bc3c243}{void {\bfseries Destroy\+Active\+Projectile\+Object} (\hyperlink{class_arena_1_1_projectile}{Projectile} $\ast$projectile)}\label{class_arena_1_1_object_pool_ac93918883a7b94f94960f9c39bc3c243}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a57c198c10b856a9c2a2be798c84c1622}{unsigned int {\bfseries Get\+Active\+Projectile\+Count} ()}\label{class_arena_1_1_object_pool_a57c198c10b856a9c2a2be798c84c1622}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_aa8d5b17e4bb15c012a57e0bae13c010c}{unsigned int {\bfseries Get\+Inactive\+Projectile\+Count} ()}\label{class_arena_1_1_object_pool_aa8d5b17e4bb15c012a57e0bae13c010c}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a85e12cbc408a2bd0756983858190b1d6}{\hyperlink{class_arena_1_1_power_ups_1_1_additional_barrel}{Power\+Ups\+::\+Additional\+Barrel} $\ast$ {\bfseries Get\+Additional\+Barrel\+Object} ()}\label{class_arena_1_1_object_pool_a85e12cbc408a2bd0756983858190b1d6}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a885490174c6e54139fce91c97e969d18}{\hyperlink{class_arena_1_1_power_ups_1_1_additional_barrel}{Power\+Ups\+::\+Additional\+Barrel} $\ast$ {\bfseries Create\+New\+Additional\+Barrel\+Power\+Up} ()}\label{class_arena_1_1_object_pool_a885490174c6e54139fce91c97e969d18}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a29953b8730216d72e26a3ab7f2a64c58}{void {\bfseries Destroy\+Active\+Additional\+Barrel\+Object} (\hyperlink{class_arena_1_1_power_ups_1_1_additional_barrel}{Power\+Ups\+::\+Additional\+Barrel} $\ast$additional\+Barrel)}\label{class_arena_1_1_object_pool_a29953b8730216d72e26a3ab7f2a64c58}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_af1413e23d4088b1b808f29015b423aa8}{unsigned int {\bfseries Get\+Active\+Additional\+Barrel\+Count} ()}\label{class_arena_1_1_object_pool_af1413e23d4088b1b808f29015b423aa8}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a730bf993765648fed72f139cb504555a}{unsigned int {\bfseries Get\+Inactive\+Additional\+Barrel\+Count} ()}\label{class_arena_1_1_object_pool_a730bf993765648fed72f139cb504555a}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_ac7ee019760c7fe46901042b1178ab4b3}{\hyperlink{class_arena_1_1_power_ups_1_1_health}{Power\+Ups\+::\+Health} $\ast$ {\bfseries Get\+Health\+Object} ()}\label{class_arena_1_1_object_pool_ac7ee019760c7fe46901042b1178ab4b3}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a4b22fe8268ee2ccdd0aef130eb532273}{\hyperlink{class_arena_1_1_power_ups_1_1_health}{Power\+Ups\+::\+Health} $\ast$ {\bfseries Create\+New\+Health\+Power\+Up} ()}\label{class_arena_1_1_object_pool_a4b22fe8268ee2ccdd0aef130eb532273}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_ab1d1414d29b85601f90c5a1b40322d09}{void {\bfseries Destroy\+Active\+Health\+Object} (\hyperlink{class_arena_1_1_power_ups_1_1_health}{Power\+Ups\+::\+Health} $\ast$health)}\label{class_arena_1_1_object_pool_ab1d1414d29b85601f90c5a1b40322d09}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a1ec8dbbcbc17e1b1249a758afa1ff412}{unsigned int {\bfseries Get\+Active\+Health\+Count} ()}\label{class_arena_1_1_object_pool_a1ec8dbbcbc17e1b1249a758afa1ff412}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_af9879fb32ef6ab15e790182e7f779afa}{unsigned int {\bfseries Get\+Inactive\+Health\+Count} ()}\label{class_arena_1_1_object_pool_af9879fb32ef6ab15e790182e7f779afa}
+
+\item 
+\hypertarget{class_arena_1_1_object_pool_a309055923d6e937777429639ba23cd93}{void {\bfseries Kill\+All\+Active\+Enemys} ()}\label{class_arena_1_1_object_pool_a309055923d6e937777429639ba23cd93}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_object_pool_a64f65a690d7663a93594e527a3f4c7a1}{octet\+::dynarray$<$ \hyperlink{class_arena_1_1_physics_object}{Physics\+Object} $\ast$ $>$ {\bfseries physics\+Objects}}\label{class_arena_1_1_object_pool_a64f65a690d7663a93594e527a3f4c7a1}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Object\+Pool.\+h\end{DoxyCompactItemize}

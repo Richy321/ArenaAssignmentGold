@@ -1,0 +1,134 @@
+\hypertarget{class_arena_1_1_enemy}{\section{Arena\+:\+:Enemy Class Reference}
+\label{class_arena_1_1_enemy}\index{Arena\+::\+Enemy@{Arena\+::\+Enemy}}
+}
+Inheritance diagram for Arena\+:\+:Enemy\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{class_arena_1_1_enemy}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_enemy_af5ced89684887a3cdccdfc22ab51b77b}{enum {\bfseries A\+I\+Mode} \{ {\bfseries Idle}, 
+{\bfseries Dumb\+Chase}, 
+{\bfseries Chase}
+ \}}\label{class_arena_1_1_enemy_af5ced89684887a3cdccdfc22ab51b77b}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_abecbeb25d89a5953bad561cdb3cec90a}{enum {\bfseries state} \{ {\bfseries Alive}, 
+{\bfseries Dead}
+ \}}\label{class_arena_1_1_enemy_abecbeb25d89a5953bad561cdb3cec90a}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_enemy_a9ebdb58b2731565c36e5c629086227fc}{virtual const char $\ast$ {\bfseries Get\+Reference\+Type} ()}\label{class_arena_1_1_enemy_a9ebdb58b2731565c36e5c629086227fc}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a210783fb287f22243ec8ac8f75e6a4a9}{virtual void {\bfseries Initialise} ()}\label{class_arena_1_1_enemy_a210783fb287f22243ec8ac8f75e6a4a9}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a726403d5782cbafb305e11c7d90a5e39}{virtual void {\bfseries Reset} ()}\label{class_arena_1_1_enemy_a726403d5782cbafb305e11c7d90a5e39}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a5d1019b8cdc7ef54b59e59d9590a28d6}{virtual void {\bfseries Die} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_enemy_a5d1019b8cdc7ef54b59e59d9590a28d6}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_aea14958970021ec0008b4a25a1a7949f}{virtual void {\bfseries Destroy\+Via\+Pool} ()}\label{class_arena_1_1_enemy_aea14958970021ec0008b4a25a1a7949f}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a1ce5c09dd7e70bae8a523538a70f183c}{virtual void {\bfseries Update} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context) override}\label{class_arena_1_1_enemy_a1ce5c09dd7e70bae8a523538a70f183c}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_aaa0e8e8b2a938edac8a9aec8e887952c}{virtual void {\bfseries Take\+Damage} (unsigned int damage\+Value)}\label{class_arena_1_1_enemy_aaa0e8e8b2a938edac8a9aec8e887952c}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a720a0a0e7d0c048015f0d0ecb8792245}{virtual void {\bfseries Enable} ()}\label{class_arena_1_1_enemy_a720a0a0e7d0c048015f0d0ecb8792245}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a14ee95b34c6028edf878898ed88518a4}{int {\bfseries Get\+Damage} ()}\label{class_arena_1_1_enemy_a14ee95b34c6028edf878898ed88518a4}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_acf79a7430de8d6e1830ca7ba2cdba09b}{int {\bfseries Get\+Health} ()}\label{class_arena_1_1_enemy_acf79a7430de8d6e1830ca7ba2cdba09b}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a7c121dd52072e2eda65ace4209a0e7fd}{int {\bfseries Get\+Points} ()}\label{class_arena_1_1_enemy_a7c121dd52072e2eda65ace4209a0e7fd}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_ac9a6daf5675ba476c0104841be887e9a}{A\+I\+Mode {\bfseries Get\+A\+I\+Mode} ()}\label{class_arena_1_1_enemy_ac9a6daf5675ba476c0104841be887e9a}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a8cc2a2ff13b4a89cefbc23ac7822ab60}{\hyperlink{class_arena_1_1_physics_object}{Physics\+Object} $\ast$ {\bfseries Get\+Target} ()}\label{class_arena_1_1_enemy_a8cc2a2ff13b4a89cefbc23ac7822ab60}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a18dd97d9953cd8ac0159d7641c2756e4}{void {\bfseries Set\+A\+I\+Mode} (A\+I\+Mode mode)}\label{class_arena_1_1_enemy_a18dd97d9953cd8ac0159d7641c2756e4}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a1cf3f3c3677a2df47f94fd6203b3dc74}{void {\bfseries Set\+Target} (\hyperlink{class_arena_1_1_physics_object}{Physics\+Object} $\ast$target)}\label{class_arena_1_1_enemy_a1cf3f3c3677a2df47f94fd6203b3dc74}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_affb40ac0643b2bf248f30afa5117a242}{void {\bfseries Set\+Speed} (float speed\+Value)}\label{class_arena_1_1_enemy_affb40ac0643b2bf248f30afa5117a242}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a86b8608c3c4ee16b119eaa8f878268e7}{float {\bfseries Get\+Speed} ()}\label{class_arena_1_1_enemy_a86b8608c3c4ee16b119eaa8f878268e7}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_enemy_a33ff6676f2db2d1a7ca544efae35ba89}{enum Arena\+::\+Enemy\+::state {\bfseries state} = Alive}\label{class_arena_1_1_enemy_a33ff6676f2db2d1a7ca544efae35ba89}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_enemy_a6d24e2b081471cdf2f98b2be7efa4f69}{static const char $\ast$ {\bfseries reference\+Name} = \char`\"{}Enemy\char`\"{}}\label{class_arena_1_1_enemy_a6d24e2b081471cdf2f98b2be7efa4f69}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_enemy_ab0f3119116ee38319721e6a6114458a0}{int {\bfseries base\+Health} = 100}\label{class_arena_1_1_enemy_ab0f3119116ee38319721e6a6114458a0}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a8ff525eedd897bbb220f0d5787376276}{int {\bfseries health} = base\+Health}\label{class_arena_1_1_enemy_a8ff525eedd897bbb220f0d5787376276}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_abf5959a001f72ecf6b8d3a5733b1e56a}{int {\bfseries damage} = 25}\label{class_arena_1_1_enemy_abf5959a001f72ecf6b8d3a5733b1e56a}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a6f189374e39470f3a56162f9d143da55}{int {\bfseries points} = 1}\label{class_arena_1_1_enemy_a6f189374e39470f3a56162f9d143da55}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a840f94d89e2b22427d13e2174214f7f8}{float {\bfseries speed}}\label{class_arena_1_1_enemy_a840f94d89e2b22427d13e2174214f7f8}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_af962d0cb87f847a3694651dd587b9856}{float {\bfseries base\+Speed}}\label{class_arena_1_1_enemy_af962d0cb87f847a3694651dd587b9856}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a8b03a36b7f0ad192043c0a59338923dc}{\hyperlink{class_arena_1_1_physics_object}{Physics\+Object} $\ast$ {\bfseries target} = nullptr}\label{class_arena_1_1_enemy_a8b03a36b7f0ad192043c0a59338923dc}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_aefdaa12f70d6a5e04ce116910a0eaf08}{A\+I\+Mode {\bfseries mode} = Idle}\label{class_arena_1_1_enemy_aefdaa12f70d6a5e04ce116910a0eaf08}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a9d24db112aaebbd116843ffdcbabb446}{octet\+::vec4 {\bfseries original\+Colour}}\label{class_arena_1_1_enemy_a9d24db112aaebbd116843ffdcbabb446}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a87ac19a8345ced47f23d540751b436ce}{octet\+::vec4 {\bfseries damage\+Colour}}\label{class_arena_1_1_enemy_a87ac19a8345ced47f23d540751b436ce}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a9679a4f0c4bab16a68f34ff93ed4671b}{float {\bfseries dead\+Time} = 0.\+0f}\label{class_arena_1_1_enemy_a9679a4f0c4bab16a68f34ff93ed4671b}
+
+\item 
+\hypertarget{class_arena_1_1_enemy_a36c89279f8a207f9289ad2d69125aa29}{float {\bfseries death\+Delay} = 5.\+0f}\label{class_arena_1_1_enemy_a36c89279f8a207f9289ad2d69125aa29}
+
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Enemy.\+h\end{DoxyCompactItemize}

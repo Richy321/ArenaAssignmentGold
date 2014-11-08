@@ -98,6 +98,9 @@ namespace Arena
 
 			octet::ref<octet::image> darkWall = new octet::image("src/examples/arena/assets/sci_fi_dark_wall_2.jpg");
 			textures["DarkWall"] = darkWall;
+
+			octet::ref<octet::image> sciFiCube = new octet::image("src/examples/arena/assets/explode_crate.jpg");
+			textures["SciFiCube"] = sciFiCube;
 		}
 
 		octet::image* GetTexture(char* name)
@@ -148,7 +151,7 @@ namespace Arena
 		}
 		Enemy* CreateNewEnemy()
 		{
-			ExplodeEnemy* enemy = new ExplodeEnemy();
+			ExplodeEnemy* enemy = new ExplodeEnemy(*gameWorldContext);
 			enemy->addPhysicsObjectToWorld(*gameWorldContext);
 			return enemy;
 		}
