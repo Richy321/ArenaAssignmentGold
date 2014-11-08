@@ -22,6 +22,8 @@ namespace Arena
 		octet::dynarray<Projectile*> activeProjectiles;
 		octet::dynarray<Projectile*> inactiveProjectiles;
 
+		octet::dictionary<octet::ref<octet::image>> textures;
+
 		GameWorldContext* gameWorldContext;
 
 		ObjectPool(ObjectPool const&);
@@ -37,6 +39,9 @@ namespace Arena
 		void Initialise(GameWorldContext& context, int enemyCapacity, int projectileCapacity)
 		{
 			gameWorldContext = &context;
+			
+			InitialiseTextures();
+
 			activeEnemies.reserve(enemyCapacity);
 			inactiveEnemies.reserve(enemyCapacity);
 			activeProjectiles.reserve(projectileCapacity);
@@ -48,13 +53,34 @@ namespace Arena
 				proj->Disable();
 				inactiveProjectiles.push_back(proj);
 			}
-			
+
 			for (int i = 0; i < enemyCapacity; i++)
 			{
 				Enemy* enemy = CreateNewEnemy();
 				enemy->Disable();
 				inactiveEnemies.push_back(enemy);
 			}
+		}
+
+		void InitialiseTextures()
+		{
+			octet::ref<octet::image> sciFiCaution = new octet::image("src/examples/arena/assets/sci_fi_caution2.jpg");
+			textures["SciFiCaution"] = sciFiCaution;
+
+			octet::ref<octet::image> forerunner = new octet::image("src/examples/arena/assets/Forerunner_2.jpg");
+			textures["Forerunner"] = forerunner;
+
+			octet::ref<octet::image> darkWall = new octet::image("src/examples/arena/assets/sci_fi_dark_wall_2.jpg");
+			textures["DarkWall"] = darkWall;
+		}
+
+		octet::image* GetTexture(char* name)
+		{
+			if (textures.contains(name))
+			{
+				return textures[name];
+			}
+			return NULL;
 		}
 
 		void AddPhysicsObject(PhysicsObject* physObj) override
@@ -97,7 +123,7 @@ namespace Arena
 		}
 		Enemy* CreateNewEnemy()
 		{
-			SphereEnemy* enemy = new SphereEnemy();
+			ExplodeEnemy* enemy = new ExplodeEnemy();
 			enemy->addPhysicsObjectToWorld(*gameWorldContext);
 			return enemy;
 		}
@@ -167,7 +193,7 @@ namespace Arena
 		}
 		PowerUps::AdditionalBarrel* CreateNewAdditionalBarrelPowerUp()
 		{
-			PowerUps::AdditionalBarrel* barrel = new PowerUps::AdditionalBarrel();
+			PowerUps::AdditionalBarrel* barrel = new PowerUps::AdditionalBarrel(gameWorldContext->soundManager);
 			barrel->addPhysicsObjectToWorld(*gameWorldContext);
 			return barrel;
 		}
@@ -185,7 +211,7 @@ namespace Arena
 		}
 		PowerUps::Health* CreateNewHealthPowerUp()
 		{
-			PowerUps::Health* health = new PowerUps::Health();
+			PowerUps::Health* health = new PowerUps::Health(gameWorldContext->soundManager);
 			health->addPhysicsObjectToWorld(*gameWorldContext);
 			return health;
 		}

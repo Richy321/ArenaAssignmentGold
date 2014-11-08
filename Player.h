@@ -38,8 +38,6 @@ namespace Arena
 		float respawnDelay = 5.0f;
 		float diedTime = -respawnDelay;
 		
-		//octet::material *originalMat;
-		//octet::material *damagedMat;
 		octet::material *explode;
 
 		octet::vec4 originalColour;
@@ -80,8 +78,6 @@ namespace Arena
 			damageColour = octet::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 			originalColour = octet::vec4(0.0f, 0.75f, 0.0f, 1.0f);
 
-
-			
 			//damagedMat = new octet::material(octet::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 			
 			mat = new octet::material(originalColour);
@@ -302,7 +298,10 @@ namespace Arena
 			}
 		}
 		
-		void FireTurrets(GameWorldContext& context) { turret->FireProjectile(context); }
+		void FireTurrets(GameWorldContext& context) 
+		{ 
+			turret->FireProjectile(context);
+		}
 
 		void SetTurretDampening(float value) { turret->SetDampening(value);}
 

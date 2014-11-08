@@ -73,6 +73,7 @@ namespace Arena
 
 				proj->GetRigidBody()->applyImpulse(force, btVector3(0.0f, 0.0f, 0.0f));
 
+				context.soundManager.Play(context.soundManager.futuristicGunshot);
 				lastFireTime = runningTime;
 			}
 		}

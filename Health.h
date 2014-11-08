@@ -11,7 +11,7 @@ namespace PowerUps
 
 		unsigned int amount = 50;
 		octet::mesh_instance *secondMesh;
-		Health()
+		Health(SoundManager &sound) : PowerUp(sound)
 		{
 			Initialise(octet::vec3(0.0f, 0.5f, 0.0f));
 		}

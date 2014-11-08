@@ -19,7 +19,9 @@ namespace Arena
 		};
 
 		Type type = None;
-		PowerUp()
+
+		SoundManager& soundManager;
+		PowerUp(SoundManager &sound) : soundManager(sound)
 		{
 		}
 
@@ -38,6 +40,7 @@ namespace Arena
 		virtual void ApplyPowerUp(Player& player) = 0;
 		virtual void OnHit()
 		{
+			soundManager.Play(soundManager.pickupSound);
 			DestroyViaPool();
 		}
 	};

@@ -5,12 +5,14 @@
 // Modular Framework for OpenGLES2 rendering on multiple platforms.
 //
 #define OCTET_BULLET 1
+#include <functional>
 #include "../../octet.h"
+
 #include "IObjectPool.h"
 #include "GameWorldContext.h"
-
 #include "ObjectPool.h"
 #include "ObjectPoolT.h"
+#include "SoundManager.h"
 #include "PhysicsObject.h"
 #include "Player.h"
 #include "Enemy.h"
@@ -21,10 +23,9 @@
 #include "PowerUp.h"
 #include "HUD.h"
 #include "ArenaLayout.h"
-
 #include "Joystick.h"
-#include <functional>
 #include "GameMode.h"
+#include "SkyPlane.h"
 
 namespace Arena
 {
@@ -47,6 +48,8 @@ namespace Arena
 		Timer *timer;
 		WaveManager *waveManager;
 		ArenaLayout *arena;
+		SoundManager *sound;
+
 
 		Hud *HUD;
 		Joystick *joystickHandler;
@@ -56,7 +59,9 @@ namespace Arena
 
 		GameMode mode = GameMode::Solo;
 
-		octet::random* rnd;
+		octet::random *rnd;
+
+		SkyPlane *skyPlane;
 
 		//Mouse variables
 		int prevMouseX = -1;
@@ -307,9 +312,11 @@ namespace Arena
 
 			joystickHandler = new Joystick();
 
+			sound = new SoundManager();
+
 			objectPool = new ObjectPool();
 			rnd = new octet::random(timer->GetTime());
-			worldContext = new GameWorldContext(*app_scene, *world, *objectPool, *timer, *rnd);
+			worldContext = new GameWorldContext(*app_scene, *world, *objectPool, *timer, *rnd, *sound);
 			
 			objectPool->Initialise(*worldContext, 25, 30);
 
@@ -321,6 +328,8 @@ namespace Arena
 			player = new Player();
 			player->addPhysicsObjectToWorld(*worldContext);
 			player->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
+
+			skyPlane = new SkyPlane(arenaWidth + 100.0f, arenaHeight + 100.0f, octet::vec3(0.0f, 0.0f, 0.0f), *worldContext);
 
 			HUD = new Hud();
 			HUD->initialise();
@@ -440,7 +449,6 @@ namespace Arena
 					floor = ((Floor*)physObj);
 				}
 			}
-
 
 			//Player & Enemy Collision
 			if (player != nullptr && enemy != nullptr)

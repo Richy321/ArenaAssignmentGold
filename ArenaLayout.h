@@ -10,14 +10,14 @@ namespace Arena
 	private:
 		void GenerateWall(octet::vec3 size, octet::mat4t worldTransform, GameWorldContext &context)
 		{
-			Wall *wall = new Wall(worldTransform, size);
+			Wall *wall = new Wall(worldTransform, size, context);
 			wall->addPhysicsObjectToWorld(context);
 			context.objectPool.AddPhysicsObject(wall);
 		}
 
 		void GenerateColumn(float radius, float halfExtents, octet::mat4t worldTransform, GameWorldContext &context)
 		{
-			Column *col = new Column(worldTransform, radius, halfExtents);
+			Column *col = new Column(worldTransform, radius, halfExtents, context);
 			col->addPhysicsObjectToWorld(context);
 			context.objectPool.AddPhysicsObject(col);
 		}
@@ -55,7 +55,7 @@ namespace Arena
 
 		void Initialise(float width, float height, GameWorldContext &context)
 		{
-			floor = new Floor(width, height);
+			floor = new Floor(width, height, context);
 			this->height = height;
 			this->width = width;
 

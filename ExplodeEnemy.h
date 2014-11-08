@@ -15,6 +15,7 @@ namespace Arena
 
 		float fromExtrude = 0.0f;
 		float toExtrude = 50.0f;
+		bool playingExplosionSound = false;
 
 		ExplodeEnemy()
 		{
@@ -66,6 +67,7 @@ namespace Arena
 			maxSpeed = 30.0f;
 			health = baseHealth;
 			state = Alive;
+			playingExplosionSound = false;
 		}
 
 		virtual void Update(GameWorldContext& context) override
@@ -75,6 +77,11 @@ namespace Arena
 				float progressValue = 0.0f;
 				if (state == Dead)
 				{
+					if (!playingExplosionSound)
+					{
+						context.soundManager.Play(context.soundManager.enemyExplode);
+						playingExplosionSound = true;
+					}
 					float time = context.timer.GetRunningTime();
 					progressValue = (time - deadTime) / deathDelay;
 

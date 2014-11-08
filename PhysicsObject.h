@@ -62,8 +62,7 @@ namespace Arena
 
 			if (mat == nullptr)
 			{
-				octet::random rnd = octet::random();
-				mat = new octet::material(octet::vec4(rnd.get(0.0f, 1.0f), rnd.get(0.0f, 1.0f), rnd.get(0.0f, 1.0f), 0.0f));
+				mat = new octet::material(octet::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 			}
 
 			if (shape == nullptr)

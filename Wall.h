@@ -15,9 +15,9 @@ namespace Arena
 			return referenceName;
 		}
 
-		Wall(octet::mat4t modelToWorld, octet::vec3 size)
+		Wall(octet::mat4t modelToWorld, octet::vec3 size, GameWorldContext& context)
 		{
-			Initialise(modelToWorld, size);
+			Initialise(modelToWorld, size, context);
 		}
 
 		virtual ~Wall()
@@ -25,7 +25,7 @@ namespace Arena
 		
 		}
 
-		void Initialise(octet::mat4t modelToWorld, octet::vec3 size)
+		void Initialise(octet::mat4t modelToWorld, octet::vec3 size, GameWorldContext& context)
 		{
 			collisionType = CollisionFlags::CollisionTypes::COL_WALL;
 
@@ -34,8 +34,7 @@ namespace Arena
 				CollisionFlags::CollisionTypes::COL_POWERUP;
 
 			mass = 0;
-
-			mat = new octet::material(octet::vec4(0.0f, 0.25f, 1.0f, 1.0f));
+			mat = new octet::material(context.objectPool.GetTexture("DarkWall"));
 			octet::mesh *shape = new octet::mesh_box(size);
 			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
 

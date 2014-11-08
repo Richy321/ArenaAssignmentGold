@@ -239,6 +239,8 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PowerUp.h" />
     <ClInclude Include="Projectile.h" />
+    <ClInclude Include="SkyPlane.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SphereEnemy.h" />
     <ClInclude Include="VaryingColourEnemy.h" />
     <ClInclude Include="Timer.h" />

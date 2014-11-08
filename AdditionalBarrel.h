@@ -8,7 +8,7 @@ namespace PowerUps
 	class AdditionalBarrel : public PowerUp
 	{
 	public:
-		AdditionalBarrel()
+		AdditionalBarrel(SoundManager& sound) : PowerUp(sound)
 		{
 			Initialise(octet::vec3(0.0f, 0.5f, 0.0f));
 		}

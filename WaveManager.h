@@ -124,9 +124,6 @@ namespace Arena
 
 		void Update(GameWorldContext& context, Player* target, Player* target2, GameMode mode)
 		{
-			if (context.timer.GetRunningTime() > lastPowerUpSpawnTime + powerUpSpawnFrequency)
-				SpawnRandomPowerUp(context);
-
 			if (state == Active)
 			{
 				remainingWaveDelayTime = 0.0f;

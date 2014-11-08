@@ -530,6 +530,8 @@
     <ClInclude Include="SphereEnemy.h">
       <Filter>Source Files\Enemies</Filter>
     </ClInclude>
+    <ClInclude Include="SkyPlane.h" />
+    <ClInclude Include="SoundManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\resources\mesh_builder.inl">

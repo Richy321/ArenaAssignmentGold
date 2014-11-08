@@ -11,9 +11,9 @@ namespace Arena
 	public:
 		const float thickness = 0.5f;
 
-		Floor(float width, float height)
+		Floor(float width, float height, GameWorldContext& context)
 		{
-			Initialise(octet::vec3(0.0f, 0.0f, 0.0f), octet::vec3(width, thickness, height));
+			Initialise(octet::vec3(0.0f, 0.0f, 0.0f), octet::vec3(width, thickness, height), context);
 		}
 
 		static const char* referenceName;
@@ -23,15 +23,14 @@ namespace Arena
 			return referenceName;
 		}
 
-		virtual void Initialise(octet::vec3 position, octet::vec3 size)
+		virtual void Initialise(octet::vec3 position, octet::vec3 size, GameWorldContext& context)
 		{
 			mass = 0.0f;
 			collisionType = CollisionFlags::CollisionTypes::COL_WALL;
 			collisionMask = CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_PLAYER | 
 				CollisionFlags::CollisionTypes::COL_PROJECTILES | CollisionFlags::CollisionTypes::COL_POWERUP;
 			
-			octet::image *bitmap = new octet::image("src/examples/arena/assets/asphaltSeemless_alt.jpg");
-			mat = new octet::material(bitmap);
+			mat = new octet::material(context.objectPool.GetTexture("Forerunner"));
 			octet::mesh *shape = new octet::mesh_box(size);
 			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
 
