@@ -33,11 +33,12 @@ namespace Arena
 			collisionType = CollisionFlags::CollisionTypes::COL_PLAYER;
 			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_POWERUP | CollisionFlags::CollisionTypes::COL_PROJECTILES;
 
-
 			mass = 0.01f;
 			octet::mesh *baseShape = new octet::mesh_sphere(octet::vec3(0.0f, 0.0f, 0.0f), 1.5f);
 			mat = new octet::material(octet::vec4(1.0f, 1.0f, 0.33f, 1.0f));
 			this->owner = owner;
+
+			maxAngularVelocity = 15.0f;
 
 			PhysicsObject::Initialise(position, baseShape, baseShape->get_bullet_shape());
 		}
@@ -63,6 +64,7 @@ namespace Arena
 		{
 			SetDampening(0.0f);
 			rigidBody->applyTorque(btVector3(0.0f, amount, 0.0f));
+
 		}
 
 		void SetDampening(float dampening)
@@ -87,6 +89,7 @@ namespace Arena
 				barrels.push_back(barrel);
 			}
 		}
+
 	};
 	const char * Turret::referenceName = "Turret";
 }

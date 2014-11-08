@@ -30,13 +30,12 @@ namespace Arena
 		float deadTime = 0.0f;
 		float deathDelay = 5.0f;
 
+	public:
 		enum state
 		{
 			Alive,
 			Dead
 		} state = Alive;
-
-	public:
 		static const char* referenceName;
 
 		virtual const char* GetReferenceType()

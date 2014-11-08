@@ -24,7 +24,7 @@ namespace Arena
 		static const octet::vec3 defaultSize;
 		
 		float maxSpeed = -1.0f;
-
+		float maxAngularVelocity = -1.0f;
 		IObjectPool* objectPool;
 		Timer* timer;
 
@@ -112,6 +112,14 @@ namespace Arena
 				float speed = vel.length();
 				if (speed > maxSpeed)
 					rigidBody->setLinearVelocity(vel * (maxSpeed / speed));
+			}
+
+			if (maxAngularVelocity >= 0)
+			{
+				btVector3 vel = rigidBody->getAngularVelocity();
+				float speed = vel.length();
+				if (speed > maxAngularVelocity)
+					rigidBody->setAngularVelocity(vel * (maxAngularVelocity / speed));
 			}
 
 			UpdateNodeMatrixFromPhysics();

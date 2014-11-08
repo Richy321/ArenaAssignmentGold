@@ -102,8 +102,8 @@ namespace Arena
 			state = Dead;
 			deadTime = context.timer.GetRunningTime();
 			mode = AIMode::Idle;
-			this->rigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
-			this->rigidBody->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
+			rigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
+			rigidBody->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
 		}
 	};
 }

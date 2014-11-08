@@ -27,6 +27,8 @@
 #include "GameMode.h"
 #include "SkyPlane.h"
 
+#include "XInputJoypad.h"
+
 namespace Arena
 {
 	/// Scene using bullet for physics effects.
@@ -53,6 +55,10 @@ namespace Arena
 
 		Hud *HUD;
 		Joystick *joystickHandler;
+
+		XInputJoypad *joypad;
+		XInputJoypad *joypad2;
+
 		GameWorldContext *worldContext;
 
 		btOverlapFilterCallback *filterCallback;
@@ -195,7 +201,52 @@ namespace Arena
 		void handleInput()
 		{
 			HandleKeyboardInput();
-			HandleJoystickInput();
+			
+			HandleXInputJoypads();
+			//HandleJoystickInput();
+		}
+
+		void HandleXInputJoypads()
+		{
+			if (joypad->Connected())
+			{
+				HandleXInputJoypad(*player, *joypad);
+			}
+
+			if (joypad2->Connected() && player2 != nullptr && (mode == Coop || mode == Versus))
+			{
+				HandleXInputJoypad(*player2, *joypad2);
+			}
+		}
+
+		void HandleXInputJoypad(Player& player, XInputJoypad& curJoypad)
+		{
+			if (!curJoypad.LStickInDeadzone())
+				if(curJoypad.LeftStick_X() < 0.0f)
+					player.Move(octet::vec3(-1.0f, 0.0f, 0.0f), Player::Direction::East);
+
+			if (!curJoypad.LStickInDeadzone())
+				if (curJoypad.LeftStick_X() > 0.0f)
+					player.Move(octet::vec3(1.0f, 0.0f, 0.0f), Player::Direction::West);
+
+			if (!curJoypad.LStickInDeadzone())
+				if (curJoypad.LeftStick_Y() < 0.0f)
+					player.Move(octet::vec3(0.0f, 0.0f, 1.0f), Player::Direction::South);
+
+			if (!curJoypad.LStickInDeadzone())
+				if (curJoypad.LeftStick_Y() > 0.0f)
+					player.Move(octet::vec3(0.0f, 0.0f, -1.0f), Player::Direction::North);
+
+			if (!curJoypad.RStickInDeadzone())
+				if (curJoypad.RightStick_X() > 0.0f)
+					player.RotateTurret(-1.0f);
+
+			if (!curJoypad.RStickInDeadzone())
+				if (curJoypad.RightStick_X() < 0.0f)
+					player.RotateTurret(1.0f);
+
+			if (curJoypad.LeftTrigger() > 0.0f || curJoypad.RightTrigger() > 0.0f)
+				player.FireTurrets(*worldContext);
 		}
 
 		void HandleJoystickInput()
@@ -236,7 +287,8 @@ namespace Arena
 		}
 		void cleanup()
 		{
-			joystickHandler->ShutDown();
+			waveManager->state = WaveManager::Inactive;
+			//joystickHandler->ShutDown();
 			delete world;
 			delete solver;
 			delete broadphase;
@@ -277,7 +329,7 @@ namespace Arena
 			world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, &config);
 			filterCallback = new ArenaApp::customFilterCallback();
 
-			//world->getPairCache()->setOverlapFilterCallback(filterCallback); //register custom broadphase callback filter
+			world->getPairCache()->setOverlapFilterCallback(filterCallback); //register custom broadphase callback filter
 		}
 
 		~ArenaApp()
@@ -311,6 +363,9 @@ namespace Arena
 			mode = None;
 
 			joystickHandler = new Joystick();
+
+			joypad = new XInputJoypad(0);
+			joypad2 = new XInputJoypad(1);
 
 			sound = new SoundManager();
 
@@ -492,11 +547,28 @@ namespace Arena
 				bool collides = (proxy0->m_collisionFilterGroup & proxy1->m_collisionFilterMask) != 0;
 				collides = collides && (proxy1->m_collisionFilterGroup & proxy0->m_collisionFilterMask);
 				
-				if ((proxy0->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_PROJECTILES && proxy1->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_PLAYER) ||
-					(proxy1->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_PROJECTILES && proxy0->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_PLAYER))
+				if (proxy0->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_ENEMY)
 				{
-					collides = false;
+					btRigidBody* rb0 = btRigidBody::upcast(static_cast<btCollisionObject*>(proxy0->m_clientObject));
+					if (rb0 != NULL)
+					{
+						Enemy* nme = (Enemy*)rb0->getUserPointer();
+						if (nme->state == Enemy::state::Dead)
+							collides = false;
+					}
 				}
+
+				if (proxy1->m_collisionFilterGroup == CollisionFlags::CollisionTypes::COL_ENEMY)
+				{
+					btRigidBody* rb0 = btRigidBody::upcast(static_cast<btCollisionObject*>(proxy1->m_clientObject));
+					if (rb0 != NULL)
+					{
+						Enemy* nme = (Enemy*)rb0->getUserPointer();
+						if (nme->state == Enemy::state::Dead)
+							collides = false;
+					}
+				}
+
 				return collides;
 			}
 		};
