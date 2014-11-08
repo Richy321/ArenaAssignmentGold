@@ -97,7 +97,7 @@ namespace Arena
 		}
 		~Player() {}
 
-		float collisionDamage = 20.0f;
+		unsigned int collisionDamage = 20;
 
 		void InitialiseExplodeShader()
 		{

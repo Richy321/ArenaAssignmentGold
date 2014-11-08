@@ -93,31 +93,38 @@ namespace Arena
 				GenerateWall(size, worldTransform, context);
 			}
 
-				worldTransform.loadIdentity();
-				worldTransform.translate(-10.0f, 0.0f, 10.0f);
-				GenerateColumn(5.0f, wallHeight, worldTransform, context);
+			worldTransform.loadIdentity();
+			worldTransform.translate(-10.0f, 0.0f, 10.0f);
+			GenerateColumn(5.0f, wallHeight, worldTransform, context);
 
-				worldTransform.loadIdentity();
-				worldTransform.translate(10.0f, 0.0f, 10.0f);
-				GenerateColumn(5.0f, wallHeight, worldTransform, context);
+			worldTransform.loadIdentity();
+			worldTransform.translate(10.0f, 0.0f, 10.0f);
+			GenerateColumn(5.0f, wallHeight, worldTransform, context);
 
-				worldTransform.loadIdentity();
-				worldTransform.translate(10.0f, 0.0f, -10.0f);
-				GenerateColumn(5.0f, wallHeight, worldTransform, context);
+			worldTransform.loadIdentity();
+			worldTransform.translate(10.0f, 0.0f, -10.0f);
+			GenerateColumn(5.0f, wallHeight, worldTransform, context);
 
-				worldTransform.loadIdentity();
-				worldTransform.translate(-10.0f, 0.0f, -10.0f);
-				GenerateColumn(5.0f, wallHeight, worldTransform, context);
+			worldTransform.loadIdentity();
+			worldTransform.translate(-10.0f, 0.0f, -10.0f);
+			GenerateColumn(5.0f, wallHeight, worldTransform, context);
+				
+			float spawnOffset = 10.0f;
 
-				spawnPoints.push_back(octet::vec3(0.0f, 0.0f, 0.0f));
+			spawnPoints.push_back(octet::vec3(0.0f, 0.0f, 0.0f)); //middle
+			spawnPoints.push_back(octet::vec3(-width + wallThickness + spawnOffset, 0.0f, height - wallThickness - spawnOffset)); //top left
+			spawnPoints.push_back(octet::vec3(width - wallThickness - spawnOffset, 0.0f, height - wallThickness - spawnOffset)); // top right
+			spawnPoints.push_back(octet::vec3(-width + wallThickness + spawnOffset, 0.0f, -height + wallThickness + spawnOffset)); //bottom left
+			spawnPoints.push_back(octet::vec3(width - wallThickness - spawnOffset, 0.0f, -height + wallThickness + spawnOffset)); // bottom right
 		}
 		
 		const float GetWidth(){ return width; }
 		const float GetHeight(){ return height; }
 
-		const octet::vec3 GetRandomSpawnPoint()
+		const octet::vec3 GetRandomSpawnPoint(unsigned int &spawnIndex)
 		{
-			return spawnPoints[rnd.get(0, spawnPoints.size() - 1)];
+			spawnIndex = rnd.get(0, spawnPoints.size() - 1);
+			return spawnPoints[spawnIndex];
 		}
 
 		octet::vec3 GetRandomSpawnLocation()

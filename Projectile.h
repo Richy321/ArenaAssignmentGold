@@ -9,7 +9,7 @@ namespace Arena
 	private:
 		unsigned int damage = 50;
 		float createdTime = -1.0f;
-		const float lifespan = 1.0f; //seconds
+		const float lifespan = 1.65f; //seconds
 		
 	public:
 		static const char* referenceName;

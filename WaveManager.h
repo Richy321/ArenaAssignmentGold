@@ -16,6 +16,7 @@ namespace Arena
 		const float waveSpawnDelay = 5.0f;
 		float lastWaveFinishedTime = -waveSpawnDelay;
 	public:
+		enum { maxPowerUpsPerType = 5 };
 
 		ArenaLayout &arena;
 		int currentWave = 0;
@@ -68,10 +69,20 @@ namespace Arena
 					curTarget = target;
 				else if (mode == Coop)
 				{
-					int rndInt = rnd.get(0, 2);
-					curTarget = rndInt == 0 ? target : target2;
+					bool target1Alive = target->GetRemainingLives() >= 0;
+					bool target2Alive = target2->GetRemainingLives() >= 0;
+					if (target1Alive && target2Alive)
+					{
+						int rndInt = rnd.get(0, 2);
+						curTarget = rndInt == 0 ? target : target2;
+					}
+					else if (target1Alive)
+						curTarget = target;
+					else if (target2Alive)
+						curTarget = target2;
+					else
+						curTarget = nullptr;
 				}
-
 				enemy->SetTarget(curTarget);
 			}
 			SpawnRandomPowerUp(context);

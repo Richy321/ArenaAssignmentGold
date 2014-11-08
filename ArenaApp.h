@@ -52,7 +52,6 @@ namespace Arena
 		ArenaLayout *arena;
 		SoundManager *sound;
 
-
 		Hud *HUD;
 		Joystick *joystickHandler;
 
@@ -68,6 +67,8 @@ namespace Arena
 		octet::random *rnd;
 
 		SkyPlane *skyPlane;
+
+		unsigned int lastSpawnPointIndex = 0;
 
 		//Mouse variables
 		int prevMouseX = -1;
@@ -314,7 +315,7 @@ namespace Arena
 			if (mode == GameMode::Solo)
 				cameraFollow((*player));
 			
-			HUD->update(*player, *objectPool, *waveManager, mode);
+			HUD->update(player, player2, *objectPool, *waveManager, mode);
 
 			waveManager->Update(*worldContext, player, player2, mode);
 		}
@@ -337,13 +338,19 @@ namespace Arena
 			cleanup();
 		}
 
+
 		void PlayerRespawn(Player& player)
 		{
-			octet::vec3 pos = arena->GetRandomSpawnPoint();
+			unsigned int spawnIndex = lastSpawnPointIndex;
+			octet::vec3 pos;
+
+			while (spawnIndex == lastSpawnPointIndex)
+				pos = arena->GetRandomSpawnPoint(spawnIndex);
 
 			octet::mat4t transform;
 			transform.translate(pos.x(), pos.y() + 5.0f, pos.z());
 			player.SetWorldTransform(transform);
+			lastSpawnPointIndex = spawnIndex;
 		}
 
 		/// this is called once OpenGL is initialized
@@ -373,7 +380,7 @@ namespace Arena
 			rnd = new octet::random(timer->GetTime());
 			worldContext = new GameWorldContext(*app_scene, *world, *objectPool, *timer, *rnd, *sound);
 			
-			objectPool->Initialise(*worldContext, 25, 30);
+			objectPool->Initialise(*worldContext, 25, 30, WaveManager::maxPowerUpsPerType, WaveManager::maxPowerUpsPerType);
 
 			joystickHandler->InitInputDevice(this, this->window_handle);
 

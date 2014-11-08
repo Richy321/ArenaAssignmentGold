@@ -14,6 +14,7 @@ namespace Arena
 		HUDText *optionsText;
 		HUDText *waveCountdownText;
 		HUDText *player1Stats;
+		HUDText *player2Stats;
 
 		octet::bitmap_font *font;
 		octet::ref<octet::text_overlay> overlay;
@@ -31,6 +32,7 @@ namespace Arena
 			optionsText = new HUDText(new octet::aabb(octet::vec3(35.0f, 25.0f, 0.0f), octet::vec3(70.0f, 50.0f, 0.0f)), font);
 
 			player1Stats = new HUDText(new octet::aabb(octet::vec3(250.0f, 300.0f, 0.0f), octet::vec3(90.0f, 50.0f, 0.0f)), font);
+			player2Stats = new HUDText(new octet::aabb(octet::vec3(-250.0f, 300.0f, 0.0f), octet::vec3(90.0f, 50.0f, 0.0f)), font);
 
 			initialise();
 		}
@@ -44,6 +46,7 @@ namespace Arena
 			overlay->add_mesh_text(waveCountdownText->mesh);
 			overlay->add_mesh_text(optionsText->mesh);
 			overlay->add_mesh_text(player1Stats->mesh);
+			overlay->add_mesh_text(player2Stats->mesh);
 		}
 
 		void draw(int vx, int vy, GameMode mode)
@@ -53,6 +56,7 @@ namespace Arena
 			poolingText->draw();
 			waveCountdownText->draw();
 			player1Stats->draw();
+			player2Stats->draw();
 
 			if (mode == GameMode::None)
 				optionsText->draw();
@@ -65,12 +69,12 @@ namespace Arena
 			overlay->render(vx, vy);
 		}
 
-		void update(Player& player, ObjectPool& objPool, WaveManager& waveManager, GameMode mode)
+		void update(Player* player, Player* player2, ObjectPool& objPool, WaveManager& waveManager, GameMode mode)
 		{
 			static char tmp[64];
 		
-			debugText->text = player.GetVelocity().toString(tmp, sizeof(tmp));
-			debugText2->text = player.GetDampening().toString(tmp, sizeof(tmp));
+			debugText->text = player->GetVelocity().toString(tmp, sizeof(tmp));
+			debugText2->text = player->GetDampening().toString(tmp, sizeof(tmp));
 			snprintf(tmp, sizeof(tmp), "EnemyPool - %u/%u\nProjPool - %u/%u", objPool.GetActiveEnemyCount(), objPool.GetInactiveEnemyCount(), objPool.GetActiveProjectileCount(), objPool.GetInactiveProjectileCount());
 			poolingText->text = tmp;
 
@@ -91,8 +95,16 @@ namespace Arena
 			else
 				optionsText->text = "";
 
-			snprintf(tmp, sizeof(tmp), "Player1 Lives: %d\n       Health: %d", player.GetRemainingLives(), player.GetHealth());
+			snprintf(tmp, sizeof(tmp), "Player1 Lives: %d\n       Health: %d", player->GetRemainingLives(), player->GetHealth());
 			player1Stats->text = tmp;
+
+			if (player2 != nullptr)
+			{
+				snprintf(tmp, sizeof(tmp), "Player2 Lives: %d\n       Health: %d", player2->GetRemainingLives(), player2->GetHealth());
+				player2Stats->text = tmp;
+			}
+			else
+				player2Stats->text = "";
 		}
 	};
 }

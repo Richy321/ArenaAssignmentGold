@@ -22,6 +22,13 @@ namespace Arena
 		octet::dynarray<Projectile*> activeProjectiles;
 		octet::dynarray<Projectile*> inactiveProjectiles;
 
+		octet::dynarray<PowerUps::Health*> activeHealth;
+		octet::dynarray<PowerUps::Health*> inactiveHealth;
+
+		octet::dynarray<PowerUps::AdditionalBarrel*> activeAdditionalBarrel;
+		octet::dynarray<PowerUps::AdditionalBarrel*> inactiveAdditionalBarrel;
+
+
 		octet::dictionary<octet::ref<octet::image>> textures;
 
 		GameWorldContext* gameWorldContext;
@@ -36,7 +43,7 @@ namespace Arena
 
 		virtual ~ObjectPool() override { }
 
-		void Initialise(GameWorldContext& context, int enemyCapacity, int projectileCapacity)
+		void Initialise(GameWorldContext& context, int enemyCapacity, int projectileCapacity, int healthCapacity, int additionalBarrelCapacity)
 		{
 			gameWorldContext = &context;
 			
@@ -46,6 +53,11 @@ namespace Arena
 			inactiveEnemies.reserve(enemyCapacity);
 			activeProjectiles.reserve(projectileCapacity);
 			inactiveProjectiles.reserve(projectileCapacity);
+			activeHealth.reserve(healthCapacity);
+			inactiveHealth.reserve(healthCapacity);
+			activeAdditionalBarrel.reserve(additionalBarrelCapacity);
+			inactiveAdditionalBarrel.reserve(additionalBarrelCapacity);
+
 
 			for (int i = 0; i < projectileCapacity; i++)
 			{
@@ -59,6 +71,20 @@ namespace Arena
 				Enemy* enemy = CreateNewEnemy();
 				enemy->Disable();
 				inactiveEnemies.push_back(enemy);
+			}
+
+			for (int i = 0; i < healthCapacity; i++)
+			{
+				PowerUps::Health* health = CreateNewHealthPowerUp();
+				health->Disable();
+				inactiveHealth.push_back(health);
+			}
+
+			for (int i = 0; i < additionalBarrelCapacity; i++)
+			{
+				PowerUps::AdditionalBarrel* addBarrel = CreateNewAdditionalBarrelPowerUp();
+				addBarrel->Disable();
+				inactiveAdditionalBarrel.push_back(addBarrel);
 			}
 		}
 
@@ -187,9 +213,22 @@ namespace Arena
 
 		PowerUps::AdditionalBarrel* GetAdditionalBarrelObject()
 		{
-			PowerUps::AdditionalBarrel* barrel = CreateNewAdditionalBarrelPowerUp();
-			barrel->Enable();
-			return barrel;
+			PowerUps::AdditionalBarrel* addBarrel = nullptr;
+			if (inactiveAdditionalBarrel.size() > 0)
+			{
+				addBarrel = inactiveAdditionalBarrel[inactiveAdditionalBarrel.size() - 1];
+				inactiveAdditionalBarrel.pop_back();
+			}
+			else
+			{
+				//allocate new - try to avoid this
+				addBarrel = new PowerUps::AdditionalBarrel(gameWorldContext->soundManager);
+				addBarrel->addPhysicsObjectToWorld(*gameWorldContext);
+			}
+
+			activeAdditionalBarrel.push_back(addBarrel);
+			addBarrel->Enable();
+			return addBarrel;
 		}
 		PowerUps::AdditionalBarrel* CreateNewAdditionalBarrelPowerUp()
 		{
@@ -199,13 +238,36 @@ namespace Arena
 		}
 		void DestroyActiveAdditionalBarrelObject(PowerUps::AdditionalBarrel* additionalBarrel)
 		{
-			additionalBarrel->Disable();
+			for (unsigned int i = 0; i < activeAdditionalBarrel.size(); i++)
+			{
+				if (activeAdditionalBarrel[i] == additionalBarrel)
+				{
+					additionalBarrel->Disable();
+					inactiveAdditionalBarrel.push_back(activeAdditionalBarrel[i]);
+					activeAdditionalBarrel.erase(i);
+					return;
+				}
+			}
 		}
-		
+		unsigned int GetActiveAdditionalBarrelCount() { return activeAdditionalBarrel.size(); }
+		unsigned int GetInactiveAdditionalBarrelCount(){ return inactiveAdditionalBarrel.size(); }
+
 		PowerUps::Health* GetHealthObject()
 		{
-			
-			PowerUps::Health* health = CreateNewHealthPowerUp();
+			PowerUps::Health* health = nullptr;
+			if (inactiveHealth.size() > 0)
+			{
+				health = inactiveHealth[inactiveHealth.size() - 1];
+				inactiveHealth.pop_back();
+			}
+			else
+			{
+				//allocate new - try to avoid this
+				health = new PowerUps::Health(gameWorldContext->soundManager);
+				health->addPhysicsObjectToWorld(*gameWorldContext);
+			}
+
+			activeHealth.push_back(health);
 			health->Enable();
 			return health;
 		}
@@ -217,8 +279,19 @@ namespace Arena
 		}
 		void DestroyActiveHealthObject(PowerUps::Health* health)
 		{
-			health->Disable();
+			for (unsigned int i = 0; i < activeHealth.size(); i++)
+			{
+				if (activeHealth[i] == health)
+				{
+					health->Disable();
+					inactiveHealth.push_back(activeHealth[i]);
+					activeHealth.erase(i);
+					return;
+				}
+			}
 		}
+		unsigned int GetActiveHealthCount() { return activeHealth.size(); }
+		unsigned int GetInactiveHealthCount(){ return inactiveHealth.size(); }
 
 		void KillAllActiveEnemys()
 		{
