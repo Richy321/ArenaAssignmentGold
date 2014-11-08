@@ -13,7 +13,7 @@ namespace PowerUps
 		octet::mesh_instance *secondMesh;
 		Health(SoundManager &sound) : PowerUp(sound)
 		{
-			Initialise(octet::vec3(0.0f, 0.5f, 0.0f));
+			Initialise(octet::vec3(0.0f, 0.0f, 0.0f));
 		}
 
 		virtual ~Health()

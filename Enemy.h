@@ -19,7 +19,7 @@ namespace Arena
 	protected:
 		int baseHealth = 100;
 		int health = baseHealth;
-		int damage = 5;
+		int damage = 25;
 		int points = 1;
 		float speed;
 		float baseSpeed;
@@ -149,6 +149,8 @@ namespace Arena
 
 		void SetAIMode(AIMode mode) { this->mode = mode; }
 		void SetTarget(PhysicsObject *target){ this->target = target; }
+		void SetSpeed(float speedValue) { speed = speedValue; }
+		float GetSpeed() { return speed; }
 	};
 	const char *Enemy::referenceName = "Enemy";
 }

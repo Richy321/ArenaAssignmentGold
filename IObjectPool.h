@@ -21,6 +21,7 @@ namespace Arena
 		virtual Enemy* GetEnemyObject() = 0;
 		virtual void DestroyActiveEnemyObject(Enemy *enemy) = 0;
 		virtual unsigned int GetActiveEnemyCount() = 0;
+		virtual octet::dynarray<Enemy*>& GetActiveEnemies() = 0;
 
 		virtual Projectile* GetProjectileObject() = 0;
 		virtual void DestroyActiveProjectileObject(Projectile *proj) = 0;

@@ -22,7 +22,7 @@ namespace Arena
 		{
 			Alive,
 			Dead
-		};
+		} curState = Dead;
 	private:
 		int health;
 		int baseHealth;
@@ -38,8 +38,6 @@ namespace Arena
 		float respawnDelay = 5.0f;
 		float diedTime = -respawnDelay;
 		
-		octet::material *explode;
-
 		octet::vec4 originalColour;
 		octet::vec4 damageColour;
 
@@ -51,20 +49,8 @@ namespace Arena
 		btGeneric6DofConstraint* constrXY;
 		btHingeConstraint *constrTurretBase;
 
-		State curState = Dead;
-
 		int baseLives;
 		int remainingLives;
-
-		octet::ref<octet::param_uniform> progress;
-		octet::ref<octet::param_uniform> fromExtrudeUniform;
-		octet::ref<octet::param_uniform> toExtrudeUniform;
-
-		float maxExtrude = 50.0f;
-		float minExtrude = 0.0f;
-
-		float fromExtrude = 0.0f;
-		float toExtrude = 0.0f;
 
 	public:
 		Player()
@@ -77,9 +63,7 @@ namespace Arena
 
 			damageColour = octet::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 			originalColour = octet::vec4(0.0f, 0.75f, 0.0f, 1.0f);
-
-			//damagedMat = new octet::material(octet::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-			
+		
 			mat = new octet::material(originalColour);
 			octet::mesh *shape = new octet::mesh_box(size);
 
@@ -99,19 +83,6 @@ namespace Arena
 
 		unsigned int collisionDamage = 20;
 
-		void InitialiseExplodeShader()
-		{
-			octet::param_shader *shader = new octet::param_shader("src/examples/arena/shaders/Explode.vs", "shaders/default_solid.fs");
-			octet::atom_t atom_progress = octet::app_utils::get_atom("progress");
-			octet::atom_t atom_toExtrude = octet::app_utils::get_atom("toExtrudeUniform");
-			octet::atom_t atom_fromExtrude = octet::app_utils::get_atom("fromExtrudeUniform");
-
-			explode = new octet::material(originalColour, shader);
-			float val = 0.0f;
-			progress = explode->add_uniform(&val, atom_progress, GL_FLOAT, 1, octet::param::stage_vertex);
-			toExtrudeUniform = explode->add_uniform(&maxExtrude, atom_toExtrude, GL_FLOAT, 1, octet::param::stage_vertex);
-			fromExtrudeUniform = explode->add_uniform(&minExtrude, atom_fromExtrude, GL_FLOAT, 1, octet::param::stage_vertex);
-		}
 		Turret *turret;
 
 		std::function<void(Player&)> respawnCallback = nullptr;
@@ -123,6 +94,7 @@ namespace Arena
 			return Player::referenceName;
 		}
 
+		
 		virtual void Initialise()
 		{
 			baseSpeed = 1000.0f;
@@ -135,8 +107,6 @@ namespace Arena
 			remainingLives = baseLives;
 
 			maxSpeed = 90;
-
-			InitialiseExplodeShader();
 
 			activeAcceleration[Direction::North] = false;
 			activeAcceleration[Direction::East] = false;
@@ -196,19 +166,14 @@ namespace Arena
 
 			if (curState == Alive)
 			{
-				if (health < 0)
-				{
+				if (health <= 0)
 					Die(context);
-				}
 			}
 			else if (curState == Dead)
 			{
 				float time = context.timer.GetRunningTime();
+		
 
-				//update explode shader params
-				float progressValue = time / (diedTime + respawnDelay);
-				mat->set_uniform(progress, &progressValue, sizeof(progressValue));
-			
 				if (time > diedTime + respawnDelay)
 					Respawn(context);
 			}
@@ -329,9 +294,7 @@ namespace Arena
 		void Die(GameWorldContext& context)
 		{
 			diedTime = context.timer.GetRunningTime();
-			//mesh->set_material(explode);
 			float initValue = 0.0f;
-			//explode->set_uniform(progress, &initValue, sizeof(initValue));
 			curState = Dead;
 			context.physicsWorld.removeConstraint(constrXY);
 			context.physicsWorld.removeConstraint(constrTurretBase);
@@ -341,6 +304,8 @@ namespace Arena
 			turret->GetRigidBody()->applyCentralImpulse(btVector3(0.0f, 0.5f, 0.0f));
 			turret->GetRigidBody()->applyTorqueImpulse(btVector3(1.0f, 11.0f, 1.0f));
 
+			rigidBody->translate(btVector3(1000.0f, 1000.0f, 1000.0f));
+
 			remainingLives--;
 		}
 
@@ -349,9 +314,7 @@ namespace Arena
 			if (respawnCallback != nullptr)
 				respawnCallback(*this);
 
-			curState = Alive;
-			//mesh->set_material(mat);
-			
+			curState = Alive;	
 
 			rigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
 			rigidBody->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));

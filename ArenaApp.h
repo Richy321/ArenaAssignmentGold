@@ -23,10 +23,8 @@
 #include "PowerUp.h"
 #include "HUD.h"
 #include "ArenaLayout.h"
-#include "Joystick.h"
 #include "GameMode.h"
 #include "SkyPlane.h"
-
 #include "XInputJoypad.h"
 
 namespace Arena
@@ -53,8 +51,6 @@ namespace Arena
 		SoundManager *sound;
 
 		Hud *HUD;
-		Joystick *joystickHandler;
-
 		XInputJoypad *joypad;
 		XInputJoypad *joypad2;
 
@@ -202,9 +198,7 @@ namespace Arena
 		void handleInput()
 		{
 			HandleKeyboardInput();
-			
 			HandleXInputJoypads();
-			//HandleJoystickInput();
 		}
 
 		void HandleXInputJoypads()
@@ -250,46 +244,9 @@ namespace Arena
 				player.FireTurrets(*worldContext);
 		}
 
-		void HandleJoystickInput()
-		{
-			for (int i = 0; i < joystickHandler->GetNumberOfDevicesFound(); i++)
-			{
-				if (joystickHandler->AcquireInputData(i))
-				{
-					DIJOYSTATE* state = joystickHandler->GetCurrentState();
-
-					if (i == 0 && player != nullptr)
-						HandlePlayerJoystickInput(player, state);
-					if (i == 1 && player2 != nullptr && (mode == Coop || mode == Versus))
-						HandlePlayerJoystickInput(player2, state);
-				}
-			}
-		}
-
-		void HandlePlayerJoystickInput(Player* player, DIJOYSTATE* state)
-		{
-			if (state->lX < -joypadThreshold)
-				player->Move(octet::vec3(-1.0f, 0.0f, 0.0f), Player::Direction::East);
-			if (state->lX > joypadThreshold)
-				player->Move(octet::vec3(1.0f, 0.0f, 0.0f), Player::Direction::West);
-			if (state->lY > joypadThreshold)
-				player->Move(octet::vec3(0.0f, 0.0f, 1.0f), Player::Direction::South);
-			if (state->lY < -joypadThreshold)
-				player->Move(octet::vec3(0.0f, 0.0f, -1.0f), Player::Direction::North);
-
-			if (state->lRx > joypadThreshold)
-				player->RotateTurret(-1.0f);
-
-			if (state->lRx < -joypadThreshold)
-				player->RotateTurret(1.0f);
-
-			if (state->rgbButtons[4] || state->rgbButtons[5])
-				player->FireTurrets(*worldContext);
-		}
 		void cleanup()
 		{
 			waveManager->state = WaveManager::Inactive;
-			//joystickHandler->ShutDown();
 			delete world;
 			delete solver;
 			delete broadphase;
@@ -369,8 +326,6 @@ namespace Arena
 
 			mode = None;
 
-			joystickHandler = new Joystick();
-
 			joypad = new XInputJoypad(0);
 			joypad2 = new XInputJoypad(1);
 
@@ -382,14 +337,8 @@ namespace Arena
 			
 			objectPool->Initialise(*worldContext, 25, 30, WaveManager::maxPowerUpsPerType, WaveManager::maxPowerUpsPerType);
 
-			joystickHandler->InitInputDevice(this, this->window_handle);
-
 			arena = new ArenaLayout(arenaWidth, arenaHeight, *worldContext);
 			waveManager = new WaveManager(*arena, *worldContext);
-
-			player = new Player();
-			player->addPhysicsObjectToWorld(*worldContext);
-			player->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
 
 			skyPlane = new SkyPlane(arenaWidth + 100.0f, arenaHeight + 100.0f, octet::vec3(0.0f, 0.0f, 0.0f), *worldContext);
 
@@ -401,6 +350,13 @@ namespace Arena
 
 		void InitGameMode(GameMode newMode)
 		{
+			if (player == nullptr)
+			{
+				player = new Player();
+				player->addPhysicsObjectToWorld(*worldContext);
+				player->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
+			}
+
 			switch (newMode)
 			{
 			case Solo:
@@ -435,11 +391,14 @@ namespace Arena
 
 		void cameraFollow(Player& target)
 		{
-			camera->get_node()->loadIdentity();
+			if (target.curState == Player::State::Alive)
+			{
+				camera->get_node()->loadIdentity();
 
-			octet::vec3 targetPos = target.GetPosition();
-			camera->get_node()->rotate(-90, octet::vec3(1, 0, 0));
-			camera->get_node()->translate(octet::vec3(targetPos.x(), -targetPos.z(), 100));
+				octet::vec3 targetPos = target.GetPosition();
+				camera->get_node()->rotate(-90, octet::vec3(1, 0, 0));
+				camera->get_node()->translate(octet::vec3(targetPos.x(), -targetPos.z(), 100));
+			}
 		}
 		/// this is called to draw the world
 		void draw_world(int x, int y, int w, int h) {

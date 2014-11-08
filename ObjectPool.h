@@ -139,8 +139,7 @@ namespace Arena
 			else
 			{
 				//allocate new - try to avoid this
-				enemy = new Enemy();
-				enemy->addPhysicsObjectToWorld(*gameWorldContext);
+				enemy = CreateNewEnemy();
 			}
 
 			activeEnemies.push_back(enemy);
@@ -153,7 +152,7 @@ namespace Arena
 			enemy->addPhysicsObjectToWorld(*gameWorldContext);
 			return enemy;
 		}
-		octet::dynarray<Enemy*>& GetActiveEnemies() { return activeEnemies; }
+		octet::dynarray<Enemy*>& GetActiveEnemies() override { return activeEnemies; }
 		void DestroyActiveEnemyObject(Enemy* enemy)
 		{
 			for (unsigned int i = 0; i < activeEnemies.size(); i++)
@@ -221,13 +220,13 @@ namespace Arena
 			}
 			else
 			{
-				//allocate new - try to avoid this
-				addBarrel = new PowerUps::AdditionalBarrel(gameWorldContext->soundManager);
-				addBarrel->addPhysicsObjectToWorld(*gameWorldContext);
+				//allocate new
+				addBarrel = CreateNewAdditionalBarrelPowerUp();
 			}
 
 			activeAdditionalBarrel.push_back(addBarrel);
 			addBarrel->Enable();
+			
 			return addBarrel;
 		}
 		PowerUps::AdditionalBarrel* CreateNewAdditionalBarrelPowerUp()
@@ -263,8 +262,7 @@ namespace Arena
 			else
 			{
 				//allocate new - try to avoid this
-				health = new PowerUps::Health(gameWorldContext->soundManager);
-				health->addPhysicsObjectToWorld(*gameWorldContext);
+				health = CreateNewHealthPowerUp();
 			}
 
 			activeHealth.push_back(health);

@@ -37,7 +37,7 @@ namespace PowerUps
 			player.AddBarrel();
 		}
 
-		virtual void DestroyViaPool()
+		virtual void DestroyViaPool() override
 		{
 			objectPool->DestroyActiveAdditionalBarrelObject(this);
 			Disable();

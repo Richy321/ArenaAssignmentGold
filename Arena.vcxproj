@@ -232,7 +232,6 @@
     <ClInclude Include="Hud.h" />
     <ClInclude Include="HUDText.h" />
     <ClInclude Include="IObjectPool.h" />
-    <ClInclude Include="Joystick.h" />
     <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="ObjectPoolT.h" />
     <ClInclude Include="PhysicsObject.h" />
