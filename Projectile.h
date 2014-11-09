@@ -39,10 +39,10 @@ namespace Arena
 			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_PLAYER;
 
 			float radius = 0.5f;
-			mat = new octet::material(octet::vec4(0.0f, 0.75f, 0.0f, 1.0f));
-			octet::mesh *shape = new octet::mesh_sphere(octet::vec3(0.0f, 0.0f, 0.0f), radius);
+			mat = new octet::material(octet::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			octet::mesh *shape = new octet::mesh_sphere(octet::vec3(0.0f, 0.0f, 0.0f), radius, 1);
 			btCollisionShape *collisionShape = new btSphereShape(btScalar(radius));
-
+			shape->set_mode(GL_LINES);
 			PhysicsObject::Initialise(position, shape, collisionShape, mat);
 
 			rigidBody->setCollisionFlags(rigidBody->getCollisionFlags() |

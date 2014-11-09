@@ -7,7 +7,6 @@
 #include "AdditionalBarrel.h"
 #include "Health.h"
 
-#include "VaryingColourEnemy.h"
 #include "ExplodeEnemy.h"
 #include "SphereEnemy.h"
 
@@ -92,9 +91,6 @@ namespace Arena
 
 		void InitialiseTextures()
 		{
-			octet::ref<octet::image> sciFiCaution = new octet::image("src/examples/arena/assets/images/sci_fi_caution2.jpg");
-			textures["SciFiCaution"] = sciFiCaution;
-
 			octet::ref<octet::image> forerunner = new octet::image("src/examples/arena/assets/images/Forerunner_2.jpg");
 			textures["Forerunner"] = forerunner;
 
@@ -102,10 +98,13 @@ namespace Arena
 			textures["DarkWall"] = darkWall;
 
 			octet::ref<octet::image> sciFiCube = new octet::image("src/examples/arena/assets/images/explode_crate.jpg");
-			textures["SciFiCube"] = sciFiCube;
+			textures["ExplodeCrate"] = sciFiCube;
 
 			octet::ref<octet::image> skyTexture = new octet::image("src/examples/arena/assets/images/skyTexture.jpg");
 			textures["SkyTexture"] = skyTexture;
+
+			octet::ref<octet::image> metalSeamless = new octet::image("src/examples/arena/assets/images/14wehk8.jpg");
+			textures["MetalSeamless"] = metalSeamless;
 		}
 
 		///Get texture based on predefined string

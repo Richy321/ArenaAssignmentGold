@@ -76,6 +76,9 @@ namespace Arena
 		const float arenaWidth = 50.0f;
 		const float arenaHeight = 50.0f;
 
+		const octet::vec4 player1Colour = octet::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+		const octet::vec4 player2Colour = octet::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+
 		void handleCameraMovement()
 		{
 			if (prevMouseX != -1 && prevMouseY != -1)
@@ -342,7 +345,7 @@ namespace Arena
 		{
 			if (player == nullptr)
 			{
-				player = new Player();
+				player = new Player(*worldContext, player1Colour);
 				player->addPhysicsObjectToWorld(*worldContext);
 				player->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
 			}
@@ -357,7 +360,7 @@ namespace Arena
 				waveManager->state = WaveManager::Inactive;
 				if (player2 == nullptr)
 				{
-					player2 = new Player();
+					player2 = new Player(*worldContext, player2Colour);
 					player2->addPhysicsObjectToWorld(*worldContext);
 					player2->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
 				}
@@ -368,7 +371,7 @@ namespace Arena
 				waveManager->state = WaveManager::BetweenWaves;
 				if (player2 == nullptr)
 				{
-					player2 = new Player();
+					player2 = new Player(*worldContext, player2Colour);
 					player2->addPhysicsObjectToWorld(*worldContext);
 					player2->respawnCallback = std::bind(&ArenaApp::PlayerRespawn, this, std::placeholders::_1);
 				}

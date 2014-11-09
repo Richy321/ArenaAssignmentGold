@@ -144,7 +144,6 @@ namespace Arena
 		virtual void Disable()
 		{
 			activeState = Disabled;
-			//rigidBody->setActivationState(DISABLE_SIMULATION); //this messed up when enabling/disabling and setting forces on the same physics update.
 			rigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
 			rigidBody->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
 			rigidBody->translate(btVector3(1000, 0, -1000));
@@ -212,7 +211,6 @@ namespace Arena
 		#pragma endregion
 	};
 	
-
 	const char *PhysicsObject::referenceName = "PhysicsObject";
 	const octet::vec3 PhysicsObject::defaultSize = octet::vec3(2.0f, 2.0f, 2.0f);
 }

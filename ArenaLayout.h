@@ -44,6 +44,7 @@ namespace Arena
 
 		virtual ~ArenaLayout()
 		{
+			delete floor;
 		}
 
 		void Initialise(float width, float height, GameWorldContext &context)

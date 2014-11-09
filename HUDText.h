@@ -1,7 +1,7 @@
 #pragma once
 namespace Arena
 {
-	///Represents a single text item on the HUD
+	///Represents a single text item on the HUD, wraps an octet:: mesh_text
 	class HUDText
 	{
 	public:

@@ -49,7 +49,7 @@ namespace Arena
 		{
 			originalColour = octet::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-			octet::image* img = context.objectPool.GetTexture("SciFiCube");
+			octet::image* img = context.objectPool.GetTexture("ExplodeCrate");
 			octet::param_shader *shader = new octet::param_shader("src/examples/arena/shaders/Explode.vs", "shaders/default_textured.fs");
 
 			octet::atom_t atom_progress = octet::app_utils::get_atom("progress");

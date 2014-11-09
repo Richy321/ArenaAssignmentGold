@@ -45,8 +45,9 @@ namespace Arena
 		{
 			octet::mat4t modelToParentMatrix = octet::mat4t();
 			modelToParentMatrix.translate(position.x(), position.y(), position.z());
-			octet::mesh *barrelShape = new octet::mesh_cylinder(octet::math::zcylinder(octet::vec3(0.0f, 0.0f, 0.0f), radius, halfExtents), modelToParentMatrix);
-			
+			octet::mesh *barrelShape = new octet::mesh_cylinder(octet::math::zcylinder(octet::vec3(0.0f, 0.0f, 0.0f), radius, halfExtents), modelToParentMatrix, 8);
+			barrelShape->set_mode(GL_LINES);
+
 			mesh = new octet::mesh_instance(node, barrelShape, mat);
 			context.app_scene.add_mesh_instance(mesh);
 		}

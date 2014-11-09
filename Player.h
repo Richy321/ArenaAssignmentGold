@@ -61,8 +61,9 @@ namespace Arena
 		};
 
 	public:
-		Player()
+		Player(GameWorldContext& context, octet::vec4 colour)
 		{
+			originalColour = colour;
 			octet::vec3 position = octet::vec3(0.0f, 10.0f, -10.0f);
 			octet::vec3 size = octet::vec3(2.0f, 2.0f, 2.0f);
 
@@ -70,18 +71,12 @@ namespace Arena
 			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_POWERUP | CollisionFlags::CollisionTypes::COL_PLAYER | CollisionFlags::CollisionTypes::COL_PROJECTILES;
 
 			damageColour = octet::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-			originalColour = octet::vec4(0.0f, 0.75f, 0.0f, 1.0f);
 		
 			mat = new octet::material(originalColour);
-			octet::mesh *shape = BuildBaseMesh(size.x());
 
-			/*
-			octet::collada_builder collada;
-			collada.load_xml("src/examples/arena/assets/models/tankBase.dae");
-			const char* id = "TankBaseMesh-mesh";
-			octet::resources::resource_dict dict;
-			collada.get_mesh(*shape, id, dict);
-			*/
+			octet::mesh *shape = new octet::mesh_box(size);
+			shape->set_mode(GL_LINES);
+
 			this->size = size;
 			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
 
@@ -176,35 +171,53 @@ namespace Arena
 
 		octet::mesh* BuildBaseMesh(float size)
 		{
-			octet::mesh *mesh = new octet::mesh_box(octet::vec3(size));
-			return mesh;
+			octet::mesh* baseMesh = new octet::mesh();
 
-			//return new octet::mesh_box(octet::vec3(size));
-			octet::mesh* baseMesh = new octet::mesh_box();
-			octet::gl_resource::rwlock vl(baseMesh->get_vertices());
+			baseMesh->allocate(sizeof(octet::mesh::vertex) * 8, sizeof(uint32_t) * 32);
+
+			baseMesh->add_attribute(octet::attribute_pos, 3, GL_FLOAT, 0);
+			baseMesh->add_attribute(octet::attribute_normal, 3, GL_FLOAT, 12);
+			baseMesh->add_attribute(octet::attribute_uv, 2, GL_FLOAT, 24);
+			baseMesh->set_params(sizeof(octet::mesh::vertex), 32, 8, GL_LINES, GL_UNSIGNED_INT);
 			
-			//baseMesh->get_num_vertices()
+			octet::gl_resource::wolock vl(baseMesh->get_vertices());
+			octet::mesh::vertex *vtx = (octet::mesh::vertex *)vl.u8();
+			octet::gl_resource::wolock il(baseMesh->get_indices());
+			uint32_t *idx = il.u32();
 
-			//octet::mesh::vertex *vtx = (octet::mesh::vertex*)vl.u8();
+			float frontOffsetX = 0.5f;
+			float frontOffsetZ = 0.5f;
 
-			//vtx->pos = octet::vec3(vtx->pos.
-			//return baseMesh;
+			float backOffsetX = 0.75;
+			float backOffsetZ = 0.5f;
+
+			//back
+			vtx->pos = octet::vec3p(-size, -size, size); vtx->normal = octet::vec3p(0.0f, 0.0f, 1.0f);  vtx->uv = octet::vec2p(0.0f, 0.0f); vtx++; //bottom left
+			vtx->pos = octet::vec3p(-size, size, size); vtx->normal = octet::vec3p(0.0f, 0.0f, 1.0f);  vtx->uv = octet::vec2p(0.0f, 1.0f); vtx++; //top left
+			vtx->pos = octet::vec3p(size, size, size); vtx->normal = octet::vec3p(0.0f, 0.0f, 1.0f);  vtx->uv = octet::vec2p(1.0f, 1.0f); vtx++; //top right
+			vtx->pos = octet::vec3p(size, -size, size); vtx->normal = octet::vec3p(0.0f, 0.0f, 1.0f);  vtx->uv = octet::vec2p(1.0f, 0.0f); vtx++; //bottom right
+
+			//front
+			vtx->pos = octet::vec3p(-size, -size, -size); vtx->normal = octet::vec3p(0.0f, 0.0f, 1.0f);  vtx->uv = octet::vec2p(0.0f, 0.0f); vtx++;
+			vtx->pos = octet::vec3p(-size, size, -size); vtx->normal = octet::vec3p(0.0f, 0.0f, 1.0f);  vtx->uv = octet::vec2p(0.0f, 1.0f); vtx++;
+			vtx->pos = octet::vec3p(size, size, -size); vtx->normal = octet::vec3p(0.0f, 0.0f, 1.0f);  vtx->uv = octet::vec2p(1.0f, 1.0f); vtx++;
+			vtx->pos = octet::vec3p(size, -size, -size); vtx->normal = octet::vec3p(0.0f, 0.0f, 1.0f);  vtx->uv = octet::vec2p(1.0f, 0.0f); vtx++;
+
+			for (int i = 0; i < 6; i++)
+			{
+				idx[0] = i + 0;
+				idx[1] = i + 3;
+				idx[2] = i + 1;
+				idx += 3;
+
+				idx[0] = i + 0;
+				idx[1] = i + 2;
+				idx[2] = i + 3;
+				idx += 3;
+			}
+
+			return baseMesh;
 		}
-		/*
-		void AddFace(octet::mesh_builder &b)
-		{
-			unsigned short cur_vertex = (unsigned short)b.vertices.size();
-			b.add_vertex(vec4(-size, -size, size, 1.0f), vec4(0.0f, 0.0f, 1.0f, 0.0f), 0.0f, 0.0f);
-			b.add_vertex(vec4(-size, size, size, 1.0f), vec4(0.0f, 0.0f, 1.0f, 0.0f), 0.0f, 1.0f);
-			b.add_vertex(vec4(size, size, size, 1.0f), vec4(0.0f, 0.0f, 1.0f, 0.0f), 1.0f, 1.0f);
-			b.add_vertex(vec4(size, -size, size, 1.0f), vec4(0.0f, 0.0f, 1.0f, 0.0f), 1.0f, 0.0f);
-			b.indices.push_back(cur_vertex + 0);
-			b.indices.push_back(cur_vertex + 1);
-			b.indices.push_back(cur_vertex + 2);
-			b.indices.push_back(cur_vertex + 0);
-			indices.push_back(cur_vertex + 2);
-			indices.push_back(cur_vertex + 3);
-		}*/
 
 		void Update(GameWorldContext& context) override
 		{

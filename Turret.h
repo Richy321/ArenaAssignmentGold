@@ -35,7 +35,8 @@ namespace Arena
 			collisionMask = CollisionFlags::CollisionTypes::COL_WALL | CollisionFlags::CollisionTypes::COL_ENEMY | CollisionFlags::CollisionTypes::COL_POWERUP | CollisionFlags::CollisionTypes::COL_PROJECTILES;
 
 			mass = 0.01f;
-			octet::mesh *baseShape = new octet::mesh_sphere(octet::vec3(0.0f, 0.0f, 0.0f), 1.5f);
+			octet::mesh *baseShape = new octet::mesh_sphere(octet::vec3(0.0f, 0.0f, 0.0f), 1.5f, 1);
+			baseShape->set_mode(GL_LINES);
 			mat = new octet::material(octet::vec4(1.0f, 1.0f, 0.33f, 1.0f));
 			this->owner = owner;
 
@@ -49,7 +50,6 @@ namespace Arena
 			this->context = &context;
 			PhysicsObject::addPhysicsObjectToWorld(context);
 
-			octet::material* mat = new octet::material(octet::vec4(1.0f, 0.54f, 0.2f, 0.1f));
 			TurretBarrel *barrel = new TurretBarrel(context, node, mat, barrelOffset, owner);
 
 			barrels.push_back(barrel);

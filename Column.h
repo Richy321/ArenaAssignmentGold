@@ -38,7 +38,7 @@ namespace Arena
 			mass = 0;
 
 			//mat = new octet::material(octet::vec4(0.0f, 0.25f, 1.0f, 1.0f));
-			mat = new octet::material(context.objectPool.GetTexture("SciFiCaution"));
+			mat = new octet::material(context.objectPool.GetTexture("MetalSeamless"));
 			octet::mesh *shape = new octet::mesh_cylinder(octet::math::zcylinder(octet::vec3(0.0f, 0.0f, 0.0f), radius, halfExtents));
 
 
