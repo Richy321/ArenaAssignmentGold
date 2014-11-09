@@ -1,6 +1,10 @@
 \hypertarget{class_arena_1_1_physics_object}{\section{Arena\+:\+:Physics\+Object Class Reference}
 \label{class_arena_1_1_physics_object}\index{Arena\+::\+Physics\+Object@{Arena\+::\+Physics\+Object}}
 }
+
+
+{\ttfamily \#include $<$Physics\+Object.\+h$>$}
+
 Inheritance diagram for Arena\+:\+:Physics\+Object\+:\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -18,54 +22,51 @@ Inheritance diagram for Arena\+:\+:Physics\+Object\+:\begin{figure}[H]
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{class_arena_1_1_physics_object_af0cdd9b1d59e30eba7101916e4de2c52}{virtual const char $\ast$ {\bfseries Get\+Reference\+Type} ()}\label{class_arena_1_1_physics_object_af0cdd9b1d59e30eba7101916e4de2c52}
+\hypertarget{class_arena_1_1_physics_object_af0cdd9b1d59e30eba7101916e4de2c52}{virtual const char $\ast$ \hyperlink{class_arena_1_1_physics_object_af0cdd9b1d59e30eba7101916e4de2c52}{Get\+Reference\+Type} ()}\label{class_arena_1_1_physics_object_af0cdd9b1d59e30eba7101916e4de2c52}
 
-\item 
+\begin{DoxyCompactList}\small\item\em Unique identifier for this class, used to identify from derived classes. \end{DoxyCompactList}\item 
 \hypertarget{class_arena_1_1_physics_object_a1c047cab77a4d7f8555c3f1bed3cea86}{virtual void {\bfseries Initialise} (octet\+::vec3 position, octet\+::mesh $\ast$shape=nullptr, bt\+Collision\+Shape $\ast$collision\+Shape=nullptr, octet\+::material $\ast$mat=nullptr)}\label{class_arena_1_1_physics_object_a1c047cab77a4d7f8555c3f1bed3cea86}
 
 \item 
-\hypertarget{class_arena_1_1_physics_object_a9e10bdfe72672967777e52ca51d5682a}{void {\bfseries Initialise\+Rigid\+Body} (octet\+::mat4t model\+To\+World, bt\+Collision\+Shape $\ast$collision\+Shape=nullptr)}\label{class_arena_1_1_physics_object_a9e10bdfe72672967777e52ca51d5682a}
+\hypertarget{class_arena_1_1_physics_object_a34ee0dacb9dff05dde46fbf99672f40c}{virtual void \hyperlink{class_arena_1_1_physics_object_a34ee0dacb9dff05dde46fbf99672f40c}{add\+Physics\+Object\+To\+World} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_physics_object_a34ee0dacb9dff05dde46fbf99672f40c}
 
-\item 
-\hypertarget{class_arena_1_1_physics_object_a34ee0dacb9dff05dde46fbf99672f40c}{virtual void {\bfseries add\+Physics\+Object\+To\+World} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_physics_object_a34ee0dacb9dff05dde46fbf99672f40c}
+\begin{DoxyCompactList}\small\item\em Adds rigid to the physics world, mesh and top node to the game world. \end{DoxyCompactList}\item 
+\hypertarget{class_arena_1_1_physics_object_a3efbef8665fee4e50cc19d5202292eee}{virtual void \hyperlink{class_arena_1_1_physics_object_a3efbef8665fee4e50cc19d5202292eee}{Update} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_physics_object_a3efbef8665fee4e50cc19d5202292eee}
 
-\item 
-\hypertarget{class_arena_1_1_physics_object_a3efbef8665fee4e50cc19d5202292eee}{virtual void {\bfseries Update} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_physics_object_a3efbef8665fee4e50cc19d5202292eee}
+\begin{DoxyCompactList}\small\item\em Updates the game physics objects tranforms and caps angular/linear velocities. \end{DoxyCompactList}\item 
+\hypertarget{class_arena_1_1_physics_object_a0d10de17213299177cd2b10499d9f038}{virtual void \hyperlink{class_arena_1_1_physics_object_a0d10de17213299177cd2b10499d9f038}{Enable} ()}\label{class_arena_1_1_physics_object_a0d10de17213299177cd2b10499d9f038}
 
-\item 
-\hypertarget{class_arena_1_1_physics_object_a0d10de17213299177cd2b10499d9f038}{virtual void {\bfseries Enable} ()}\label{class_arena_1_1_physics_object_a0d10de17213299177cd2b10499d9f038}
+\begin{DoxyCompactList}\small\item\em Sets the rigid body to be active. \end{DoxyCompactList}\item 
+\hypertarget{class_arena_1_1_physics_object_a2fa9893c955d2332d67108fbaa7f308e}{virtual void \hyperlink{class_arena_1_1_physics_object_a2fa9893c955d2332d67108fbaa7f308e}{Disable} ()}\label{class_arena_1_1_physics_object_a2fa9893c955d2332d67108fbaa7f308e}
 
-\item 
-\hypertarget{class_arena_1_1_physics_object_a2fa9893c955d2332d67108fbaa7f308e}{virtual void {\bfseries Disable} ()}\label{class_arena_1_1_physics_object_a2fa9893c955d2332d67108fbaa7f308e}
+\begin{DoxyCompactList}\small\item\em Moves the object off screeen and resets velocities to zero. \end{DoxyCompactList}\item 
+\hypertarget{class_arena_1_1_physics_object_a93fc76dcb805562b0a52bfd2cf5875fc}{void \hyperlink{class_arena_1_1_physics_object_a93fc76dcb805562b0a52bfd2cf5875fc}{Translate} (octet\+::vec3 dir)}\label{class_arena_1_1_physics_object_a93fc76dcb805562b0a52bfd2cf5875fc}
 
-\item 
-\hypertarget{class_arena_1_1_physics_object_ab3f025024f294f67913cd06c2ee0116a}{void {\bfseries Set\+World\+Transform} (octet\+::mat4t world4t)}\label{class_arena_1_1_physics_object_ab3f025024f294f67913cd06c2ee0116a}
+\begin{DoxyCompactList}\small\item\em Translate via rigid body using vec3 for convience. \end{DoxyCompactList}\item 
+\hypertarget{class_arena_1_1_physics_object_a0f087630aa3ec68b5038c14e65ead3c5}{void \hyperlink{class_arena_1_1_physics_object_a0f087630aa3ec68b5038c14e65ead3c5}{Translate} (bt\+Vector3 dir)}\label{class_arena_1_1_physics_object_a0f087630aa3ec68b5038c14e65ead3c5}
 
-\item 
-\hypertarget{class_arena_1_1_physics_object_a69f91c2a392a5ace0af86d69d355f5ee}{void {\bfseries Set\+World\+Transform} (bt\+Transform transform)}\label{class_arena_1_1_physics_object_a69f91c2a392a5ace0af86d69d355f5ee}
+\begin{DoxyCompactList}\small\item\em Translate using rigid body. \end{DoxyCompactList}\item 
+\hypertarget{class_arena_1_1_physics_object_ab3f025024f294f67913cd06c2ee0116a}{void \hyperlink{class_arena_1_1_physics_object_ab3f025024f294f67913cd06c2ee0116a}{Set\+World\+Transform} (octet\+::mat4t world4t)}\label{class_arena_1_1_physics_object_ab3f025024f294f67913cd06c2ee0116a}
 
-\item 
-\hypertarget{class_arena_1_1_physics_object_a93fc76dcb805562b0a52bfd2cf5875fc}{void {\bfseries Translate} (octet\+::vec3 dir)}\label{class_arena_1_1_physics_object_a93fc76dcb805562b0a52bfd2cf5875fc}
+\begin{DoxyCompactList}\small\item\em Setter for world tranforms taking mat4t for convience. \end{DoxyCompactList}\item 
+\hypertarget{class_arena_1_1_physics_object_a69f91c2a392a5ace0af86d69d355f5ee}{void \hyperlink{class_arena_1_1_physics_object_a69f91c2a392a5ace0af86d69d355f5ee}{Set\+World\+Transform} (bt\+Transform transform)}\label{class_arena_1_1_physics_object_a69f91c2a392a5ace0af86d69d355f5ee}
 
-\item 
-\hypertarget{class_arena_1_1_physics_object_a0f087630aa3ec68b5038c14e65ead3c5}{void {\bfseries Translate} (bt\+Vector3 dir)}\label{class_arena_1_1_physics_object_a0f087630aa3ec68b5038c14e65ead3c5}
+\begin{DoxyCompactList}\small\item\em Setter for world tranforms. \end{DoxyCompactList}\item 
+\hypertarget{class_arena_1_1_physics_object_a6f3c3b01b933d19be331473e83f50792}{virtual octet\+::material \& \hyperlink{class_arena_1_1_physics_object_a6f3c3b01b933d19be331473e83f50792}{Get\+Material} ()}\label{class_arena_1_1_physics_object_a6f3c3b01b933d19be331473e83f50792}
 
-\item 
-\hypertarget{class_arena_1_1_physics_object_a6f3c3b01b933d19be331473e83f50792}{virtual octet\+::material \& {\bfseries Get\+Material} ()}\label{class_arena_1_1_physics_object_a6f3c3b01b933d19be331473e83f50792}
+\begin{DoxyCompactList}\small\item\em return Material \end{DoxyCompactList}\item 
+\hypertarget{class_arena_1_1_physics_object_a9b8197cee988ddfd57be2fd86d5ee404}{virtual bt\+Rigid\+Body $\ast$ \hyperlink{class_arena_1_1_physics_object_a9b8197cee988ddfd57be2fd86d5ee404}{Get\+Rigid\+Body} ()}\label{class_arena_1_1_physics_object_a9b8197cee988ddfd57be2fd86d5ee404}
 
-\item 
-\hypertarget{class_arena_1_1_physics_object_a9b8197cee988ddfd57be2fd86d5ee404}{virtual bt\+Rigid\+Body $\ast$ {\bfseries Get\+Rigid\+Body} ()}\label{class_arena_1_1_physics_object_a9b8197cee988ddfd57be2fd86d5ee404}
+\begin{DoxyCompactList}\small\item\em returns rigid body \end{DoxyCompactList}\item 
+\hypertarget{class_arena_1_1_physics_object_a5d7d933148997b6a48511e5650b46c49}{virtual octet\+::mesh\+\_\+instance $\ast$ \hyperlink{class_arena_1_1_physics_object_a5d7d933148997b6a48511e5650b46c49}{Get\+Mesh} ()}\label{class_arena_1_1_physics_object_a5d7d933148997b6a48511e5650b46c49}
 
-\item 
-\hypertarget{class_arena_1_1_physics_object_a5d7d933148997b6a48511e5650b46c49}{virtual octet\+::mesh\+\_\+instance $\ast$ {\bfseries Get\+Mesh} ()}\label{class_arena_1_1_physics_object_a5d7d933148997b6a48511e5650b46c49}
+\begin{DoxyCompactList}\small\item\em returns mesh instance \end{DoxyCompactList}\item 
+\hypertarget{class_arena_1_1_physics_object_a0e18b08f240a130fdc6aad588fcac72d}{virtual octet\+::scene\+\_\+node $\ast$ \hyperlink{class_arena_1_1_physics_object_a0e18b08f240a130fdc6aad588fcac72d}{Get\+Node} ()}\label{class_arena_1_1_physics_object_a0e18b08f240a130fdc6aad588fcac72d}
 
-\item 
-\hypertarget{class_arena_1_1_physics_object_a0e18b08f240a130fdc6aad588fcac72d}{virtual octet\+::scene\+\_\+node $\ast$ {\bfseries Get\+Node} ()}\label{class_arena_1_1_physics_object_a0e18b08f240a130fdc6aad588fcac72d}
+\begin{DoxyCompactList}\small\item\em returns top node \end{DoxyCompactList}\item 
+\hypertarget{class_arena_1_1_physics_object_a8dbe1238d40acc779ba9ad599ffab09e}{octet\+::vec3 \hyperlink{class_arena_1_1_physics_object_a8dbe1238d40acc779ba9ad599ffab09e}{Get\+Position} ()}\label{class_arena_1_1_physics_object_a8dbe1238d40acc779ba9ad599ffab09e}
 
-\item 
-\hypertarget{class_arena_1_1_physics_object_a8dbe1238d40acc779ba9ad599ffab09e}{octet\+::vec3 {\bfseries Get\+Position} ()}\label{class_arena_1_1_physics_object_a8dbe1238d40acc779ba9ad599ffab09e}
-
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Gets world position from node matrix. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \subsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
@@ -83,6 +84,12 @@ Arena\+::\+Physics\+Object\+::\+Active\+State {\bfseries active\+State} = Active
 \begin{DoxyCompactItemize}
 \item 
 \hypertarget{class_arena_1_1_physics_object_ae91e377385b599d597ec997158359820}{static const char $\ast$ {\bfseries reference\+Name} = \char`\"{}Physics\+Object\char`\"{}}\label{class_arena_1_1_physics_object_ae91e377385b599d597ec997158359820}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_arena_1_1_physics_object_a9e10bdfe72672967777e52ca51d5682a}{void {\bfseries Initialise\+Rigid\+Body} (octet\+::mat4t model\+To\+World, bt\+Collision\+Shape $\ast$collision\+Shape=nullptr)}\label{class_arena_1_1_physics_object_a9e10bdfe72672967777e52ca51d5682a}
 
 \end{DoxyCompactItemize}
 \subsection*{Protected Attributes}
@@ -122,6 +129,9 @@ Arena\+::\+Physics\+Object\+::\+Active\+State {\bfseries active\+State} = Active
 
 \end{DoxyCompactItemize}
 
+
+\subsection{Detailed Description}
+Base class for a game object with physics (a rigid body) 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 

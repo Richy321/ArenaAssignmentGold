@@ -3,12 +3,11 @@
 
 namespace Arena
 {
+	///Basic static physic object representing the arena wall, fully collidable
 	class Wall : public PhysicsObject
 	{
 	private:
 	public:
-
-		const float thickness = 0.5f;
 		static const char* referenceName;
 		virtual const char* GetReferenceType()
 		{

@@ -121,10 +121,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            secondMesh = <span class="keyword">new</span> octet::mesh_instance(node, plusV, mat);</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        }</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> addPhysicsObjectToWorld(<a class="code" href="struct_arena_1_1_game_world_context.html">GameWorldContext</a>&amp; context)<span class="keyword"> override</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="class_arena_1_1_power_ups_1_1_health.html#a42a3054c97c611cacc448a94af2ecd71">   40</a></span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_arena_1_1_power_ups_1_1_health.html#a42a3054c97c611cacc448a94af2ecd71">addPhysicsObjectToWorld</a>(<a class="code" href="struct_arena_1_1_game_world_context.html">GameWorldContext</a>&amp; context)<span class="keyword"> override</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">        </span>{</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            context.app_scene.add_mesh_instance(secondMesh);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            PowerUp::addPhysicsObjectToWorld(context);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <a class="code" href="class_arena_1_1_physics_object.html#a34ee0dacb9dff05dde46fbf99672f40c">PowerUp::addPhysicsObjectToWorld</a>(context);</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        }</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> ApplyPowerUp(<a class="code" href="class_arena_1_1_player.html">Player</a>&amp; player)</div>
@@ -135,7 +135,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> DestroyViaPool()<span class="keyword"> override</span></div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">        </span>{</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            objectPool-&gt;DestroyActiveHealthObject(<span class="keyword">this</span>);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            Disable();</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            <a class="code" href="class_arena_1_1_physics_object.html#a2fa9893c955d2332d67108fbaa7f308e">Disable</a>();</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        }</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    };</div>
@@ -143,15 +143,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
 <div class="ttc" id="class_arena_1_1_sound_manager_html"><div class="ttname"><a href="class_arena_1_1_sound_manager.html">Arena::SoundManager</a></div><div class="ttdef"><b>Definition:</b> SoundManager.h:5</div></div>
-<div class="ttc" id="class_arena_1_1_player_html"><div class="ttname"><a href="class_arena_1_1_player.html">Arena::Player</a></div><div class="ttdef"><b>Definition:</b> Player.h:11</div></div>
+<div class="ttc" id="class_arena_1_1_player_html"><div class="ttname"><a href="class_arena_1_1_player.html">Arena::Player</a></div><div class="ttdoc">Represents a tank player with rotatable turret. </div><div class="ttdef"><b>Definition:</b> Player.h:13</div></div>
+<div class="ttc" id="class_arena_1_1_power_ups_1_1_health_html_a42a3054c97c611cacc448a94af2ecd71"><div class="ttname"><a href="class_arena_1_1_power_ups_1_1_health.html#a42a3054c97c611cacc448a94af2ecd71">Arena::PowerUps::Health::addPhysicsObjectToWorld</a></div><div class="ttdeci">virtual void addPhysicsObjectToWorld(GameWorldContext &amp;context) override</div><div class="ttdoc">Adds rigid to the physics world, mesh and top node to the game world. </div><div class="ttdef"><b>Definition:</b> Health.h:40</div></div>
+<div class="ttc" id="class_arena_1_1_physics_object_html_a34ee0dacb9dff05dde46fbf99672f40c"><div class="ttname"><a href="class_arena_1_1_physics_object.html#a34ee0dacb9dff05dde46fbf99672f40c">Arena::PhysicsObject::addPhysicsObjectToWorld</a></div><div class="ttdeci">virtual void addPhysicsObjectToWorld(GameWorldContext &amp;context)</div><div class="ttdoc">Adds rigid to the physics world, mesh and top node to the game world. </div><div class="ttdef"><b>Definition:</b> PhysicsObject.h:100</div></div>
 <div class="ttc" id="class_arena_1_1_power_up_html"><div class="ttname"><a href="class_arena_1_1_power_up.html">Arena::PowerUp</a></div><div class="ttdef"><b>Definition:</b> PowerUp.h:7</div></div>
 <div class="ttc" id="struct_arena_1_1_game_world_context_html"><div class="ttname"><a href="struct_arena_1_1_game_world_context.html">Arena::GameWorldContext</a></div><div class="ttdef"><b>Definition:</b> GameWorldContext.h:8</div></div>
+<div class="ttc" id="class_arena_1_1_physics_object_html_a2fa9893c955d2332d67108fbaa7f308e"><div class="ttname"><a href="class_arena_1_1_physics_object.html#a2fa9893c955d2332d67108fbaa7f308e">Arena::PhysicsObject::Disable</a></div><div class="ttdeci">virtual void Disable()</div><div class="ttdoc">Moves the object off screeen and resets velocities to zero. </div><div class="ttdef"><b>Definition:</b> PhysicsObject.h:142</div></div>
 <div class="ttc" id="namespace_arena_html"><div class="ttname"><a href="namespace_arena.html">Arena</a></div><div class="ttdef"><b>Definition:</b> AdditionalBarrel.h:4</div></div>
 <div class="ttc" id="class_arena_1_1_power_ups_1_1_health_html"><div class="ttname"><a href="class_arena_1_1_power_ups_1_1_health.html">Arena::PowerUps::Health</a></div><div class="ttdef"><b>Definition:</b> Health.h:8</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Nov 8 2014 23:20:49 for Arena by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Nov 9 2014 09:50:30 for Arena by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

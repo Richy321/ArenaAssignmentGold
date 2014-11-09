@@ -10,9 +10,7 @@
 #define OCTET_BULLET 1
 
 #include "../../octet.h"
-
 #include "ArenaApp.h"
-
 
 /// Create a box with octet
 int main(int argc, char **argv) {

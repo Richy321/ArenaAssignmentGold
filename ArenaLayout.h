@@ -5,9 +5,11 @@
 
 namespace Arena
 {
+	/// Manages all static arena objects and randomised locations within the arena
 	class ArenaLayout
 	{
 	private:
+		///Generate a wall section with given inputs. Automatically adds to the world.
 		void GenerateWall(octet::vec3 size, octet::mat4t worldTransform, GameWorldContext &context)
 		{
 			Wall *wall = new Wall(worldTransform, size, context);
@@ -15,21 +17,12 @@ namespace Arena
 			context.objectPool.AddPhysicsObject(wall);
 		}
 
+		///Generate a column section with given inputs. Automatically adds to the world.
 		void GenerateColumn(float radius, float halfExtents, octet::mat4t worldTransform, GameWorldContext &context)
 		{
 			Column *col = new Column(worldTransform, radius, halfExtents, context);
 			col->addPhysicsObjectToWorld(context);
 			context.objectPool.AddPhysicsObject(col);
-		}
-
-		void GenerateRandomWall()
-		{
-
-		}
-
-		void GenerateRandomColumn()
-		{
-
 		}
 
 	public:

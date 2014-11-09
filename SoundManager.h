@@ -1,7 +1,7 @@
 #pragma once
-
 namespace Arena
 {
+	///Handles all sounds using octets openAL implemenation
 	class SoundManager
 	{
 

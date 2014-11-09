@@ -5,11 +5,12 @@
 
 namespace Arena
 {
+	///Basic static physic object representing the arena floor
 	class Floor : public PhysicsObject
 	{
 	private:
 	public:
-		const float thickness = 0.5f;
+		const float thickness = 0.5f; ///floor thickness to prevent fall-through between physics steps
 
 		Floor(float width, float height, GameWorldContext& context)
 		{

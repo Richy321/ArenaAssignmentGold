@@ -5,6 +5,8 @@
 
 namespace Arena
 {
+	///Represents a single turret barrel for use with Turret class.
+	///Handles projectile firing with sound
 	class TurretBarrel
 	{
 	private:
@@ -49,6 +51,7 @@ namespace Arena
 			context.app_scene.add_mesh_instance(mesh);
 		}
 
+		///Gets a projectile from the object pool and fires it long the barrel direction 
 		void Fire(GameWorldContext& context)
 		{
 			float runningTime = context.timer.GetRunningTime();

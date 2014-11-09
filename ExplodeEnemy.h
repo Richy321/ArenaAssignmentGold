@@ -2,6 +2,8 @@
 #include "Enemy.h"
 namespace Arena
 {
+	///Enemy TNT crate that explodes on death.
+	//Uses Explode.vs
 	class ExplodeEnemy : public Enemy
 	{
 	public:
@@ -42,18 +44,17 @@ namespace Arena
 			Reset();
 		}
 
+		///Initialise the Explode shader with progress and to/from values
 		virtual void InitialiseExplodeShaderMaterial(GameWorldContext& context)
 		{
 			originalColour = octet::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 			octet::image* img = context.objectPool.GetTexture("SciFiCube");
-			octet::param_shader *shader = new octet::param_shader("src/examples/arena/shaders/MeshTwitch.vs", "shaders/default_textured.fs");
-
+			octet::param_shader *shader = new octet::param_shader("src/examples/arena/shaders/Explode.vs", "shaders/default_textured.fs");
 
 			octet::atom_t atom_progress = octet::app_utils::get_atom("progress");
 			octet::atom_t atom_toExtrude = octet::app_utils::get_atom("toExtrudeUniform");
 			octet::atom_t atom_fromExtrude = octet::app_utils::get_atom("fromExtrudeUniform");
-
 
 			mat = new octet::material(img, NULL, shader);
 

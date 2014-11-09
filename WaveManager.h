@@ -9,6 +9,7 @@
 
 namespace Arena
 {
+	///Manages enemy and powerup spawning, enemy target switching and difficulty
 	class WaveManager
 	{
 	private:
@@ -32,9 +33,7 @@ namespace Arena
 			BetweenWaves,
 			Inactive
 		}
-
 		state = Inactive;
-		octet::random rnd;
 
 		WaveManager(ArenaLayout& Arena, GameWorldContext& context) : arena(Arena)
 		{
@@ -47,8 +46,10 @@ namespace Arena
 
 		void Initialise(GameWorldContext& context)
 		{
-			rnd = octet::random(context.timer.GetTime());
+			context.rnd = octet::random(context.timer.GetTime());
 		}
+
+		///Spawns a new wave with random enemy positions and scaled difficulty
 		void SpawnWave(GameWorldContext& context, Player* target, Player* target2, GameMode mode)
 		{
 			octet::mat4t modelToWorld;
@@ -80,7 +81,7 @@ namespace Arena
 					bool target2Alive = target2->GetRemainingLives() >= 0;
 					if (target1Alive && target2Alive)
 					{
-						int rndInt = rnd.get(0, 2);
+						int rndInt = context.rnd.get(0, 2);
 						curTarget = rndInt == 0 ? target : target2;
 					}
 					else if (target1Alive)
@@ -95,32 +96,15 @@ namespace Arena
 			SpawnRandomPowerUp(context);
 		}
 
-		void SpawnPhysicsExampleWave(GameWorldContext& context)
-		{
-			octet::mat4t modelToWorld;
-			modelToWorld.translate(-4.5f, 10.0f, 0);
-
-			for (int i = 0; i != 20; ++i)
-			{
-				Enemy *enemy = context.objectPool.GetEnemyObject();
-				modelToWorld.translate(3, 0, 0);
-				modelToWorld.rotateZ(360 / 20);
-				enemy->SetWorldTransform(modelToWorld);
-			}
-
-			SpawnPowerUp(octet::vec3(15.0f, 1.0f, 15.0f), PowerUp::Type::AdditionalBarrel, context);
-			SpawnPowerUp(octet::vec3(-15.0f, 1.0f, -15.0f), PowerUp::Type::Health, context);
-		}
-
-		//Random function to spawn powerups.
+		///Random function to spawn powerups.
 		void SpawnRandomPowerUp(GameWorldContext context)
 		{
 			lastPowerUpSpawnTime = context.timer.GetRunningTime();
-			int powerUpNum = rnd.get(PowerUp::Type::AdditionalBarrel, PowerUp::Type::Health +1);
+			int powerUpNum = context.rnd.get(PowerUp::Type::AdditionalBarrel, PowerUp::Type::Health +1);
 			SpawnPowerUp(arena.GetRandomSpawnLocation(), (PowerUp::Type)powerUpNum, context);
 		}
 
-		//Specific spawn of powerups
+		///Specific spawn of powerups
 		void SpawnPowerUp(octet::vec3 position, PowerUp::Type powerupType, GameWorldContext& context)
 		{
 			PowerUp* powerup = nullptr;
@@ -142,6 +126,7 @@ namespace Arena
 			}
 		}
 
+		///Checks to see if a new wave needs to be spawned and re-arranges enemy targets based on player/s state.
 		void Update(GameWorldContext& context, Player* target, Player* target2, GameMode mode)
 		{
 			if (state == Active)

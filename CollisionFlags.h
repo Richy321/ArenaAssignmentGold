@@ -1,9 +1,4 @@
 #pragma once
-
-#include "../../octet.h"
-//#include "Enemy.h"
-//#include "Player.h"
-
 namespace Arena
 {
 	class CollisionFlags

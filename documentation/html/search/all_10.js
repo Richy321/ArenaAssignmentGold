@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['xinputjoypad',['XInputJoypad',['../class_arena_1_1_x_input_joypad.html',1,'Arena']]]
+  ['wall',['Wall',['../class_arena_1_1_wall.html',1,'Arena']]],
+  ['wavemanager',['WaveManager',['../class_arena_1_1_wave_manager.html',1,'Arena']]]
 ];

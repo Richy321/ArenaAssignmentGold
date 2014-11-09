@@ -6,6 +6,7 @@
 
 namespace Arena
 {
+	///Represents the top base of the turret holding all turret barrels
 	class Turret : public PhysicsObject
 	{
 	private:
@@ -64,7 +65,6 @@ namespace Arena
 		{
 			SetDampening(0.0f);
 			rigidBody->applyTorque(btVector3(0.0f, amount, 0.0f));
-
 		}
 
 		void SetDampening(float dampening)

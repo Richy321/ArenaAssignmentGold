@@ -111,7 +111,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            PowerUp::Initialise(position, barrelShape, collisionShape, mat);</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        }</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* GetReferenceType()</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="class_arena_1_1_power_ups_1_1_additional_barrel.html#aac9fb5dfee01e692c8ad28b84c9aaf68">   30</a></span>&#160;        <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="class_arena_1_1_power_ups_1_1_additional_barrel.html#aac9fb5dfee01e692c8ad28b84c9aaf68">GetReferenceType</a>()</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        {</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            <span class="keywordflow">return</span> AdditionalBarrel::referenceName;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        }</div>
@@ -124,21 +124,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> DestroyViaPool()<span class="keyword"> override</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">        </span>{</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            objectPool-&gt;DestroyActiveAdditionalBarrelObject(<span class="keyword">this</span>);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            Disable();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <a class="code" href="class_arena_1_1_physics_object.html#a2fa9893c955d2332d67108fbaa7f308e">Disable</a>();</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        }</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    };</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="ttc" id="class_arena_1_1_power_ups_1_1_additional_barrel_html_aac9fb5dfee01e692c8ad28b84c9aaf68"><div class="ttname"><a href="class_arena_1_1_power_ups_1_1_additional_barrel.html#aac9fb5dfee01e692c8ad28b84c9aaf68">Arena::PowerUps::AdditionalBarrel::GetReferenceType</a></div><div class="ttdeci">virtual const char * GetReferenceType()</div><div class="ttdoc">Unique identifier for this class, used to identify from derived classes. </div><div class="ttdef"><b>Definition:</b> AdditionalBarrel.h:30</div></div>
 <div class="ttc" id="class_arena_1_1_sound_manager_html"><div class="ttname"><a href="class_arena_1_1_sound_manager.html">Arena::SoundManager</a></div><div class="ttdef"><b>Definition:</b> SoundManager.h:5</div></div>
-<div class="ttc" id="class_arena_1_1_player_html"><div class="ttname"><a href="class_arena_1_1_player.html">Arena::Player</a></div><div class="ttdef"><b>Definition:</b> Player.h:11</div></div>
+<div class="ttc" id="class_arena_1_1_player_html"><div class="ttname"><a href="class_arena_1_1_player.html">Arena::Player</a></div><div class="ttdoc">Represents a tank player with rotatable turret. </div><div class="ttdef"><b>Definition:</b> Player.h:13</div></div>
 <div class="ttc" id="class_arena_1_1_power_up_html"><div class="ttname"><a href="class_arena_1_1_power_up.html">Arena::PowerUp</a></div><div class="ttdef"><b>Definition:</b> PowerUp.h:7</div></div>
 <div class="ttc" id="class_arena_1_1_power_ups_1_1_additional_barrel_html"><div class="ttname"><a href="class_arena_1_1_power_ups_1_1_additional_barrel.html">Arena::PowerUps::AdditionalBarrel</a></div><div class="ttdef"><b>Definition:</b> AdditionalBarrel.h:8</div></div>
+<div class="ttc" id="class_arena_1_1_physics_object_html_a2fa9893c955d2332d67108fbaa7f308e"><div class="ttname"><a href="class_arena_1_1_physics_object.html#a2fa9893c955d2332d67108fbaa7f308e">Arena::PhysicsObject::Disable</a></div><div class="ttdeci">virtual void Disable()</div><div class="ttdoc">Moves the object off screeen and resets velocities to zero. </div><div class="ttdef"><b>Definition:</b> PhysicsObject.h:142</div></div>
 <div class="ttc" id="namespace_arena_html"><div class="ttname"><a href="namespace_arena.html">Arena</a></div><div class="ttdef"><b>Definition:</b> AdditionalBarrel.h:4</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Nov 8 2014 23:20:49 for Arena by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Nov 9 2014 09:50:30 for Arena by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

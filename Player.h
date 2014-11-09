@@ -8,6 +8,8 @@
 namespace Arena
 {
 	class ArenaApp;
+
+	///Represents a tank player with rotatable turret
 	class Player : public PhysicsObject
 	{
 	public: 		
@@ -52,6 +54,12 @@ namespace Arena
 		int baseLives;
 		int remainingLives;
 
+		struct custom_vertex
+		{
+			octet::vec3p pos;
+			uint32_t color;
+		};
+
 	public:
 		Player()
 		{
@@ -65,8 +73,15 @@ namespace Arena
 			originalColour = octet::vec4(0.0f, 0.75f, 0.0f, 1.0f);
 		
 			mat = new octet::material(originalColour);
-			octet::mesh *shape = new octet::mesh_box(size);
+			octet::mesh *shape = BuildBaseMesh(size.x());
 
+			/*
+			octet::collada_builder collada;
+			collada.load_xml("src/examples/arena/assets/models/tankBase.dae");
+			const char* id = "TankBaseMesh-mesh";
+			octet::resources::resource_dict dict;
+			collada.get_mesh(*shape, id, dict);
+			*/
 			this->size = size;
 			btBoxShape *collisionShape = new btBoxShape(get_btVector3(size));
 
@@ -93,7 +108,6 @@ namespace Arena
 		{
 			return Player::referenceName;
 		}
-
 		
 		virtual void Initialise()
 		{
@@ -160,6 +174,38 @@ namespace Arena
 			addTurretConstraint(context);
 		}
 
+		octet::mesh* BuildBaseMesh(float size)
+		{
+			octet::mesh *mesh = new octet::mesh_box(octet::vec3(size));
+			return mesh;
+
+			//return new octet::mesh_box(octet::vec3(size));
+			octet::mesh* baseMesh = new octet::mesh_box();
+			octet::gl_resource::rwlock vl(baseMesh->get_vertices());
+			
+			//baseMesh->get_num_vertices()
+
+			//octet::mesh::vertex *vtx = (octet::mesh::vertex*)vl.u8();
+
+			//vtx->pos = octet::vec3(vtx->pos.
+			//return baseMesh;
+		}
+		/*
+		void AddFace(octet::mesh_builder &b)
+		{
+			unsigned short cur_vertex = (unsigned short)b.vertices.size();
+			b.add_vertex(vec4(-size, -size, size, 1.0f), vec4(0.0f, 0.0f, 1.0f, 0.0f), 0.0f, 0.0f);
+			b.add_vertex(vec4(-size, size, size, 1.0f), vec4(0.0f, 0.0f, 1.0f, 0.0f), 0.0f, 1.0f);
+			b.add_vertex(vec4(size, size, size, 1.0f), vec4(0.0f, 0.0f, 1.0f, 0.0f), 1.0f, 1.0f);
+			b.add_vertex(vec4(size, -size, size, 1.0f), vec4(0.0f, 0.0f, 1.0f, 0.0f), 1.0f, 0.0f);
+			b.indices.push_back(cur_vertex + 0);
+			b.indices.push_back(cur_vertex + 1);
+			b.indices.push_back(cur_vertex + 2);
+			b.indices.push_back(cur_vertex + 0);
+			indices.push_back(cur_vertex + 2);
+			indices.push_back(cur_vertex + 3);
+		}*/
+
 		void Update(GameWorldContext& context) override
 		{
 			PhysicsObject::Update(context);
@@ -173,7 +219,6 @@ namespace Arena
 			{
 				float time = context.timer.GetRunningTime();
 		
-
 				if (time > diedTime + respawnDelay)
 					Respawn(context);
 			}

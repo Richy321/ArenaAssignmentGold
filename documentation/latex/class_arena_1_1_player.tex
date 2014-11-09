@@ -1,6 +1,15 @@
 \hypertarget{class_arena_1_1_player}{\section{Arena\+:\+:Player Class Reference}
 \label{class_arena_1_1_player}\index{Arena\+::\+Player@{Arena\+::\+Player}}
 }
+
+
+Represents a tank player with rotatable turret.  
+
+
+
+
+{\ttfamily \#include $<$Player.\+h$>$}
+
 Inheritance diagram for Arena\+:\+:Player\+:\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -25,9 +34,9 @@ Inheritance diagram for Arena\+:\+:Player\+:\begin{figure}[H]
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{class_arena_1_1_player_aa22c5cdce358781bc98892b1e2829bf2}{virtual const char $\ast$ {\bfseries Get\+Reference\+Type} () override}\label{class_arena_1_1_player_aa22c5cdce358781bc98892b1e2829bf2}
+\hypertarget{class_arena_1_1_player_aa22c5cdce358781bc98892b1e2829bf2}{virtual const char $\ast$ \hyperlink{class_arena_1_1_player_aa22c5cdce358781bc98892b1e2829bf2}{Get\+Reference\+Type} () override}\label{class_arena_1_1_player_aa22c5cdce358781bc98892b1e2829bf2}
 
-\item 
+\begin{DoxyCompactList}\small\item\em Unique identifier for this class, used to identify from derived classes. \end{DoxyCompactList}\item 
 \hypertarget{class_arena_1_1_player_a9b5949b4c56768c6132397360587af47}{virtual void {\bfseries Initialise} ()}\label{class_arena_1_1_player_a9b5949b4c56768c6132397360587af47}
 
 \item 
@@ -37,15 +46,18 @@ Inheritance diagram for Arena\+:\+:Player\+:\begin{figure}[H]
 \hypertarget{class_arena_1_1_player_a4d4c157ae313fc2b9560225e066b7590}{void {\bfseries add\+Turret\+Constraint} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_player_a4d4c157ae313fc2b9560225e066b7590}
 
 \item 
-\hypertarget{class_arena_1_1_player_a8816424a271312fd584b8cda77c9d959}{void {\bfseries add\+Physics\+Object\+To\+World} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context) override}\label{class_arena_1_1_player_a8816424a271312fd584b8cda77c9d959}
+\hypertarget{class_arena_1_1_player_a8816424a271312fd584b8cda77c9d959}{void \hyperlink{class_arena_1_1_player_a8816424a271312fd584b8cda77c9d959}{add\+Physics\+Object\+To\+World} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context) override}\label{class_arena_1_1_player_a8816424a271312fd584b8cda77c9d959}
 
-\item 
+\begin{DoxyCompactList}\small\item\em Adds rigid to the physics world, mesh and top node to the game world. \end{DoxyCompactList}\item 
 \hypertarget{class_arena_1_1_player_a4fd4eb5692672d246124137d46648093}{void {\bfseries Attach\+Constraints} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context)}\label{class_arena_1_1_player_a4fd4eb5692672d246124137d46648093}
 
 \item 
-\hypertarget{class_arena_1_1_player_ad050b166333495653886d883dae4da4a}{void {\bfseries Update} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context) override}\label{class_arena_1_1_player_ad050b166333495653886d883dae4da4a}
+\hypertarget{class_arena_1_1_player_a0b83f644e36f82b13bbbdaf002e2d784}{octet\+::mesh $\ast$ {\bfseries Build\+Base\+Mesh} (float size)}\label{class_arena_1_1_player_a0b83f644e36f82b13bbbdaf002e2d784}
 
 \item 
+\hypertarget{class_arena_1_1_player_ad050b166333495653886d883dae4da4a}{void \hyperlink{class_arena_1_1_player_ad050b166333495653886d883dae4da4a}{Update} (\hyperlink{struct_arena_1_1_game_world_context}{Game\+World\+Context} \&context) override}\label{class_arena_1_1_player_ad050b166333495653886d883dae4da4a}
+
+\begin{DoxyCompactList}\small\item\em Updates the game physics objects tranforms and caps angular/linear velocities. \end{DoxyCompactList}\item 
 \hypertarget{class_arena_1_1_player_af4a1b3d8a444e4a417d29806d5b2c4e3}{void {\bfseries Move} (octet\+::vec3 move\+Vec, Direction accel\+Dir)}\label{class_arena_1_1_player_af4a1b3d8a444e4a417d29806d5b2c4e3}
 
 \item 
@@ -117,6 +129,9 @@ Inheritance diagram for Arena\+:\+:Player\+:\begin{figure}[H]
 \end{DoxyCompactItemize}
 \subsection*{Additional Inherited Members}
 
+
+\subsection{Detailed Description}
+Represents a tank player with rotatable turret. 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 

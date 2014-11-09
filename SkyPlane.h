@@ -4,6 +4,7 @@
 
 namespace Arena
 {
+	///Background sky box
 	class SkyPlane
 	{
 
@@ -18,7 +19,7 @@ namespace Arena
 			octet::mat4t modelToWorld = octet::mat4t();
 			modelToWorld.translate(position.x(), position.y(), position.z());
 
-			octet::image *img = new octet::image("src/examples/arena/assets/skyTexture.jpg");
+			octet::image *img = context.objectPool.GetTexture("SkyTexture");
 			mat = new octet::material(img);
 
 			octet::mesh *shape = new octet::mesh_box(octet::vec3(width, width, height));

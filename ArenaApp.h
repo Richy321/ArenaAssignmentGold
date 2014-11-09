@@ -29,7 +29,7 @@
 
 namespace Arena
 {
-	/// Scene using bullet for physics effects.
+	/// Main Arena game app
 	class ArenaApp : public octet::app 
 	{
 	private:
@@ -39,10 +39,10 @@ namespace Arena
 		btDbvtBroadphase *broadphase;                 /// handler for broadphase (rough) collision
 		btSequentialImpulseConstraintSolver *solver;  /// handler to resolve collisions
 		btDiscreteDynamicsWorld *world;               /// physics world, contains rigid bodies
-		octet::camera_instance *camera;
+		octet::camera_instance *camera;				  /// main camera instance 
 
-		Player *player = nullptr;
-		Player *player2 = nullptr;
+		Player *player = nullptr;	///Player1
+		Player *player2 = nullptr;  ///Player2 - if present
 		Floor *floor;
 		ObjectPool *objectPool;
 		Timer *timer;
@@ -51,11 +51,10 @@ namespace Arena
 		SoundManager *sound;
 
 		Hud *HUD;
-		XInputJoypad *joypad;
-		XInputJoypad *joypad2;
+		XInputJoypad *joypad;	///joypad in slot one
+		XInputJoypad *joypad2;  ///joypad in slot two
 
 		GameWorldContext *worldContext;
-
 		btOverlapFilterCallback *filterCallback;
 
 		GameMode mode = GameMode::Solo;
@@ -162,7 +161,7 @@ namespace Arena
 					for (unsigned int i = 0; i < objectPool->GetActiveEnemies().size(); i++)
 					{
 						objectPool->GetActiveEnemies()[i]->SetTarget(player);
-						objectPool->GetActiveEnemies()[i]->SetAIMode(Enemy::AIMode::DumbChase);
+						objectPool->GetActiveEnemies()[i]->SetAIMode(Enemy::AIMode::Chase);
 					}
 				}
 			}
@@ -172,14 +171,6 @@ namespace Arena
 				if (mode == None)
 				{
 					InitGameMode(Coop);
-				}
-				else
-				{
-					for (unsigned int i = 0; i < objectPool->GetActiveEnemies().size(); i++)
-					{
-						objectPool->GetActiveEnemies()[i]->SetTarget(player);
-						objectPool->GetActiveEnemies()[i]->SetAIMode(Enemy::AIMode::Chase);
-					}
 				}
 			}
 
@@ -295,7 +286,6 @@ namespace Arena
 			cleanup();
 		}
 
-
 		void PlayerRespawn(Player& player)
 		{
 			unsigned int spawnIndex = lastSpawnPointIndex;
@@ -389,6 +379,7 @@ namespace Arena
 			mode = newMode;
 		}
 
+		///Follows a Player target using a top down view.
 		void cameraFollow(Player& target)
 		{
 			if (target.curState == Player::State::Alive)
@@ -429,6 +420,7 @@ namespace Arena
 			//camera->get_cameraToProjection
 		}
 
+		///contact callback function to enable custom actions based on detection of specific object-object collision
 		static bool contactCallback(btManifoldPoint &btmanifoldpoint,
 			const btCollisionObjectWrapper *btcollisionobject0,
 			int part_0, int index_0,
@@ -505,6 +497,9 @@ namespace Arena
 			return false;
 		}
 
+		///Early collision detection callback to prevent collision response on certain occasions.
+		///Ignore enemy collisions when the enemy is dead (can still be animating but we don't want a collision)
+		///Using this due to problems disabling simulation on rigid body
 		static struct customFilterCallback : public btOverlapFilterCallback
 		{
 			// return true when pairs need collision

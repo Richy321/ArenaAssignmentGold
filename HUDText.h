@@ -1,6 +1,7 @@
 #pragma once
 namespace Arena
 {
+	///Represents a single text item on the HUD
 	class HUDText
 	{
 	public:
@@ -19,11 +20,10 @@ namespace Arena
 		{
 		}
 
-
 		void initialise(octet::aabb *bounds, octet::bitmap_font *font)
 		{
 			text = "";
-			mesh = new octet::mesh_text(font, "initTestings", bounds);
+			mesh = new octet::mesh_text(font, "initTest", bounds);
 		}
 		void draw()
 		{

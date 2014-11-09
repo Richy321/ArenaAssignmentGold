@@ -1,10 +1,9 @@
 #pragma once
 #include <Xinput.h>
-//based on http://lcmccauley.wordpress.com/2014/01/06/gamepadtutorial-part1/
 
 namespace Arena
 {
-
+	///Handles pooling of a single Xbox controller
 	class XInputJoypad
 	{
 	private:
@@ -70,60 +69,44 @@ namespace Arena
 
 		float LeftStick_X()
 		{
-			// Obtain X axis of left stick
 			short sX = state.Gamepad.sThumbLX;
-
-			// Return axis value, converted to a float
 			return (static_cast<float>(sX) / 32768.0f);
 		}
 
 		float LeftStick_Y()
 		{
-			// Obtain Y axis of left stick
 			short sY = state.Gamepad.sThumbLY;
-
-			// Return axis value, converted to a float
-			return (static_cast<float>(sY) / 32768.0f);
+			return ((float)(sY) / 32768.0f);
 		}
 
 		float RightStick_X()
 		{
-			// Obtain X axis of right stick
 			short sX = state.Gamepad.sThumbRX;
-
-			// Return axis value, converted to a float
-			return (static_cast<float>(sX) / 32768.0f);
+			return ((float)(sX) / 32768.0f);
 		}
 
 		float RightStick_Y()
 		{
-			// Obtain the Y axis of the left stick
 			short sY = state.Gamepad.sThumbRY;
-
-			// Return axis value, converted to a float
-			return (static_cast<float>(sY) / 32768.0f);
+			return ((float)(sY) / 32768.0f);
 		}
 
 		float LeftTrigger()
 		{
-			// Obtain value of left trigger
 			BYTE Trigger = state.Gamepad.bLeftTrigger;
-
 			if (Trigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
 				return Trigger / 255.0f;
 
-			return 0.0f; // Trigger was not pressed
+			return 0.0f;
 		}
 
 		float RightTrigger()
 		{
-			// Obtain value of right trigger
 			BYTE Trigger = state.Gamepad.bRightTrigger;
-
 			if (Trigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
 				return Trigger / 255.0f;
 
-			return 0.0f; // Trigger was not pressed
+			return 0.0f;
 		}
 
 		// Vibrate the gamepad (0.0f cancel, 1.0f max speed)

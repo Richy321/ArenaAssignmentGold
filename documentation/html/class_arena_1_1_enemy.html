@@ -129,7 +129,8 @@ Public Types</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a9ebdb58b2731565c36e5c629086227fc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9ebdb58b2731565c36e5c629086227fc"></a>
-virtual const char *&#160;</td><td class="memItemRight" valign="bottom"><b>GetReferenceType</b> ()</td></tr>
+virtual const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_enemy.html#a9ebdb58b2731565c36e5c629086227fc">GetReferenceType</a> ()</td></tr>
+<tr class="memdesc:a9ebdb58b2731565c36e5c629086227fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unique identifier for this class, used to identify from derived classes. <br /></td></tr>
 <tr class="separator:a9ebdb58b2731565c36e5c629086227fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a210783fb287f22243ec8ac8f75e6a4a9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a210783fb287f22243ec8ac8f75e6a4a9"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>Initialise</b> ()</td></tr>
@@ -144,13 +145,15 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>Die</b> (<a c
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>DestroyViaPool</b> ()</td></tr>
 <tr class="separator:aea14958970021ec0008b4a25a1a7949f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ce5c09dd7e70bae8a523538a70f183c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1ce5c09dd7e70bae8a523538a70f183c"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>Update</b> (<a class="el" href="struct_arena_1_1_game_world_context.html">GameWorldContext</a> &amp;context) override</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_enemy.html#a1ce5c09dd7e70bae8a523538a70f183c">Update</a> (<a class="el" href="struct_arena_1_1_game_world_context.html">GameWorldContext</a> &amp;context) override</td></tr>
+<tr class="memdesc:a1ce5c09dd7e70bae8a523538a70f183c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the game physics objects tranforms and caps angular/linear velocities. <br /></td></tr>
 <tr class="separator:a1ce5c09dd7e70bae8a523538a70f183c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa0e8e8b2a938edac8a9aec8e887952c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaa0e8e8b2a938edac8a9aec8e887952c"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>TakeDamage</b> (unsigned int damageValue)</td></tr>
 <tr class="separator:aaa0e8e8b2a938edac8a9aec8e887952c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a720a0a0e7d0c048015f0d0ecb8792245"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a720a0a0e7d0c048015f0d0ecb8792245"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>Enable</b> ()</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_enemy.html#a720a0a0e7d0c048015f0d0ecb8792245">Enable</a> ()</td></tr>
+<tr class="memdesc:a720a0a0e7d0c048015f0d0ecb8792245"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the rigid body to be active. <br /></td></tr>
 <tr class="separator:a720a0a0e7d0c048015f0d0ecb8792245"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14ee95b34c6028edf878898ed88518a4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a14ee95b34c6028edf878898ed88518a4"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>GetDamage</b> ()</td></tr>
@@ -183,41 +186,49 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>GetSpeed</b> ()</td>
 <tr class="memitem:a1c047cab77a4d7f8555c3f1bed3cea86 inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1c047cab77a4d7f8555c3f1bed3cea86"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>Initialise</b> (octet::vec3 position, octet::mesh *shape=nullptr, btCollisionShape *collisionShape=nullptr, octet::material *mat=nullptr)</td></tr>
 <tr class="separator:a1c047cab77a4d7f8555c3f1bed3cea86 inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e10bdfe72672967777e52ca51d5682a inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9e10bdfe72672967777e52ca51d5682a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>InitialiseRigidBody</b> (octet::mat4t modelToWorld, btCollisionShape *collisionShape=nullptr)</td></tr>
-<tr class="separator:a9e10bdfe72672967777e52ca51d5682a inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34ee0dacb9dff05dde46fbf99672f40c inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a34ee0dacb9dff05dde46fbf99672f40c"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>addPhysicsObjectToWorld</b> (<a class="el" href="struct_arena_1_1_game_world_context.html">GameWorldContext</a> &amp;context)</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_physics_object.html#a34ee0dacb9dff05dde46fbf99672f40c">addPhysicsObjectToWorld</a> (<a class="el" href="struct_arena_1_1_game_world_context.html">GameWorldContext</a> &amp;context)</td></tr>
+<tr class="memdesc:a34ee0dacb9dff05dde46fbf99672f40c inherit pub_methods_class_arena_1_1_physics_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds rigid to the physics world, mesh and top node to the game world. <br /></td></tr>
 <tr class="separator:a34ee0dacb9dff05dde46fbf99672f40c inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2fa9893c955d2332d67108fbaa7f308e inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2fa9893c955d2332d67108fbaa7f308e"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>Disable</b> ()</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_physics_object.html#a2fa9893c955d2332d67108fbaa7f308e">Disable</a> ()</td></tr>
+<tr class="memdesc:a2fa9893c955d2332d67108fbaa7f308e inherit pub_methods_class_arena_1_1_physics_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves the object off screeen and resets velocities to zero. <br /></td></tr>
 <tr class="separator:a2fa9893c955d2332d67108fbaa7f308e inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3f025024f294f67913cd06c2ee0116a inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab3f025024f294f67913cd06c2ee0116a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>SetWorldTransform</b> (octet::mat4t world4t)</td></tr>
-<tr class="separator:ab3f025024f294f67913cd06c2ee0116a inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69f91c2a392a5ace0af86d69d355f5ee inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a69f91c2a392a5ace0af86d69d355f5ee"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>SetWorldTransform</b> (btTransform transform)</td></tr>
-<tr class="separator:a69f91c2a392a5ace0af86d69d355f5ee inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93fc76dcb805562b0a52bfd2cf5875fc inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a93fc76dcb805562b0a52bfd2cf5875fc"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Translate</b> (octet::vec3 dir)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_physics_object.html#a93fc76dcb805562b0a52bfd2cf5875fc">Translate</a> (octet::vec3 dir)</td></tr>
+<tr class="memdesc:a93fc76dcb805562b0a52bfd2cf5875fc inherit pub_methods_class_arena_1_1_physics_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Translate via rigid body using vec3 for convience. <br /></td></tr>
 <tr class="separator:a93fc76dcb805562b0a52bfd2cf5875fc inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f087630aa3ec68b5038c14e65ead3c5 inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0f087630aa3ec68b5038c14e65ead3c5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Translate</b> (btVector3 dir)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_physics_object.html#a0f087630aa3ec68b5038c14e65ead3c5">Translate</a> (btVector3 dir)</td></tr>
+<tr class="memdesc:a0f087630aa3ec68b5038c14e65ead3c5 inherit pub_methods_class_arena_1_1_physics_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Translate using rigid body. <br /></td></tr>
 <tr class="separator:a0f087630aa3ec68b5038c14e65ead3c5 inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3f025024f294f67913cd06c2ee0116a inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab3f025024f294f67913cd06c2ee0116a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_physics_object.html#ab3f025024f294f67913cd06c2ee0116a">SetWorldTransform</a> (octet::mat4t world4t)</td></tr>
+<tr class="memdesc:ab3f025024f294f67913cd06c2ee0116a inherit pub_methods_class_arena_1_1_physics_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for world tranforms taking mat4t for convience. <br /></td></tr>
+<tr class="separator:ab3f025024f294f67913cd06c2ee0116a inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69f91c2a392a5ace0af86d69d355f5ee inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a69f91c2a392a5ace0af86d69d355f5ee"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_physics_object.html#a69f91c2a392a5ace0af86d69d355f5ee">SetWorldTransform</a> (btTransform transform)</td></tr>
+<tr class="memdesc:a69f91c2a392a5ace0af86d69d355f5ee inherit pub_methods_class_arena_1_1_physics_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for world tranforms. <br /></td></tr>
+<tr class="separator:a69f91c2a392a5ace0af86d69d355f5ee inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f3c3b01b933d19be331473e83f50792 inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6f3c3b01b933d19be331473e83f50792"></a>
-virtual octet::material &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>GetMaterial</b> ()</td></tr>
+virtual octet::material &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_physics_object.html#a6f3c3b01b933d19be331473e83f50792">GetMaterial</a> ()</td></tr>
+<tr class="memdesc:a6f3c3b01b933d19be331473e83f50792 inherit pub_methods_class_arena_1_1_physics_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">return Material <br /></td></tr>
 <tr class="separator:a6f3c3b01b933d19be331473e83f50792 inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b8197cee988ddfd57be2fd86d5ee404 inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9b8197cee988ddfd57be2fd86d5ee404"></a>
-virtual btRigidBody *&#160;</td><td class="memItemRight" valign="bottom"><b>GetRigidBody</b> ()</td></tr>
+virtual btRigidBody *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_physics_object.html#a9b8197cee988ddfd57be2fd86d5ee404">GetRigidBody</a> ()</td></tr>
+<tr class="memdesc:a9b8197cee988ddfd57be2fd86d5ee404 inherit pub_methods_class_arena_1_1_physics_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns rigid body <br /></td></tr>
 <tr class="separator:a9b8197cee988ddfd57be2fd86d5ee404 inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d7d933148997b6a48511e5650b46c49 inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5d7d933148997b6a48511e5650b46c49"></a>
-virtual octet::mesh_instance *&#160;</td><td class="memItemRight" valign="bottom"><b>GetMesh</b> ()</td></tr>
+virtual octet::mesh_instance *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_physics_object.html#a5d7d933148997b6a48511e5650b46c49">GetMesh</a> ()</td></tr>
+<tr class="memdesc:a5d7d933148997b6a48511e5650b46c49 inherit pub_methods_class_arena_1_1_physics_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns mesh instance <br /></td></tr>
 <tr class="separator:a5d7d933148997b6a48511e5650b46c49 inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e18b08f240a130fdc6aad588fcac72d inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0e18b08f240a130fdc6aad588fcac72d"></a>
-virtual octet::scene_node *&#160;</td><td class="memItemRight" valign="bottom"><b>GetNode</b> ()</td></tr>
+virtual octet::scene_node *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_physics_object.html#a0e18b08f240a130fdc6aad588fcac72d">GetNode</a> ()</td></tr>
+<tr class="memdesc:a0e18b08f240a130fdc6aad588fcac72d inherit pub_methods_class_arena_1_1_physics_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns top node <br /></td></tr>
 <tr class="separator:a0e18b08f240a130fdc6aad588fcac72d inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8dbe1238d40acc779ba9ad599ffab09e inherit pub_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8dbe1238d40acc779ba9ad599ffab09e"></a>
-octet::vec3&#160;</td><td class="memItemRight" valign="bottom"><b>GetPosition</b> ()</td></tr>
+octet::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_arena_1_1_physics_object.html#a8dbe1238d40acc779ba9ad599ffab09e">GetPosition</a> ()</td></tr>
+<tr class="memdesc:a8dbe1238d40acc779ba9ad599ffab09e inherit pub_methods_class_arena_1_1_physics_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets world position from node matrix. <br /></td></tr>
 <tr class="separator:a8dbe1238d40acc779ba9ad599ffab09e inherit pub_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -316,6 +327,10 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>maxAngularVelocity</
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_methods_class_arena_1_1_physics_object"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_arena_1_1_physics_object')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_arena_1_1_physics_object.html">Arena::PhysicsObject</a></td></tr>
+<tr class="memitem:a9e10bdfe72672967777e52ca51d5682a inherit pro_methods_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9e10bdfe72672967777e52ca51d5682a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>InitialiseRigidBody</b> (octet::mat4t modelToWorld, btCollisionShape *collisionShape=nullptr)</td></tr>
+<tr class="separator:a9e10bdfe72672967777e52ca51d5682a inherit pro_methods_class_arena_1_1_physics_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_static_attribs_class_arena_1_1_physics_object"><td colspan="2" onclick="javascript:toggleInherit('pro_static_attribs_class_arena_1_1_physics_object')"><img src="closed.png" alt="-"/>&#160;Static Protected Attributes inherited from <a class="el" href="class_arena_1_1_physics_object.html">Arena::PhysicsObject</a></td></tr>
 <tr class="memitem:a0b1e6536e2d403aff86c54c546772099 inherit pro_static_attribs_class_arena_1_1_physics_object"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b1e6536e2d403aff86c54c546772099"></a>
 static const octet::vec3&#160;</td><td class="memItemRight" valign="bottom"><b>defaultSize</b> = octet::vec3(2.0f, 2.0f, 2.0f)</td></tr>
@@ -327,7 +342,7 @@ static const octet::vec3&#160;</td><td class="memItemRight" valign="bottom"><b>d
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Nov 8 2014 23:20:50 for Arena by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Nov 9 2014 09:50:31 for Arena by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

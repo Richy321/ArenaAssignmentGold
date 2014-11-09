@@ -53,9 +53,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\helpers\http_server.h">
@@ -515,13 +512,7 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="ObjectPoolT.h" />
-    <ClInclude Include="VaryingColourEnemy.h">
-      <Filter>Source Files\Enemies</Filter>
-    </ClInclude>
     <ClInclude Include="ExplodeEnemy.h">
-      <Filter>Source Files\Enemies</Filter>
-    </ClInclude>
-    <ClInclude Include="SphereEnemy.h">
       <Filter>Source Files\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="XInputJoypad.h">

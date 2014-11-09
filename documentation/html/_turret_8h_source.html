@@ -127,10 +127,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            PhysicsObject::Initialise(position, baseShape, baseShape-&gt;get_bullet_shape());</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        }</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordtype">void</span> addPhysicsObjectToWorld(<a class="code" href="struct_arena_1_1_game_world_context.html">GameWorldContext</a>&amp; context)<span class="keyword"> override</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="class_arena_1_1_turret.html#aebf826e8f5dacf6c72843f75b1b0ef92">   46</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_arena_1_1_turret.html#aebf826e8f5dacf6c72843f75b1b0ef92">addPhysicsObjectToWorld</a>(<a class="code" href="struct_arena_1_1_game_world_context.html">GameWorldContext</a>&amp; context)<span class="keyword"> override</span></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">        </span>{</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            this-&gt;context = &amp;context;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            PhysicsObject::addPhysicsObjectToWorld(context);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <a class="code" href="class_arena_1_1_physics_object.html#a34ee0dacb9dff05dde46fbf99672f40c">PhysicsObject::addPhysicsObjectToWorld</a>(context);</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            octet::material* mat = <span class="keyword">new</span> octet::material(octet::vec4(1.0f, 0.54f, 0.2f, 0.1f));</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <a class="code" href="class_arena_1_1_turret_barrel.html">TurretBarrel</a> *barrel = <span class="keyword">new</span> <a class="code" href="class_arena_1_1_turret_barrel.html">TurretBarrel</a>(context, node, mat, barrelOffset, owner);</div>
@@ -162,14 +162,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            {</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                octet::vec3 newOffset = barrelOffset;</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                newOffset.x() += 0.5f;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                <a class="code" href="class_arena_1_1_turret_barrel.html">TurretBarrel</a> *barrel = <span class="keyword">new</span> <a class="code" href="class_arena_1_1_turret_barrel.html">TurretBarrel</a>(*context, node, mat, newOffset, owner);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                TurretBarrel *barrel = <span class="keyword">new</span> TurretBarrel(*context, node, mat, newOffset, owner);</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                barrels.push_back(barrel);</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            }</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (barrels.size() == 2)</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            {</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                octet::vec3 newOffset = barrelOffset;</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                newOffset.x() -= 0.5f;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                <a class="code" href="class_arena_1_1_turret_barrel.html">TurretBarrel</a> *barrel = <span class="keyword">new</span> <a class="code" href="class_arena_1_1_turret_barrel.html">TurretBarrel</a>(*context, node, mat, newOffset, owner);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                TurretBarrel *barrel = <span class="keyword">new</span> TurretBarrel(*context, node, mat, newOffset, owner);</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                barrels.push_back(barrel);</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            }</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        }</div>
@@ -178,15 +178,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> * Turret::referenceName = <span class="stringliteral">&quot;Turret&quot;</span>;</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
-<div class="ttc" id="class_arena_1_1_physics_object_html"><div class="ttname"><a href="class_arena_1_1_physics_object.html">Arena::PhysicsObject</a></div><div class="ttdef"><b>Definition:</b> PhysicsObject.h:6</div></div>
+<div class="ttc" id="class_arena_1_1_physics_object_html"><div class="ttname"><a href="class_arena_1_1_physics_object.html">Arena::PhysicsObject</a></div><div class="ttdef"><b>Definition:</b> PhysicsObject.h:8</div></div>
 <div class="ttc" id="class_arena_1_1_turret_barrel_html"><div class="ttname"><a href="class_arena_1_1_turret_barrel.html">Arena::TurretBarrel</a></div><div class="ttdef"><b>Definition:</b> TurretBarrel.h:8</div></div>
+<div class="ttc" id="class_arena_1_1_physics_object_html_a34ee0dacb9dff05dde46fbf99672f40c"><div class="ttname"><a href="class_arena_1_1_physics_object.html#a34ee0dacb9dff05dde46fbf99672f40c">Arena::PhysicsObject::addPhysicsObjectToWorld</a></div><div class="ttdeci">virtual void addPhysicsObjectToWorld(GameWorldContext &amp;context)</div><div class="ttdoc">Adds rigid to the physics world, mesh and top node to the game world. </div><div class="ttdef"><b>Definition:</b> PhysicsObject.h:100</div></div>
 <div class="ttc" id="struct_arena_1_1_game_world_context_html"><div class="ttname"><a href="struct_arena_1_1_game_world_context.html">Arena::GameWorldContext</a></div><div class="ttdef"><b>Definition:</b> GameWorldContext.h:8</div></div>
 <div class="ttc" id="class_arena_1_1_turret_html"><div class="ttname"><a href="class_arena_1_1_turret.html">Arena::Turret</a></div><div class="ttdef"><b>Definition:</b> Turret.h:9</div></div>
+<div class="ttc" id="class_arena_1_1_turret_html_aebf826e8f5dacf6c72843f75b1b0ef92"><div class="ttname"><a href="class_arena_1_1_turret.html#aebf826e8f5dacf6c72843f75b1b0ef92">Arena::Turret::addPhysicsObjectToWorld</a></div><div class="ttdeci">void addPhysicsObjectToWorld(GameWorldContext &amp;context) override</div><div class="ttdoc">Adds rigid to the physics world, mesh and top node to the game world. </div><div class="ttdef"><b>Definition:</b> Turret.h:46</div></div>
 <div class="ttc" id="namespace_arena_html"><div class="ttname"><a href="namespace_arena.html">Arena</a></div><div class="ttdef"><b>Definition:</b> AdditionalBarrel.h:4</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Nov 8 2014 23:20:50 for Arena by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Nov 9 2014 09:50:30 for Arena by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

@@ -5,10 +5,10 @@
 
 namespace Arena
 {
+	///Handles all HUD based UI in the game.
 	class Hud
 	{
 	private:
-		//HUDText *debugText;
 		HUDText *optionsText;
 		HUDText *waveCountdownText;
 		HUDText *player1Stats;
@@ -23,7 +23,6 @@ namespace Arena
 			overlay = new octet::text_overlay();
 			font = overlay->get_default_font();
 
-			//debugText = new HUDText(new octet::aabb(octet::vec3(-350.0f, -300.0f, 0.0f), octet::vec3(20.0f, 20.0f, 50.0f)), font);
 			waveCountdownText = new HUDText(new octet::aabb(octet::vec3(0.0f, 0.0f, 0.0f), octet::vec3(50.0f, 20.0f, 50.0f)), font);
 			optionsText = new HUDText(new octet::aabb(octet::vec3(35.0f, 25.0f, 0.0f), octet::vec3(70.0f, 50.0f, 0.0f)), font);
 
@@ -36,7 +35,6 @@ namespace Arena
 
 		void initialise()
 		{			
-			//overlay->add_mesh_text(debugText->mesh);
 			overlay->add_mesh_text(waveCountdownText->mesh);
 			overlay->add_mesh_text(optionsText->mesh);
 			overlay->add_mesh_text(player1Stats->mesh);
@@ -45,7 +43,6 @@ namespace Arena
 
 		void draw(int vx, int vy, GameMode mode)
 		{
-			//debugText->draw();
 			waveCountdownText->draw();
 			player1Stats->draw();
 			player2Stats->draw();
@@ -65,8 +62,6 @@ namespace Arena
 		{
 			static char tmp[64];
 		
-			//debugText->text = player->GetVelocity().toString(tmp, sizeof(tmp));
-
 			float waveDelayTimeRemaining = waveManager.remainingWaveDelayTime;
 			if (waveDelayTimeRemaining > 0.0f)
 			{

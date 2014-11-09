@@ -32,7 +32,7 @@ namespace Arena
 		virtual PowerUps::Health* GetHealthObject() = 0;
 		virtual void DestroyActiveHealthObject(PowerUps::Health *health) = 0;
 
-		virtual octet::image* GetTexture(char* name) = 0;
+		virtual octet::image* GetTexture(const char* name) = 0;
 
 	};
 }

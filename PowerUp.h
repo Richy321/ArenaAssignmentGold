@@ -4,6 +4,7 @@
 
 namespace Arena
 {
+	//Base powerup class which plays a sound on collection. Used to dervive other powerups.
 	class PowerUp : public PhysicsObject
 	{
 	public:
@@ -13,9 +14,6 @@ namespace Arena
 			None,
 			AdditionalBarrel,
 			Health
-			//Speed,
-			//Firerate,
-			//Vortex
 		};
 
 		Type type = None;

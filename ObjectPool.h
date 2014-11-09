@@ -13,6 +13,8 @@
 
 namespace Arena
 {
+	///Creates PhysicsObjects and Textures and adds then to a pool available for dynamic ingame use.
+	///This stops memory allocation in the main game loop (slow)
 	class ObjectPool : public IObjectPool
 	{
 	private:
@@ -28,18 +30,18 @@ namespace Arena
 		octet::dynarray<PowerUps::AdditionalBarrel*> activeAdditionalBarrel;
 		octet::dynarray<PowerUps::AdditionalBarrel*> inactiveAdditionalBarrel;
 
-
 		octet::dictionary<octet::ref<octet::image>> textures;
 
 		GameWorldContext* gameWorldContext;
 
-		ObjectPool(ObjectPool const&);
-		void operator=(ObjectPool const&);
-	public:
 		octet::dynarray<PhysicsObject*> physicsObjects;
 
+		//Prevent copying
+		ObjectPool(ObjectPool const&); 
+		void operator=(ObjectPool const&);
+	public:
+		
 		ObjectPool(){}
-
 
 		virtual ~ObjectPool() override { }
 
@@ -90,20 +92,24 @@ namespace Arena
 
 		void InitialiseTextures()
 		{
-			octet::ref<octet::image> sciFiCaution = new octet::image("src/examples/arena/assets/sci_fi_caution2.jpg");
+			octet::ref<octet::image> sciFiCaution = new octet::image("src/examples/arena/assets/images/sci_fi_caution2.jpg");
 			textures["SciFiCaution"] = sciFiCaution;
 
-			octet::ref<octet::image> forerunner = new octet::image("src/examples/arena/assets/Forerunner_2.jpg");
+			octet::ref<octet::image> forerunner = new octet::image("src/examples/arena/assets/images/Forerunner_2.jpg");
 			textures["Forerunner"] = forerunner;
 
-			octet::ref<octet::image> darkWall = new octet::image("src/examples/arena/assets/sci_fi_dark_wall_2.jpg");
+			octet::ref<octet::image> darkWall = new octet::image("src/examples/arena/assets/images/sci_fi_dark_wall_2.jpg");
 			textures["DarkWall"] = darkWall;
 
-			octet::ref<octet::image> sciFiCube = new octet::image("src/examples/arena/assets/explode_crate.jpg");
+			octet::ref<octet::image> sciFiCube = new octet::image("src/examples/arena/assets/images/explode_crate.jpg");
 			textures["SciFiCube"] = sciFiCube;
+
+			octet::ref<octet::image> skyTexture = new octet::image("src/examples/arena/assets/images/skyTexture.jpg");
+			textures["SkyTexture"] = skyTexture;
 		}
 
-		octet::image* GetTexture(char* name)
+		///Get texture based on predefined string
+		octet::image* GetTexture(const char* name)
 		{
 			if (textures.contains(name))
 			{
@@ -117,12 +123,15 @@ namespace Arena
 			physicsObjects.push_back(physObj);
 		}
 
+		///call 'Update' on all PhysicsObjects created through the ObjectPool
 		void UpdatePhysicsObjects(GameWorldContext& context) override
 		{
 			for (unsigned int i = 0; i < physicsObjects.size(); i++)
 					physicsObjects[i]->Update(context);
 		}
 
+		#pragma region Enemy
+		///Gets an unused Enemy object from pool or creates a new one and adds to pool if none are available
 		Enemy* GetEnemyObject()
 		{
 			Enemy *enemy = GetEnemyObject(octet::vec3(0.0f, 0.0f, 0.0f));
@@ -130,6 +139,8 @@ namespace Arena
 
 			return enemy;
 		}
+
+		///Gets an unused Enemy object from pool or creates a new one and adds to pool if none are available.
 		Enemy* GetEnemyObject(octet::vec3 position)
 		{
 			Enemy* enemy = nullptr;
@@ -149,6 +160,8 @@ namespace Arena
 			enemy->Enable();
 			return enemy;
 		}
+		
+		///Creates a new Enemy and adds to pool
 		Enemy* CreateNewEnemy()
 		{
 			ExplodeEnemy* enemy = new ExplodeEnemy(*gameWorldContext);
@@ -156,6 +169,8 @@ namespace Arena
 			return enemy;
 		}
 		octet::dynarray<Enemy*>& GetActiveEnemies() override { return activeEnemies; }
+		
+		///Removes active enemy from the active list and puts on the inactive list and disables.
 		void DestroyActiveEnemyObject(Enemy* enemy)
 		{
 			for (unsigned int i = 0; i < activeEnemies.size(); i++)
@@ -171,7 +186,10 @@ namespace Arena
 		}
 		unsigned int GetActiveEnemyCount() override { return activeEnemies.size(); }
 		unsigned int GetInactiveEnemyCount(){ return inactiveEnemies.size(); }
+		#pragma endregion
 
+		#pragma region Projectile
+		///Gets an unused Projectile object from pool or creates a new one and adds to pool if none are available.
 		Projectile* GetProjectileObject()
 		{
 			Projectile *projectile = nullptr;
@@ -197,6 +215,8 @@ namespace Arena
 			return projectile;
 		}
 		octet::dynarray<Projectile*>& GetActiveProjectiles() { return activeProjectiles; }
+
+		///Removes active projectile from the active list and puts on the inactive list and disables.
 		void DestroyActiveProjectileObject(Projectile* projectile)
 		{
 			for (unsigned int i = 0; i < activeProjectiles.size(); i++)
@@ -212,7 +232,10 @@ namespace Arena
 		}
 		unsigned int GetActiveProjectileCount() { return activeProjectiles.size(); }
 		unsigned int GetInactiveProjectileCount() { return inactiveProjectiles.size(); }
+		#pragma endregion
 
+		#pragma region AdditionalBarrel
+		///Gets an unused AdditionalBarrel object from pool or creates a new one and adds to pool if none are available.
 		PowerUps::AdditionalBarrel* GetAdditionalBarrelObject()
 		{
 			PowerUps::AdditionalBarrel* addBarrel = nullptr;
@@ -238,6 +261,8 @@ namespace Arena
 			barrel->addPhysicsObjectToWorld(*gameWorldContext);
 			return barrel;
 		}
+
+		///Removes active AdditionalBarrel from the active list and puts on the inactive list and disables.
 		void DestroyActiveAdditionalBarrelObject(PowerUps::AdditionalBarrel* additionalBarrel)
 		{
 			for (unsigned int i = 0; i < activeAdditionalBarrel.size(); i++)
@@ -253,7 +278,10 @@ namespace Arena
 		}
 		unsigned int GetActiveAdditionalBarrelCount() { return activeAdditionalBarrel.size(); }
 		unsigned int GetInactiveAdditionalBarrelCount(){ return inactiveAdditionalBarrel.size(); }
+		#pragma endregion
 
+		#pragma region Health
+		///Gets an unused Health object from pool or creates a new one and adds to pool if none are available.
 		PowerUps::Health* GetHealthObject()
 		{
 			PowerUps::Health* health = nullptr;
@@ -278,6 +306,8 @@ namespace Arena
 			health->addPhysicsObjectToWorld(*gameWorldContext);
 			return health;
 		}
+
+		///Removes active Health from the active list and puts on the inactive list and disables.
 		void DestroyActiveHealthObject(PowerUps::Health* health)
 		{
 			for (unsigned int i = 0; i < activeHealth.size(); i++)
@@ -293,7 +323,7 @@ namespace Arena
 		}
 		unsigned int GetActiveHealthCount() { return activeHealth.size(); }
 		unsigned int GetInactiveHealthCount(){ return inactiveHealth.size(); }
-
+		#pragma endregion
 		void KillAllActiveEnemys()
 		{
 			for (int i = activeEnemies.size()-1; i >= 0; i--)

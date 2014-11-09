@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['wall',['Wall',['../class_arena_1_1_wall.html',1,'Arena']]],
-  ['wavemanager',['WaveManager',['../class_arena_1_1_wave_manager.html',1,'Arena']]]
+  ['varyingcolourenemy',['VaryingColourEnemy',['../class_arena_1_1_varying_colour_enemy.html',1,'Arena']]]
 ];

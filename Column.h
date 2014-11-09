@@ -3,6 +3,7 @@
 
 namespace Arena
 {
+	///Basic static physic object representing an arena column
 	class Column : public PhysicsObject
 	{
 	public:

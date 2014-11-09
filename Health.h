@@ -5,6 +5,7 @@ namespace Arena
 {
 namespace PowerUps
 {
+	///Represents a health pickup which gives the player X health on collection.
 	class Health : public PowerUp
 	{
 	public:

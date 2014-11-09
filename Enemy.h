@@ -3,6 +3,7 @@
 
 namespace Arena
 {
+	//Base class to represent an Enemy. Handles basic chase AI and state 
 	class Enemy : public PhysicsObject
 	{
 	public:
@@ -10,25 +11,21 @@ namespace Arena
 		enum AIMode
 		{
 			Idle,
-			DumbChase,
 			Chase
-			//Pathfind
-			//Proximity
 		};
 
 	protected:
-		int baseHealth = 100;
-		int health = baseHealth;
-		int damage = 25;
-		int points = 1;
-		float speed;
-		float baseSpeed;
-		PhysicsObject *target = nullptr;
+		int baseHealth = 100; ///initial health value before powerups
+		int health = baseHealth; ///current health value
+		int damage = 25; ///damage done to players on collision
+		float speed; ///current health value
+		float baseSpeed; ///initial speed value before powerups
+		PhysicsObject *target = nullptr; ///current AI target
 		AIMode mode = Idle;
 		octet::vec4 originalColour;
 		octet::vec4 damageColour;
-		float deadTime = 0.0f;
-		float deathDelay = 5.0f;
+		float deadTime = 0.0f; ///the running time the enemy last died
+		float deathDelay = 5.0f; ///delay before destroying after dying (allows for death animations)
 
 	public:
 		enum state
@@ -51,8 +48,6 @@ namespace Arena
 
 			damageColour = octet::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 			originalColour = octet::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-
-			//Initialise();
 		}
 
 		~Enemy()
@@ -75,6 +70,7 @@ namespace Arena
 			Reset();
 		}
 
+		///Reset internal values (used when pooling)
 		virtual void Reset()
 		{
 			baseSpeed = 10;
@@ -83,6 +79,7 @@ namespace Arena
 			state = Alive;
 		}
 
+		///Sets the Dead state and destroys via object pool
 		virtual void Die(GameWorldContext& context)
 		{
 			state = Dead;
@@ -90,6 +87,7 @@ namespace Arena
 			DestroyViaPool();
 		}
 
+		///disables enemy via the object pool
 		virtual void DestroyViaPool()
 		{
 			mat->set_diffuse(originalColour);
@@ -102,15 +100,6 @@ namespace Arena
 			switch (mode)
 			{
 			case Idle:
-				break;
-			case DumbChase:
-				if (target != nullptr)
-				{
-					octet::vec3 moveDir = target->GetPosition() - GetPosition();
-					moveDir = moveDir.normalize();
-					moveDir *= speed;
-					rigidBody->applyForce(get_btVector3(moveDir), btVector3(0.0f, 0.0f, 0.0f));
-				}
 				break;
 			case Chase:
 				if (target != nullptr)
@@ -141,16 +130,20 @@ namespace Arena
 			PhysicsObject::Enable();
 			Reset();
 		}
+
+		#pragma region Getter functions
 		int GetDamage() { return damage; }
 		int GetHealth() { return health; }
-		int GetPoints() { return points;  }
 		AIMode GetAIMode() { return mode; }
 		PhysicsObject* GetTarget() { return target; }
+		float GetSpeed() { return speed; }
+		#pragma endregion
 
+		#pragma region Setter functions
 		void SetAIMode(AIMode mode) { this->mode = mode; }
 		void SetTarget(PhysicsObject *target){ this->target = target; }
 		void SetSpeed(float speedValue) { speed = speedValue; }
-		float GetSpeed() { return speed; }
+		#pragma endregion
 	};
 	const char *Enemy::referenceName = "Enemy";
 }

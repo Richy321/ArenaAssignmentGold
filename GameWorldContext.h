@@ -5,6 +5,7 @@
 
 namespace Arena
 {
+	///Combines all commonly used object refs for convenient parameter passing.
 	struct GameWorldContext
 	{
 	public:
