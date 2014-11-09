@@ -104,37 +104,54 @@ namespace Arena
 			prevMouseY = curMouseY;
 		}
 
+		void HandlePlayer1KeyboardInput()
+		{
+			if (is_key_down('A'))
+				player->Move(octet::vec3(-1.0f, 0.0f, 0.0f), Player::Direction::East);
+			if (is_key_down('D'))
+				player->Move(octet::vec3(1.0f, 0.0f, 0.0f), Player::Direction::West);
+			if (is_key_down('W'))
+				player->Move(octet::vec3(0.0f, 0.0f, -1.0f), Player::Direction::North);
+			if (is_key_down('S'))
+				player->Move(octet::vec3(0.0f, 0.0f, 1.0f), Player::Direction::South);
+
+			if (is_key_down('Q'))
+				player->RotateTurret(1.0f);
+
+			if (is_key_down('E'))
+				player->RotateTurret(-1.0f);
+
+			if (is_key_down(octet::key_space))
+				player->FireTurrets(*worldContext);
+		}
+		void HandlePlayer2KeyboardInput()
+		{
+			if (is_key_down('J'))
+				player2->Move(octet::vec3(-1.0f, 0.0f, 0.0f), Player::Direction::East);
+			if (is_key_down('L'))
+				player2->Move(octet::vec3(1.0f, 0.0f, 0.0f), Player::Direction::West);
+			if (is_key_down('I'))
+				player2->Move(octet::vec3(0.0f, 0.0f, -1.0f), Player::Direction::North);
+			if (is_key_down('K'))
+				player2->Move(octet::vec3(0.0f, 0.0f, 1.0f), Player::Direction::South);
+
+			if (is_key_down('U'))
+				player2->RotateTurret(1.0f);
+
+			if (is_key_down('P'))
+				player2->RotateTurret(-1.0f);
+
+			if (is_key_down('N'))
+				player2->FireTurrets(*worldContext);
+		}
+
 		void HandleKeyboardInput()
 		{
 			if (mode != None)
 			{
-				if ((is_key_down(octet::key_left) || is_key_down('A') || is_key_down('a')) ||
-					(is_key_down(octet::key_right) || is_key_down('D') || is_key_down('d')) ||
-					(is_key_down(octet::key_up) || is_key_down('W') || is_key_down('w')) ||
-					(is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s')))
-				{
-					if (is_key_down(octet::key_left) || is_key_down('A') || is_key_down('a'))
-						player->Move(octet::vec3(-1.0f, 0.0f, 0.0f), Player::Direction::East);
-					if (is_key_down(octet::key_right) || is_key_down('D') || is_key_down('d'))
-						player->Move(octet::vec3(1.0f, 0.0f, 0.0f), Player::Direction::West);
-					if (is_key_down(octet::key_up) || is_key_down('W') || is_key_down('w'))
-						player->Move(octet::vec3(0.0f, 0.0f, -1.0f), Player::Direction::North);
-					if (is_key_down(octet::key_down) || is_key_down('S') || is_key_down('s'))
-						player->Move(octet::vec3(0.0f, 0.0f, 1.0f), Player::Direction::South);
-				}
-
-				if (is_key_down(octet::key_down) || is_key_down('Q') || is_key_down('q') ||
-					(is_key_down(octet::key_down) || is_key_down('E') || is_key_down('e')))
-				{
-					if (is_key_down(octet::key_down) || is_key_down('Q') || is_key_down('q'))
-						player->RotateTurret(1.0f);
-
-					if (is_key_down(octet::key_down) || is_key_down('E') || is_key_down('e'))
-						player->RotateTurret(-1.0f);
-				}
-
-				if (is_key_down(octet::key_space))
-					player->FireTurrets(*worldContext);
+				HandlePlayer1KeyboardInput();
+				if(player2 != nullptr)
+					HandlePlayer2KeyboardInput();
 			}
 
 			if (is_key_down(octet::key_f1))
@@ -185,7 +202,7 @@ namespace Arena
 			if (is_key_down(octet::key_esc))
 			{
 				cleanup();
-				exit(1); //quick exit, cleanup?
+				exit(1); //quick exit
 			}
 		}
 

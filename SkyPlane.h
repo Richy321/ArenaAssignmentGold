@@ -22,7 +22,7 @@ namespace Arena
 			octet::image *img = context.objectPool.GetTexture("SkyTexture");
 			mat = new octet::material(img);
 
-			octet::mesh *shape = new octet::mesh_box(octet::vec3(width, width, height));
+			octet::mesh *shape = new octet::mesh_box(octet::vec3(width*4, width*4, height*4));
 			
 			node = new octet::scene_node(modelToWorld, octet::atom_);
 			mesh = new octet::mesh_instance(node, shape, mat);
